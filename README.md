@@ -2,7 +2,7 @@
 
 ## ¿Qué es?
 
-**UPOMarket** es una tienda online de la [***Universidad Pablo de Olavide***](https://www.upo.es/portal/impe/web/portada/index.html), y concretamente de la ***Escuela Politécnica Superior***. Aquí se podrá obtener todo tipo de material de estudio tanto para los estudiantes como para los docentes, así como artículos de primera necesdad.
+**UPOMarket** es una tienda online de la [***Universidad Pablo de Olavide***](https://www.upo.es/portal/impe/web/portada/index.html), y concretamente de la ***Escuela Politécnica Superior***. Aquí se podrá obtener todo tipo de material de estudio tanto para los estudiantes como para los docentes, así como artículos de primera necesidad.
 
 ![EPS UPO](https://pbs.twimg.com/profile_images/1106112771635245057/NnSrv8Oa_400x400.png)
 ## Colaboradores
