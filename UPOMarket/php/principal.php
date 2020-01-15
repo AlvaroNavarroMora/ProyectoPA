@@ -8,7 +8,11 @@
 
         <title>UPOMarket-Inicio</title>
         <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/shop-homepage.css" rel="stylesheet">
+        <link href="../css/header.css" rel="stylesheet">
+        <link href="../css/footer.css" rel="stylesheet">
+        <link href="../css/principal.css" rel="stylesheet">
         <script src="../frameworks/jquery/jquery.min.js"></script>
         <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -19,24 +23,25 @@
         include '../html/header.html';
         ?>
         <!-- Page Content -->
-        <div class="container">
+        <main class="container">
 
             <div class="row">
 
                 <div class="col-lg-3">
 
-                    <img src="../img/upomarket.png" width="200">
-                    <div class="list-group">
-                        <a href="#" class="list-group-item">Category 1</a>
-                        <a href="#" class="list-group-item">Category 2</a>
-                        <a href="#" class="list-group-item">Category 3</a>
-                    </div>
+                    <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
+                    <nav class="list-group">
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="list-group-item">Category 1</a></li>
+                            <li><a href="#" class="list-group-item">Category 2</a></li>
+                            <li><a href="#" class="list-group-item">Category 3</a></li>
+                        </ul>
+                    </nav>
 
                 </div>
                 <!-- /.col-lg-3 -->
 
                 <div class="col-lg-9">
-
                     <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
                         <ol class="carousel-indicators">
                             <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -171,7 +176,7 @@
             </div>
             <!-- /.row -->
 
-        </div>
+        </main>
         <!-- /.container -->
         <?php
         include '../html/footer.html';
