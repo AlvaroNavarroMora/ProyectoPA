@@ -18,7 +18,7 @@
                     <div class="card card-signin my-5">
                         <div class="card-body">
                             <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
-                            <h5 class="card-title text-center">Inicio de sesión</h5>
+                            <h4 class="card-title text-center">Inicio de sesión</h4>
                             <form class="form-signin">
                                 <div class="form-label-group">
                                     <input type="email" id="inputEmail" class="form-control" placeholder="Correo electrónico" required autofocus>
