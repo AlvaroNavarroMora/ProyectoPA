@@ -5,7 +5,7 @@
 
 <html>
     <head>
-        <title>UPOMarket</title>
+        <title>Registro</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="../frameworks/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
@@ -18,7 +18,7 @@
                     <div class="card card-signin my-5">
                         <div class="card-body">
                             <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
-                            <h5 class="card-title text-center">Registro</h5>
+                            <h4 class="card-title text-center">Registro</h4>
                             <form class="form-signin">
                                 <div class="form-label-group">
                                     <input type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
@@ -32,10 +32,6 @@
                                     <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
                                 </div>
                                 <br />
-                                <div class="custom-control custom-checkbox mb-3">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                    <label class="custom-control-label" for="customCheck1">Recordar contraseña</label>
-                                </div>
                                 <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
                             </form>
                         </div>
