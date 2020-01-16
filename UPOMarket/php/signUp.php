@@ -23,24 +23,24 @@ function mostrarSignUp() {
                                     <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
                                 </a>
                                 <h4 class="card-title text-center">Registro</h4>
-                                <form class="form-signin">
+                                <form class="form-signin" action="./utils/inicioDeSesion.php" method="post">
                                     <div class="form-label-group">
-                                        <input type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
+                                        <input name="nombre" type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
                                     </div>
                                     <br />
                                     <div class="form-label-group">
-                                        <input type="email" id="inputEmail" class="form-control" placeholder="Correo electrónico" required autofocus>
+                                        <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Correo electrónico" required autofocus>
                                     </div>
                                     <br />
                                     <div class="form-label-group">
-                                        <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
+                                        <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
                                     </div>
                                     <br />
                                     <div class="form-label-group">
-                                        <input type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" required>
+                                        <input name="confirmPassword" type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" required>
                                     </div>
                                     <br />
-                                    <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
+                                    <input class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" value="Registrarse" name="registrarse"></input>
                                     <br />
                                     <p>¿Ya tienes una cuenta? <a href="login.php">¡Inicia sesión!</a></p>
                                 </form>
