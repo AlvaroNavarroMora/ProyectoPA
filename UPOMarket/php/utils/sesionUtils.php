@@ -8,11 +8,9 @@
 
 function cerrarSesion() {
     session_destroy();
-    header('Location: ../login.php');
+    header('Location: ./login.php');
 }
 
 function existeSesion() {
-    if (!isset($_SESSION['usuario'])) {
-        cerrarSesion();
-    }
+    return isset($_SESSION['usuario']);
 }
