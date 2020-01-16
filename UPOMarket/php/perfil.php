@@ -43,14 +43,14 @@
                     <div class="card mt-4">
                         <div class="card-body">
                             <h3 class="card-title">Perfil
-                                <button id="profileButton"><i class="fa fa-edit"></i></button></h3>
-                            <h4>Imagen</h4>
+                                <button id="profileButton"><i class="fa fa-edit"></i></button>
+                            </h3>
                             <img src="../img/defaultProfile.png" alt="Imagen de perfil" id="imgPerfil"/>
-                            <h4>Nombre</h4>
+                            <h6 class="labelPerfil">Nombre:</h6>
                             <p>Nombre de Ejempo</p>
-                            <h4>Email</h4>
+                            <h6 class="labelPerfil">Email:</h6>
                             <p>ejemplo@prueba.com</p>
-                            <h4>Contraseña</h4>
+                            <h6 class="labelPerfil">Contraseña:</h6>
                             <p>***********</p>
                         </div>
                     </div>

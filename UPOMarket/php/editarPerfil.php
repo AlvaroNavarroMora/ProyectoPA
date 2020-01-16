@@ -45,17 +45,16 @@
                             <h3 class="card-title">Perfil</h3>
                             <div id="formEditarPerfil">
                                 <form class="form-signin">
-                                    <h4>Imagen</h4>
                                     <img src="../img/defaultProfile.png" alt="Imagen de perfil" id="imgPerfil"/>
                                     <br />
                                     <button id="profileButton"><i class="fas fa-folder-open"></i></button>
-                                    <h4>Nombre</h4>
+                                    <h6 class="labelPerfil">Nombre:</h6>
                                     <input type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
-                                    <h4>Email</h4>
+                                    <h6 class="labelPerfil">Email:</h6>
                                     <input type="email" id="inputEmail" class="form-control" placeholder="Correo electrónico" required autofocus>
-                                    <h4>Contraseña</h4>
+                                    <h6 class="labelPerfil">Contraseña:</h6>
                                     <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
-                                    <h4>Confirmar Contraseña</h4>
+                                    <h6 class="labelPerfil">Confirmar Contraseña:</h6>
                                     <input type="password" id="inputConfirmPassword" class="form-control" placeholder="Contraseña" required>
                                     <br />
                                     <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Actualizar Perfil</button>
