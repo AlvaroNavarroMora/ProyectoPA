@@ -1,8 +1,6 @@
 footer {
     width: 100% !important;
     margin-top: 20px;
-    padding: 0;
-
 }
 .footer {
     background-color: #7A7D7F;
@@ -27,18 +25,14 @@ footer {
 .footer a:hover {
     color: white !important;
 }
-.f-ico{
+.f-ico{/*Iconos*/
     font-size:36px;
-    margin-left: 36px;
+    margin-left: 10px;
 }
-.f-p-ico{
-    width: 60%;
-    margin-left: auto;
-    margin-right: auto;
-}
+
 .f-p-ico a{
     text-decoration: none;
 }
 .footer div{
-    margin:0 auto !important;
+    margin: 0 auto !important;
 }
