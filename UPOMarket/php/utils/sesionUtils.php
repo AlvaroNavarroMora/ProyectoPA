@@ -6,7 +6,7 @@ function cerrarSesion() {
 }
 
 function existeSesion() {
-    return isset($_SESSION['usuario']);
+    return isset($_SESSION['email']);
 }
 
 ?>
