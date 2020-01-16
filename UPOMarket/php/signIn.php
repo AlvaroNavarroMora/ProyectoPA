@@ -32,6 +32,10 @@
                                     <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
                                 </div>
                                 <br />
+                                <div class="form-label-group">
+                                    <input type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" required>
+                                </div>
+                                <br />
                                 <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
                             </form>
                         </div>
