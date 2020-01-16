@@ -7,10 +7,11 @@
  */
 
 function openCon() {
-    $host = "127.0.0.1";
-    $user = "root";
-    $pas = "";
-    $db = "";
+    //credenciales para la BD de Marcos
+    $host = "85.137.192.11:3308";
+    $user = "upomarket";
+    $pas = "A2cMnUHsChA0DcZ8";
+    $db = "upomarket";
     return mysqli_connect($host, $user, $pas, $db);
 }
 
