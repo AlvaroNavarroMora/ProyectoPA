@@ -26,6 +26,9 @@ footer {
     margin-left: auto;
     margin-right: auto;
 }
+.f-p-ico a{
+    text-decoration: none;
+}
 .footer div{
     margin-left: auto;
     margin-right: auto;
