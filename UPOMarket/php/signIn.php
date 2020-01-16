@@ -1,6 +1,4 @@
-<?php
-
-?>
+<?php ?>
 <!DOCTYPE html>
 
 <html>
@@ -17,7 +15,9 @@
                 <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                     <div class="card card-signin my-5">
                         <div class="card-body">
-                            <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
+                            <a href="principal.php">
+                                <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
+                            </a>
                             <h4 class="card-title text-center">Registro</h4>
                             <form class="form-signin">
                                 <div class="form-label-group">
