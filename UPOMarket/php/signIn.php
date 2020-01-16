@@ -1,8 +1,11 @@
+<?php
+
+?>
 <!DOCTYPE html>
 
 <html>
     <head>
-        <title>UPOMarket</title>
+        <title>Registro</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="../frameworks/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
@@ -12,26 +15,24 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                    <div id="divTitLogin">
-                    <h1 id="titLogin">UPOMarket</h1>
-                    </div>
                     <div class="card card-signin my-5">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Sign In</h5>
+                            <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
+                            <h4 class="card-title text-center">Registro</h4>
                             <form class="form-signin">
                                 <div class="form-label-group">
-                                    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+                                    <input type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
                                 </div>
                                 <br />
                                 <div class="form-label-group">
-                                    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                                    <input type="email" id="inputEmail" class="form-control" placeholder="Correo electrónico" required autofocus>
                                 </div>
                                 <br />
-                                <div class="custom-control custom-checkbox mb-3">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                    <label class="custom-control-label" for="customCheck1">Remember password</label>
+                                <div class="form-label-group">
+                                    <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
                                 </div>
-                                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
+                                <br />
+                                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
                             </form>
                         </div>
                     </div>

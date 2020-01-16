@@ -1,0 +1,10 @@
+body{
+    background-color: #212529;
+}
+
+#logo{
+    align-self: center;
+    display: block;
+    margin: auto;
+    width: 80%;
+}
