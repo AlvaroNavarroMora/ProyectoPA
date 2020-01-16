@@ -38,20 +38,21 @@ if (isset($_POST['btnRegistrar'])) {
         $errores[] = "El campo email esta mal rellenado";
     }
 
-    if (isset($errores)) {
-        /*
-         * Tratamiento de los errores
-         */
-    } else {
+     if(empty($errores)) {
         //Si la insercion falla $credenciales=false, sino $credenciales tendrá el nombre de usuario y su id para guardar la sesion
-        if (insertUsuario($user, $password, $email) <= 0) {
+        if (insertUsuario($user, $password, $email) > 0) {
             $_SESSION['idUser'] = $email;
             $_SESSION['user'] = $user;
             $path = "../img/usrFotos/$email"; /* Carpeta para almacenar fotos de los usuarios si hiciese falta */
             mkdir($path);
             header("Location: ./principal.php");
         } else {
-            $errores[] = "usuario ya registrado";
+            $errores[] = "Usuario ya registrado";
+        }
+    }
+    if(!empty($errores)) {
+        foreach ($errores as $e) {
+            echo "$e<br>";
         }
     }
 }
