@@ -1,0 +1,15 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 16-ene-2020, 2:21:21
+    Author     : Amalio
+*/
+
+div.col-lg-9{
+    max-width: 65% !important;/*Amalio: Me parecia que tenia un tamaño demasiado grande y lo encogí un poco*/
+    margin-left: auto;
+    margin-right: auto;
+}

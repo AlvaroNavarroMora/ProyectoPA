@@ -1,20 +1,42 @@
 footer {
     width: 100% !important;
+    margin-top: 20px;
 }
 .footer {
-  background-color: #7A7D7F;
+    background-color: #7A7D7F;
 }
 
 .footer p, h5 {
-  color: white;
-}
+    font-size: 14px;
+    color: white;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji" !important;
 
+}
+.footer p {
+    text-align: justify;
+    font-size: 12px;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji" !important;
+
+}
 .footer a {
-  color: #E3DDC1;
-  font-weight: bold;
+    color: lightgray;
+    font-weight: bold;
+}
+.footer a:hover {
+    color: white !important;
+}
+.f-ico{/*Iconos*/
+    font-size:36px;
+    margin-left: 10px;
 }
 
-.f-ico{
-  font-size:36px;
-  margin: 10px;
+.f-p-ico a{
+    text-decoration: none;
+}
+.footer div{
+    margin: 0 auto !important;
+}
+.footer .row{
+    width:90%;
+    margin:0 auto;
 }
