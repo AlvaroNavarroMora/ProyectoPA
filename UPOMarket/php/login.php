@@ -1,5 +1,6 @@
 <?php
 include "./utils/sesionUtils.php";
+include "./utils/manejadorBD.php";
 
 //Funciones
 function cargarLogin() {
@@ -26,7 +27,16 @@ function cargarLogin() {
                                 <h4 class="card-title text-center">Inicio de sesión</h4>
                                 <form class="form-signin" action="#" method="post">
                                     <div class="form-label-group">
-                                        <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Correo electrónico" required autofocus>
+                                        <?php
+                                        if (isset($_COOKIE['emailUsuarioUPOMKT'])) {
+                                            $cookieEmail = filter_var($_COOKIE['emailUsuarioUPOMKT'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                                            echo '<input name="email" type="email" id="inputEmail" class="form-control" placeholder="Correo electrónico" value="' . $cookieEmail . '" required autofocus>';
+                                        } else {
+                                            ?>
+                                            <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Correo electrónico" required autofocus>
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
                                     <br />
                                     <div class="form-label-group">
@@ -52,8 +62,6 @@ function cargarLogin() {
 <?php
 session_start();
 if (!existeSesion()) {
-    cargarLogin();
-} else {
     if (isset($_POST['iniciarSesion'])) {
         if (isset($_POST['email'])) {
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
@@ -67,27 +75,45 @@ if (!existeSesion()) {
         }
 
         if (!isset($errores)) {
-            //crear la cookie de usuario actual
-            //comprobar que exista el usuario
-            //obtener $emailBD de la BD
-            //obtener $psswdHash de la BD
+            //comprobamos que existe el usuario
+            $sentencia = "SELECT email, password, nombre, tipo FROM usuarios WHERE email = '" . $email . "'";
+            $result = ejecutarConsulta($sentencia);
+            if (mysqli_num_rows($result) > 0) {
+                //crear la cookie del email del usuario
+                setcookie("emailUsuarioUPOMKT", $email, 1000 * 60 * 60 * 24 * 15);
+                $row = mysqli_fetch_array($result);
+                //obtener $psswdHash de la BD
+                $psswdHash = $row['password'];
 
-            if (password_verify($password, $psswdHash)) {
-                //obtener $nombre de la BD
-                //obtener $tipo de la BD
-                $_SESSION['email'] = $emailBD;
-                $_SESSION['nombre'] = $nombre;
-                $_SESSION['tipo'] = $tipo;
-                header('Location: ../principal.php');
+                if (password_verify($password, $psswdHash)) {
+                    //obtener $emailBD de la BD
+                    $emailBD = $row['email'];
+                    //obtener $nombre de la BD
+                    $nombre = $row['nombre'];
+                    //obtener $tipo de la BD
+                    $tipo = $row['tipo'];
+                    $_SESSION['email'] = $emailBD;
+                    $_SESSION['nombre'] = $nombre;
+                    $_SESSION['tipo'] = $tipo;
+                    header('Location: ./principal.php');
+                } else {
+                    $errores[] = "Credenciales no válidos";
+                }
             } else {
                 $errores[] = "Credenciales no válidos";
             }
         }
-        if(isset($errores)){
-            //Mostrar errores y el formulario con el campo email rellenado con la cookie en caso de existir
+        if (isset($errores)) {
+            $txtErrores = "";
+            foreach ($error as $errores) {
+                echo $error . "<br />";
+            }
+            cargarLogin();
         }
     } else {
-        header('Location: ./principal.php');
+        cargarLogin();
     }
+} else {
+    header('Location: ./principal.php');
 }
 ?>
