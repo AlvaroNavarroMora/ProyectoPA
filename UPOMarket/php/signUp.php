@@ -1,5 +1,6 @@
 <?php
 include "./utils/sesionUtils.php";
+
 //Funciones
 function mostrarSignUp() {
     ?>
@@ -23,24 +24,24 @@ function mostrarSignUp() {
                                     <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
                                 </a>
                                 <h4 class="card-title text-center">Registro</h4>
-                                <form class="form-signin">
+                                <form class="form-signin" action="./utils/registro.php">
                                     <div class="form-label-group">
-                                        <input type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
+                                        <input name="usuario" type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
                                     </div>
                                     <br />
                                     <div class="form-label-group">
-                                        <input type="email" id="inputEmail" class="form-control" placeholder="Correo electrónico" required autofocus>
+                                        <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Correo electrónico" required autofocus>
                                     </div>
                                     <br />
                                     <div class="form-label-group">
-                                        <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
+                                        <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
                                     </div>
                                     <br />
                                     <div class="form-label-group">
-                                        <input type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" required>
+                                        <input name="passwordConfirm" type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" required>
                                     </div>
                                     <br />
-                                    <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
+                                    <button name="btnRegistrar" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
                                     <br />
                                     <p>¿Ya tienes una cuenta? <a href="login.php">¡Inicia sesión!</a></p>
                                 </form>
