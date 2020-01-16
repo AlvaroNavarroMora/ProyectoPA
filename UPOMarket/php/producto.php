@@ -10,10 +10,11 @@
     <link href="../css/shop-homepage.css" rel="stylesheet">
     <link href="../css/header.css" rel="stylesheet">
     <link href="../css/footer.css" rel="stylesheet">
+    <link href="../css/principal.css" rel="stylesheet" type="text/css"/>
     <link href="../css/producto.css" rel="stylesheet" type="text/css"/>
     <script src="../frameworks/jquery/jquery.min.js"></script>
     <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
 
 </head>
 
@@ -23,12 +24,12 @@
     ?>
 
     <!-- Page Content -->
-    <div class="container">
+    <main class="container">
 
         <div class="row">
-<!-- LISTA DE CATEGORÍAS -->
+            <!-- LISTA DE CATEGORÍAS -->
             <div class="col-lg-3">
-                <h1 class="my-4">Shop Name</h1>
+                <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                 <div class="list-group">
                     <a href="#" class="list-group-item active">Category 1</a>
                     <a href="#" class="list-group-item">Category 2</a>
@@ -75,7 +76,7 @@
 
         </div>
 
-    </div>
+    </main>
     <!-- /.container -->
     <?php
     include '../html/footer.html';
