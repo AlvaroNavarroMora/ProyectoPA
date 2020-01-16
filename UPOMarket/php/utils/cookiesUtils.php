@@ -1,10 +1,4 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /*Si no existe la cookie recarga la página que le pasemos por parámetro*/
 function comprobarCookie($pagina) {
     if ($_GET['establecida'] != 'si') {
@@ -14,3 +8,5 @@ function comprobarCookie($pagina) {
         header("Location: $pagina?establecida=si");
     }
 }
+
+?>
