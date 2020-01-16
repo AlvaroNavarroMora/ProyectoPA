@@ -9,7 +9,7 @@ and open the template in the editor.
 */
 
 div.col-lg-9{
-    max-width:  55% !important;/*Amalio: Me parecia que tenia un tamaño demasiado grande y lo encogí un poco*/
+    max-width: 65% !important;/*Amalio: Me parecia que tenia un tamaño demasiado grande y lo encogí un poco*/
     margin-left: auto;
     margin-right: auto;
 }
