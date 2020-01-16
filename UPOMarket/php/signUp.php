@@ -1,5 +1,6 @@
 <?php
 include "./utils/sesionUtils.php";
+
 //Funciones
 function mostrarSignUp() {
     ?>
@@ -23,9 +24,9 @@ function mostrarSignUp() {
                                     <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
                                 </a>
                                 <h4 class="card-title text-center">Registro</h4>
-                                <form class="form-signin" action="./utils/inicioDeSesion.php" method="post">
+                                <form class="form-signin" action="./utils/registro.php">
                                     <div class="form-label-group">
-                                        <input name="nombre" type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
+                                        <input name="usuario" type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
                                     </div>
                                     <br />
                                     <div class="form-label-group">
@@ -37,10 +38,10 @@ function mostrarSignUp() {
                                     </div>
                                     <br />
                                     <div class="form-label-group">
-                                        <input name="confirmPassword" type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" required>
+                                        <input name="passwordConfirm" type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" required>
                                     </div>
                                     <br />
-                                    <input class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" value="Registrarse" name="registrarse"></input>
+                                    <button name="btnRegistrar" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
                                     <br />
                                     <p>¿Ya tienes una cuenta? <a href="login.php">¡Inicia sesión!</a></p>
                                 </form>
