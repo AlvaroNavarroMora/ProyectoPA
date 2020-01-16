@@ -2,19 +2,31 @@ footer {
     width: 100% !important;
 }
 .footer {
-  background-color: #7A7D7F;
+    background-color: #7A7D7F;
 }
 
 .footer p, h5 {
-  color: white;
+    color: white;
 }
-
+.footer p {
+    text-align: justify;
+}
 .footer a {
-  color: #E3DDC1;
-  font-weight: bold;
+    color: #E3DDC1;
+    font-weight: bold;
 }
 
 .f-ico{
-  font-size:36px;
-  margin: 10px;
+    font-size:36px;
+    margin-left: 36px;
+}
+
+.f-p-ico{
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.footer div{
+    margin-left: auto;
+    margin-right: auto;
 }
