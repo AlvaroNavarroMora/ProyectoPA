@@ -24,3 +24,9 @@
 #imgPerfil{
     max-width: 90%;
 }
+
+
+.labelPerfil{
+    margin-top: 15px;
+    font-weight: bold;
+}
