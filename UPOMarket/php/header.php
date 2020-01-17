@@ -14,12 +14,12 @@ function mostrarSinSesion() {
 function mostrarCliente() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
-        echo $_SESSION['nombre'];
-        ?></a>
-    </li>
-    <li class="nav-item">
         <a class="nav-link" href="#"><i class="fa fa-shopping-cart"></i> Cesta</a>
+    </li>
+    <li id="profile" class="nav-item">
+        <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
+            echo $_SESSION['nombre'];
+            ?></a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./utils/cerrarSesion.php">Cerrar Sesión</a>
@@ -30,18 +30,18 @@ function mostrarCliente() {
 function mostrarVendedor() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
-        echo $_SESSION['nombre'];
-        ?></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">Mis productos</a>
+        <a class="nav-link" href="./misProductos.php">Mis productos</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="#">Mis ventas</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="#"><i class="fa fa-shopping-cart"></i> Cesta</a>
+    </li>
+    <li id="profile" class="nav-item">
+        <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
+            echo $_SESSION['nombre'];
+            ?></a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./utils/cerrarSesion.php">Cerrar Sesión</a>
@@ -51,10 +51,10 @@ function mostrarVendedor() {
 
 function mostrarAdmin() {
     ?>
-    <li class="nav-item">
+    <li id="profile" class="nav-item">
         <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
-        echo $_SESSION['nombre'];
-        ?></a>
+            echo $_SESSION['nombre'];
+            ?></a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./utils/cerrarSesion.php">Cerrar Sesión</a>
