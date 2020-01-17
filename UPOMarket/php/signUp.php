@@ -94,6 +94,10 @@ if (isset($_POST['btnRegistrar'])) {
                                     <input name="passwordConfirm" type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" required>
                                 </div>
                                 <br />
+                                <div>
+                                    <span>¿Desea ser vendedor? </span><input name="vendedor" type="checkbox" id="inputVendedor" />
+                                </div>
+                                <br />
                                 <button name="btnRegistrar" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
                                 <br />
                                 <p>¿Ya tienes una cuenta? <a href="login.php">¡Inicia sesión!</a></p>
