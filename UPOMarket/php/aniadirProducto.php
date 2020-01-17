@@ -12,7 +12,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Nombre Producto - Upomarket</title>
+        <title>Añadir Producto - UPOMarket</title>
         <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -63,7 +63,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="descripcion">Descripcion</label>
+                            <label for="descripcion">Descripción</label>
                             <textarea id="descripcion" class="form-control" placeholder="Escriba una descripción del producto" rows="5"></textarea><!--Controlar numero de palabras JS? -->
                         </div>
                         <div class="form-row">
@@ -73,7 +73,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Descripción Característica</label>
-                                <input type="text" class="form-control" id="caracteristicaDesc" placeholder="Descripcion característica">
+                                <input type="text" class="form-control" id="caracteristicaDesc" placeholder="Descripción característica">
                             </div>
                         </div>
 
@@ -118,12 +118,11 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary">Sign in</button>
-
-
                             <!-- /.col-lg-9 -->
                         </div>
                     </form>
                 </div>
+            </div>
         </main>
         <!-- /.container -->
         <?php
