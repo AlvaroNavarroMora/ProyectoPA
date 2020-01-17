@@ -34,3 +34,15 @@ function insertUsuario($user, $pass, $email) {
 
     return $salida;
 }
+function insertUsuarioVendedor($user, $pass, $email) {
+    $link = openCon();
+    $hash = password_hash($pass, PASSWORD_DEFAULT);
+    $query = "INSERT INTO usuarios(email, nombre, password,tipo) VALUES ('$email', '$user', '$hash','vendedor')";
+    
+    mysqli_query($link, $query);
+
+    $salida = mysqli_affected_rows($link);
+    closeCon($link);
+
+    return $salida;
+}
