@@ -70,7 +70,7 @@ function cargarLogin($errores = null) {
 
 <?php
 session_start();
-if (!existeSesion()) {
+if (!isset($_SESSION['email'])) {
     if (isset($_POST['iniciarSesion'])) {
         if (isset($_POST['email'])) {
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
