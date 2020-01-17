@@ -18,6 +18,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
         <title>Mis Productos - UPOMarket</title>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet">
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+        <link href="../css/principal.css" rel="stylesheet">
         <link href="../css/header.css" rel="stylesheet">
         <link href="../css/footer.css" rel="stylesheet">
         <link href="../css/misproductos.css" rel="stylesheet">
@@ -67,7 +68,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav class="list-group">
                         <ul class="list-unstyled">
-                            <li><a href="#" class="list-group-item">Category 1</a></li>
+                            <li><a href="aniadirProducto.php" class="list-group-item">Añadir Producto</a></li>
                             <li><a href="#" class="list-group-item">Category 2</a></li>
                             <li><a href="#" class="list-group-item">Category 3</a></li>
                         </ul>
