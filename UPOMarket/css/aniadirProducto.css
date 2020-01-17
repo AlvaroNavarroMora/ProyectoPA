@@ -10,7 +10,12 @@ and open the template in the editor.
 form{
     margin:30px auto;
 }
-table{
-    margin:30px auto;
-    text-align: center !important;
+
+.table-form{
+    padding: 10px;
+    width:50% !important;
+    min-width: 270px;
+}
+td,tr{
+    text-align: center;
 }
