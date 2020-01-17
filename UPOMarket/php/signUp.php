@@ -14,8 +14,11 @@ if (isset($_POST['btnRegistrar'])) {
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
     $passwordConfirm = filter_var($_POST['passwordConfirm'], FILTER_SANITIZE_MAGIC_QUOTES);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-
-    if ($user === false || $password === false || $passwordConfirm === false || $email === false) {
+    $esVendedor = "off";
+    if (isset($_POST['vendedor'])) {
+        $esVendedor = filter_var($_POST['vendedor'], FILTER_SANITIZE_MAGIC_QUOTES);
+    }
+    if ($user === false || $password === false || $passwordConfirm === false || $email === false || $esVendedor === false) {
         $errores[] = "Error con los datos del formulario";
     }
 
@@ -34,14 +37,26 @@ if (isset($_POST['btnRegistrar'])) {
     if (strlen(trim($email)) < 1) {
         $errores[] = "El campo email es obligatorio";
     }
+    if (isset($_POST['vendedor'])) {
+        if (strlen(trim($esVendedor)) < 1) {
+            $errores[] = "Error con los campos del formulario";
+        }
+    }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errores[] = "El campo email esta mal rellenado";
     }
 
-     if(empty($errores)) {
+    if (empty($errores)) {
         //Si la insercion falla $credenciales=false, sino $credenciales tendrá el nombre de usuario y su id para guardar la sesion
-        if (insertUsuario($user, $password, $email) > 0) {
-            $_SESSION['idUser'] = $email;
+        $insercionCorrecta = -1;
+        if ($esVendedor === "on") {
+            $insercionCorrecta = insertUsuarioVendedor($user, $password, $email);
+            echo "Insertamos vendedor";
+        } else {
+            $insercionCorrecta = insertUsuario($user, $password, $email);
+        }
+        if ($insercionCorrecta > 0) {
+            $_SESSION['email'] = $email;
             $_SESSION['user'] = $user;
             $path = "../img/usrFotos/$email"; /* Carpeta para almacenar fotos de los usuarios si hiciese falta */
             mkdir($path);
@@ -50,7 +65,7 @@ if (isset($_POST['btnRegistrar'])) {
             $errores[] = "Usuario ya registrado";
         }
     }
-    if(!empty($errores)) {
+    if (!empty($errores)) {
         foreach ($errores as $e) {
             echo "$e<br>";
         }
