@@ -14,8 +14,11 @@ if (isset($_POST['btnRegistrar'])) {
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
     $passwordConfirm = filter_var($_POST['passwordConfirm'], FILTER_SANITIZE_MAGIC_QUOTES);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-
-    if ($user === false || $password === false || $passwordConfirm === false || $email === false) {
+    $esVendedor = "off";
+    if (isset($_POST['vendedor'])) {
+        $esVendedor = filter_var($_POST['vendedor'], FILTER_SANITIZE_MAGIC_QUOTES);
+    }
+    if ($user === false || $password === false || $passwordConfirm === false || $email === false || $esVendedor === false) {
         $errores[] = "Error con los datos del formulario";
     }
 
@@ -34,25 +37,37 @@ if (isset($_POST['btnRegistrar'])) {
     if (strlen(trim($email)) < 1) {
         $errores[] = "El campo email es obligatorio";
     }
+    if (isset($_POST['vendedor'])) {
+        if (strlen(trim($esVendedor)) < 1) {
+            $errores[] = "Error con los campos del formulario";
+        }
+    }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errores[] = "El campo email esta mal rellenado";
     }
 
-     if(empty($errores)) {
+    if (empty($errores)) {
         //Si la insercion falla $credenciales=false, sino $credenciales tendrá el nombre de usuario y su id para guardar la sesion
-        if (insertUsuario($user, $password, $email) > 0) {
-            $_SESSION['idUser'] = $email;
-            $_SESSION['user'] = $user;
+        $insercionCorrecta = -1;
+        if ($esVendedor === "on") {
+            $insercionCorrecta = insertUsuarioVendedor($user, $password, $email);
+            echo "Insertamos vendedor";
+        } else {
+            $insercionCorrecta = insertUsuario($user, $password, $email);
+        }
+        if ($insercionCorrecta > 0) {
+            $_SESSION['email'] = $email;
+            $_SESSION['nombre'] = $user;
+            if ($esVendedor === 'on') {
+                $_SESSION['tipo'] = 'vendedor';
+            } else {
+                $_SESSION['tipo'] = 'cliente';
+            }
             $path = "../img/usrFotos/$email"; /* Carpeta para almacenar fotos de los usuarios si hiciese falta */
             mkdir($path);
             header("Location: ./principal.php");
         } else {
             $errores[] = "Usuario ya registrado";
-        }
-    }
-    if(!empty($errores)) {
-        foreach ($errores as $e) {
-            echo "$e<br>";
         }
     }
 }
@@ -77,6 +92,15 @@ if (isset($_POST['btnRegistrar'])) {
                                 <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
                             </a>
                             <h4 class="card-title text-center">Registro</h4>
+                            <?php
+                            if (isset($errores)) {
+                                echo "<p id='mensajeErrores'>";
+                                foreach ($errores as $error) {
+                                    echo $error . "<br />";
+                                }
+                                echo "</p>";
+                            }
+                            ?>
                             <form class="form-signin" action="#" method="post">
                                 <div class="form-label-group">
                                     <input name="usuario" type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
@@ -92,6 +116,10 @@ if (isset($_POST['btnRegistrar'])) {
                                 <br />
                                 <div class="form-label-group">
                                     <input name="passwordConfirm" type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" required>
+                                </div>
+                                <br />
+                                <div>
+                                    <span>¿Desea ser vendedor? </span><input name="vendedor" type="checkbox" id="inputVendedor" />
                                 </div>
                                 <br />
                                 <button name="btnRegistrar" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Registrarse</button>

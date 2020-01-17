@@ -3,7 +3,7 @@ include "./utils/sesionUtils.php";
 include "./utils/manejadorBD.php";
 
 //Funciones
-function cargarLogin() {
+function cargarLogin($errores = null) {
     ?>
     <!DOCTYPE html>
 
@@ -25,6 +25,15 @@ function cargarLogin() {
                                     <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
                                 </a>
                                 <h4 class="card-title text-center">Inicio de sesión</h4>
+                                <?php
+                                if (isset($errores)) {
+                                    echo "<p id='mensajeErrores'>";
+                                    foreach ($errores as $error) {
+                                        echo $error . "<br />";
+                                    }
+                                    echo "</p>";
+                                }
+                                ?>
                                 <form class="form-signin" action="#" method="post">
                                     <div class="form-label-group">
                                         <?php
@@ -61,7 +70,7 @@ function cargarLogin() {
 
 <?php
 session_start();
-if (!existeSesion()) {
+if (!isset($_SESSION['email'])) {
     if (isset($_POST['iniciarSesion'])) {
         if (isset($_POST['email'])) {
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
@@ -104,11 +113,7 @@ if (!existeSesion()) {
             }
         }
         if (isset($errores)) {
-            $txtErrores = "";
-            foreach ($error as $errores) {
-                echo $error . "<br />";
-            }
-            cargarLogin();
+            cargarLogin($errores);
         }
     } else {
         cargarLogin();
