@@ -57,17 +57,17 @@ if (isset($_POST['btnRegistrar'])) {
         }
         if ($insercionCorrecta > 0) {
             $_SESSION['email'] = $email;
-            $_SESSION['user'] = $user;
+            $_SESSION['nombre'] = $user;
+            if ($esVendedor === 'on') {
+                $_SESSION['tipo'] = 'vendedor';
+            } else {
+                $_SESSION['tipo'] = 'cliente';
+            }
             $path = "../img/usrFotos/$email"; /* Carpeta para almacenar fotos de los usuarios si hiciese falta */
             mkdir($path);
             header("Location: ./principal.php");
         } else {
             $errores[] = "Usuario ya registrado";
-        }
-    }
-    if (!empty($errores)) {
-        foreach ($errores as $e) {
-            echo "$e<br>";
         }
     }
 }
@@ -92,6 +92,15 @@ if (isset($_POST['btnRegistrar'])) {
                                 <img id="logo" src="../img/upomarket.png" alt="Logo de UPOMarket"/>
                             </a>
                             <h4 class="card-title text-center">Registro</h4>
+                            <?php
+                            if (isset($errores)) {
+                                echo "<p id='mensajeErrores'>";
+                                foreach ($errores as $error) {
+                                    echo $error . "<br />";
+                                }
+                                echo "</p>";
+                            }
+                            ?>
                             <form class="form-signin" action="#" method="post">
                                 <div class="form-label-group">
                                     <input name="usuario" type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus>
