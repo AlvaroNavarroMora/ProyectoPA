@@ -15,7 +15,9 @@ function mostrarSinSesion() {
 function mostrarCliente() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="./perfil.php">Perfil</a>
+        <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
+        echo $_SESSION['nombre'];
+        ?></a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="#"><i class="fa fa-shopping-cart"></i> Cesta</a>
@@ -29,7 +31,9 @@ function mostrarCliente() {
 function mostrarVendedor() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="./perfil.php">Perfil</a>
+        <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
+        echo $_SESSION['nombre'];
+        ?></a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="#">Mis productos</a>
@@ -49,7 +53,9 @@ function mostrarVendedor() {
 function mostrarAdmin() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="./perfil.php">Perfil</a>
+        <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
+        echo $_SESSION['nombre'];
+        ?></a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./utils/cerrarSesion.php">Cerrar Sesión</a>
