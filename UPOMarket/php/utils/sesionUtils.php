@@ -2,7 +2,7 @@
 function cerrarSesion() {
     unset($_SESSION['email']);
     session_destroy();
-    header('Location: ./login.php');
+    header('Location: ./principal.php');
 }
 
 function existeSesion() {
