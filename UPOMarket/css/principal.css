@@ -12,3 +12,7 @@ main.container {
     display: none;
   }
 }
+
+#mensajeErrores{
+    color: red;
+}
