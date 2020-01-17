@@ -1,10 +1,4 @@
-#formEditarPerfil{
 
-}
-
-#btnSeleccionarImgPerfil{
-
-}
 
 #profileButton{
     display:inline-block;
@@ -29,4 +23,7 @@
 .labelPerfil{
     margin-top: 15px;
     font-weight: bold;
+}
+#mensajeErrores{
+    color: red;
 }
