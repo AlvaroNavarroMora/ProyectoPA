@@ -167,6 +167,8 @@ if (isset($_SESSION['email'])) {
                     $newpsswdhash = password_hash($actualpsswd, PASSWORD_DEFAULT);
                     if (isset($_POST['vendedor'])) {
                         $sentencia = "UPDATE usuarios SET nombre='$nombre', password='$newpsswdhash', tipo='vendedor', foto='" . $imgName . "' WHERE email='" . $_SESSION['email'] . "'";
+                        $pathProductos = "../img/usrFotos/".$_SESSION['email']."/products";
+                        mkdir($pathProductos);
                     } else {
                         $sentencia = "UPDATE usuarios SET nombre='$nombre', password='$newpsswdhash', foto='" . $imgName . "' WHERE email='" . $_SESSION['email'] . "'";
                     }
