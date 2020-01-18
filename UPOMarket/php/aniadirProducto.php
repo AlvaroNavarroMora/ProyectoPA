@@ -52,7 +52,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
                 </div>
                 <!-- /.col-lg-3 -->
                 <div class="col-lg-9">
-                    <form enctype="multipart-form_data">
+                    <form enctype="multipart-form_data" >
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="email">Email</label>
@@ -124,7 +124,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
                                     </label>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Sign in</button>
+                            <button name="btnAddProduct" type="submit" class="btn btn-primary">Crear</button>
                             <!-- /.col-lg-9 -->
                         </div>
                     </form>
