@@ -1,4 +1,5 @@
 <?php
+
 include 'manejadorBD.php';
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -48,10 +49,26 @@ function listarProductosPorPrecioCategoria($orderType = "ASC") {
     $lista = mysqli_fetch_all($result);
     return $lista;
 }
-/*Email de usuario que queremos buscar*/
-function productosDeUsuario($email){
+
+/* Email de usuario que queremos buscar */
+
+function productosDeUsuario($email) {
     $query = "SELECT * FROM `productos` WHERE `email_vendedor`=$email";
     $result = ejecutarConsulta($query);
     $lista = mysqli_fetch_all($result);
     return $lista;
+}
+
+function insertarProducto($email, $nombre, $descripcion, $precio, $stoc, $imagen, $categorias) {
+    $queryProducto = "INSERT INTO `productos`(`email_vendedor`, `nombre`, `descripcion`, `precio`, `stock`, `imagen`) VALUES ('$email','$nombre','$descripcion','$precio','$stoc','$imagen')";
+    $result = ejecutarConsulta($query);
+
+    $row = mysqli_fetch_row($result);
+    if ($row) {
+        $id = $row[0];
+        foreach ($categorias as $v) {
+            $queryProductoCategorias = "INSERT INTO `categorias_productos`(`nombre_categoria`, `id_producto`) VALUES ('$id','$v')";
+            ejecutarConsulta($query);
+        }
+    }
 }
