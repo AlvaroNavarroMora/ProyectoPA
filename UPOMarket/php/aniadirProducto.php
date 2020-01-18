@@ -12,7 +12,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Nombre Producto - Upomarket</title>
+        <title>Añadir Producto - UPOMarket</title>
         <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -35,6 +35,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
     <body>
         <?php
         include './header.php';
+        include './utils/utilsProductos.php'
         ?>
 
         <!-- Page Content -->
@@ -63,7 +64,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="descripcion">Descripcion</label>
+                            <label for="descripcion">Descripción</label>
                             <textarea id="descripcion" class="form-control" placeholder="Escriba una descripción del producto" rows="5"></textarea><!--Controlar numero de palabras JS? -->
                         </div>
                         <div class="form-row">
@@ -73,7 +74,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Descripción Característica</label>
-                                <input type="text" class="form-control" id="caracteristicaDesc" placeholder="Descripcion característica">
+                                <input type="text" class="form-control" id="caracteristicaDesc" placeholder="Descripción característica">
                             </div>
                         </div>
 
@@ -87,9 +88,15 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="check-td"><input class="form-check-input" type="checkbox" value="Deportes">Deportes</td>
-                                    </tr>
+
+                                    <?php
+                                    $categorias = listarCategorias();
+                                    foreach ($categorias as $v) {
+
+                                        echo "<tr><td class='check-td'><input class='form-check-input' type='checkbox' value='" . $v[0] . "'>$v[0]</td></tr>";
+                                    }
+                                    ?>
+
                                 </tbody>
                             </table>
                         </div>
@@ -104,28 +111,27 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
                                     <label for="precio">Indique el precio de la unidad</label>
                                     <input id="precio" class="form-control" placeholder="Precio en €"/>
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label for="stock">Indique el stock del que dispone</label>
-                                    <input id="precio" type="number" class="form-control" placeholder="Precio en €"/>
+                                <div class = "form-group col-md-6">
+                                    <label for = "stock">Indique el stock del que dispone</label>
+                                    <input id = "precio" type = "number" class = "form-control" placeholder = "Precio en €"/>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="condiciones">
-                                    <label class="form-check-label" for="gridCheck">
+                            <div class = "form-group">
+                                <div class = "form-check">
+                                    <input class = "form-check-input" type = "checkbox" id = "condiciones">
+                                    <label class = "form-check-label" for = "gridCheck">
                                         Acepto los terminos y condiciones
                                     </label>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary">Sign in</button>
-
-
                             <!-- /.col-lg-9 -->
                         </div>
                     </form>
                 </div>
+            </div>
         </main>
-        <!-- /.container -->
+        <!--/.container -->
         <?php
         include '../html/footer.html';
         ?>
