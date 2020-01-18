@@ -50,7 +50,17 @@ function mostrarPerfil($nombre, $email, $tipo) {
                                 <h3 class="card-title">Perfil
                                     <a href="editarPerfil.php"><button id="profileButton"><i class="fa fa-edit"></i></button></a>
                                 </h3>
-                                <img src="../img/defaultProfile.png" alt="Imagen de perfil" id="imgPerfil"/>
+                                <?php
+                                $query = "SELECT foto FROM usuarios WHERE email='" . $_SESSION['email'] . "' AND (foto is not null)";
+                                $result = ejecutarConsulta($query);
+                                if (mysqli_num_rows($result) > 0) {
+                                    $row = mysqli_fetch_array($result);
+                                    $rutaImg = $row['foto'];
+                                    echo '<img src="../img/usrFotos/' . $_SESSION['email'] . "/" . $rutaImg . '" alt="Imagen de perfil" id="imgPerfil"/>';
+                                } else {
+                                    echo '<img src="../img/defaultProfile.png" alt="Imagen de perfil" id="imgPerfil"/>';
+                                }
+                                ?>
                                 <h6 class="labelPerfil">Nombre:</h6>
                                 <p>
                                     <?php
@@ -63,7 +73,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
                                     echo $email;
                                     ?>
                                 </p>
-                                <h6 class="labelVendedor">Tipo de Usuario:</h6>
+                                <h6 class="labelPerfil">Tipo de Usuario:</h6>
                                 <p>
                                     <?php
                                     echo $tipo;
