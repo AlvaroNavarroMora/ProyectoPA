@@ -57,13 +57,16 @@ if (isset($_POST['btnRegistrar'])) {
         if ($insercionCorrecta > 0) {
             $_SESSION['email'] = $email;
             $_SESSION['nombre'] = $user;
+            $pathUser = "../img/usrFotos/$email"; /* Carpeta para almacenar fotos de los usuarios si hiciese falta */
+            mkdir($pathUser);
             if ($esVendedor === 'on') {
                 $_SESSION['tipo'] = 'vendedor';
+                $pathVendor = $pathUser."/products";
+                mkdir($pathVendor);
             } else {
                 $_SESSION['tipo'] = 'cliente';
             }
-            $path = "../img/usrFotos/$email"; /* Carpeta para almacenar fotos de los usuarios si hiciese falta */
-            mkdir($path);
+            
 
             header("Location: ./principal.php");
         } else {
