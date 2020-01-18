@@ -28,11 +28,8 @@ session_start();
         ?>
         <!-- Page Content -->
         <main class="container">
-
             <div class="row">
-
                 <div class="col-lg-3">
-
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav class="list-group">
                         <ul class="list-unstyled">
