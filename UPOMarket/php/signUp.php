@@ -65,7 +65,7 @@ if (isset($_POST['btnRegistrar'])) {
             $path = "../img/usrFotos/$email"; /* Carpeta para almacenar fotos de los usuarios si hiciese falta */
             mkdir($path);
 
-            //header("Location: ./principal.php");
+            header("Location: ./principal.php");
         } else {
             $errores[] = "Usuario ya registrado";
         }
