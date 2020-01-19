@@ -21,7 +21,7 @@ function mostrarPantallaEditarPerfil($errores = null) {
         <script src="../frameworks/jquery/jquery.min.js"></script>
         <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
-
+        <script src="../js/jsEditarPerfil.js" type="text/javascript"></script>
     </head>
 
     <body>
@@ -59,14 +59,28 @@ function mostrarPantallaEditarPerfil($errores = null) {
                                 }
                                 ?>
                                 <div id="formEditarPerfil">
-                                    <form class="form-signin" action="#" method="post">
-                                        <img src="../img/defaultProfile.png" alt="Imagen de perfil" id="imgPerfil"/>
+                                    <form class="form-signin" action="#" method="post" enctype="multipart/form-data">
+                                        <?php
+                                        $query = "SELECT foto FROM usuarios WHERE email='" . $_SESSION['email'] . "' AND (foto is not null)";
+                                        $result = ejecutarConsulta($query);
+                                        if (mysqli_num_rows($result) > 0) {
+                                            $row = mysqli_fetch_array($result);
+                                            $rutaImg = $row['foto'];
+                                            echo '<img src="../img/usrFotos/' . $_SESSION['email'] . "/" . $rutaImg . '" alt="Imagen de perfil" id="imgPerfil"/>';
+                                        } else {
+                                            echo '<img src="../img/defaultProfile.png" alt="Imagen de perfil" id="imgPerfil"/>';
+                                        }
+                                        ?>
                                         <br />
-                                        <button id="profileButton"><i class="fas fa-folder-open"></i></button>
+                                        <br />
+                                        <div class="custom-file">
+                                            <input name="imagen" type="file" class="custom-file-input" id="imgPerfilInput" >
+                                            <label class="custom-file-label" for="customFile" id="lblSelImgPerfil">Seleccionar Imagen</label>
+                                        </div>
                                         <h6 class="labelPerfil">Nombre:</h6>
                                         <?php
                                         echo '<input name="nombre" type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus value="' . $_SESSION['nombre'] . '">';
-                                        if($_SESSION['tipo'] === 'cliente'){
+                                        if ($_SESSION['tipo'] === 'cliente') {
                                             echo '<h6">Convertirse en vendedor: </h6>';
                                             echo '<span><input name="vendedor" type="checkbox" id="checkboxVendedorPerfil"></span>';
                                         }
@@ -127,7 +141,23 @@ if (isset($_SESSION['email'])) {
         } else {
             $errores[] = "Nueva contraseña no válida";
         }
-        if ($newpsswd === $confirmpsswd && $newpsswd != "" && $nombre != "") {
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0 && $_FILES['imagen']['size'] <= (5 * 1024 * 1024)) {
+            $img = $_FILES['imagen']['tmp_name'];
+            $imgRuta = "../img/usrFotos/" . $_SESSION['email'] . "/" . $_SESSION['email'] . "_" . time();
+            $imgName = $_SESSION['email'] . "_" . time();
+        } else {
+            $errores[] = "Imágen no válida";
+        }
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        if (false === $ext = array_search(
+                $finfo->file($_FILES['imagen']['tmp_name']), array(
+            'jpg' => 'image/jpeg',
+            'png' => 'image/png',
+                ), true
+                )){
+            $errores[] = "El formato de la imagen no es válido.";
+        }
+        if (!isset($errores) && $newpsswd === $confirmpsswd && $newpsswd != "" && $nombre != "") {
             $sentencia = "SELECT password FROM usuarios WHERE email='" . $_SESSION['email'] . "'";
             $result = ejecutarConsulta($sentencia);
             if (mysqli_num_rows($result) > 0) {
@@ -135,23 +165,28 @@ if (isset($_SESSION['email'])) {
                 $psswdHash = $row['password'];
                 if (password_verify($actualpsswd, $psswdHash)) {
                     $newpsswdhash = password_hash($actualpsswd, PASSWORD_DEFAULT);
-                    if(isset($_POST['vendedor'])){
-                        $sentencia = "UPDATE usuarios SET nombre='$nombre', password='$newpsswdhash', tipo='vendedor' WHERE email='". $_SESSION['email'] . "'";
-                    }else{
-                        $sentencia = "UPDATE usuarios SET nombre='$nombre', password='$newpsswdhash' WHERE email='". $_SESSION['email'] . "'";
+                    if (isset($_POST['vendedor'])) {
+                        $sentencia = "UPDATE usuarios SET nombre='$nombre', password='$newpsswdhash', tipo='vendedor', foto='" . $imgName . "' WHERE email='" . $_SESSION['email'] . "'";
+                        $pathProductos = "../img/usrFotos/".$_SESSION['email']."/products";
+                        mkdir($pathProductos);
+                    } else {
+                        $sentencia = "UPDATE usuarios SET nombre='$nombre', password='$newpsswdhash', foto='" . $imgName . "' WHERE email='" . $_SESSION['email'] . "'";
                     }
                     $result = ejecutarConsulta($sentencia);
+                    move_uploaded_file($_FILES['imagen']['tmp_name'], $imgRuta);
                     $_SESSION['nombre'] = $nombre;
                     header('Location: ./perfil.php');
                 } else {
                     $errores[] = "Contraseña actual no válida";
                 }
-            }else{
+            } else {
                 $errores[] = "Email no encontrado";
             }
         } else {
             if ($newpsswd === $confirmpsswd) {
-                $errores[] = "Campos no válidos";
+                if (!isset($errores)) {
+                    $errores[] = "Campos no válidos";
+                }
             } else {
                 $errores[] = "Las contraseñas no coinciden";
             }

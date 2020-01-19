@@ -51,20 +51,23 @@ if (isset($_POST['btnRegistrar'])) {
         $insercionCorrecta = -1;
         if ($esVendedor === "on") {
             $insercionCorrecta = insertUsuarioVendedor($user, $password, $email);
-            echo "Insertamos vendedor";
         } else {
             $insercionCorrecta = insertUsuario($user, $password, $email);
         }
         if ($insercionCorrecta > 0) {
             $_SESSION['email'] = $email;
             $_SESSION['nombre'] = $user;
+            $pathUser = "../img/usrFotos/$email"; /* Carpeta para almacenar fotos de los usuarios si hiciese falta */
+            mkdir($pathUser);
             if ($esVendedor === 'on') {
                 $_SESSION['tipo'] = 'vendedor';
+                $pathVendor = $pathUser."/products";
+                mkdir($pathVendor);
             } else {
                 $_SESSION['tipo'] = 'cliente';
             }
-            $path = "../img/usrFotos/$email"; /* Carpeta para almacenar fotos de los usuarios si hiciese falta */
-            mkdir($path);
+            
+
             header("Location: ./principal.php");
         } else {
             $errores[] = "Usuario ya registrado";
