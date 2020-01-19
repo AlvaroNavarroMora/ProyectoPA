@@ -49,7 +49,10 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
 
                         $('#productos tbody').on('click', 'tr', function () {
                             var id = table.row(this).data().id;
-                            alert("idProducto: " + id);
+                            var input = $("<input type='text' name='idProducto'/>");
+                            $(input).val(id);
+                            $("#formProducto").append(input);
+                            $("#formProducto").submit();
                         });
                     }
                 });
@@ -58,6 +61,8 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
     </head>
 
     <body>
+        <form id="formProducto" action="producto.php" method="post" hidden>
+        </form>
         <?php
         include './header.php';
         ?>
