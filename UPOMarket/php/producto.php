@@ -5,16 +5,43 @@ if (isset($_POST["idProducto"])) {
     include './utils/utilsProductos.php';
     $idProducto = filter_var($_POST["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $producto = obtenerProducto($idProducto);
-    $ruta = "../img/usrFotos/".$_SESSION['email']."/products/";
+    $ruta = "../img/usrFotos/" . $producto["email_vendedor"] . "/products/";
     $img = $producto["imagen"];
-    if($img == "ninguna" || $img == "") {
-        $img = $ruta."productDefaultImage.jpg";
-    }else {
-        $img = $ruta.$img;
+    if ($img == "ninguna" || $img == "") {
+        $img = $ruta . "productDefaultImage.jpg";
+    } else {
+        $img = $ruta . $img;
     }
     $caracteristicas = listarCaracteristicasProducto($idProducto);
     $valoraciones = listarValoracionesProcucto($idProducto);
+    $puntuacion = obtenerPuntuacionProducto($idProducto);
     //$categorias = obtenerCategoriasProducto($idProducto);
+} else {
+    //header("location:principal.php");
+}
+if (isset($_POST["enviarValoracion"])) {
+    $idProducto = filter_var($_POST["idProducto"], FILTER_SANITIZE_NUMBER_INT);
+    $puntuacion_nueva = filter_var($_POST["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
+    $valoracion_nueva = filter_var($_POST["valoracion"], FILTER_SANITIZE_STRING);
+
+    valorarProducto($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
+}
+
+function mostrarValorar() {
+    ?>
+    <form id='formValoracionProducto' class="md-form mr-auto mb-4" method="post">
+        <textarea class="form-control" name="valoracion" placeholder="Valora el producto" required>
+        </textarea>
+        <?php
+        for ($index = 1; $index <= 5; $index++) {
+            echo "<span id='puntuacion-$index' class='fa fa-star unchecked'></span>";
+        }
+        ?>
+        <input id="puntuacion" type="number" name="puntuacion" hidden>
+        <input name="idProducto" type="number" value="<?php echo $_POST["idProducto"] ?>" hidden>
+        <input id="btn-coment" type="submit" name="enviarValoracion" value="Valora el producto!" class="btn btn-success">
+    </form>
+    <?php
 }
 ?>
 <head>
@@ -23,7 +50,7 @@ if (isset($_POST["idProducto"])) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title><?php echo $producto['nombre']?> - Upomarket</title>
+    <title><?php echo $producto['nombre'] ?> - UPOMarket</title>
     <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -34,6 +61,47 @@ if (isset($_POST["idProducto"])) {
     <script src="../frameworks/jquery/jquery.min.js"></script>
     <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
+    <script>
+        $(document).ready(function () {
+            $(".fa-star").click(function () {
+                var id = $(this).attr('id');
+                var puntuacion = parseInt(id.substring(id.length - 1, id.length));
+                var estrellas = $(".fa-star");
+                for (var i = 0; i < estrellas.length; i++) {
+                    if (i < puntuacion) {
+                        $(estrellas[i]).addClass("checked");
+                        $(estrellas[i]).removeClass("unchecked");
+                    }
+                    else {
+                        $(estrellas[i]).removeClass("checked");
+                        $(estrellas[i]).addClass("unchecked");
+                    }
+                }
+            });
+            $("#formValoracionProducto").submit(function () {
+                var estrellas = $(".fa-star");
+                var cont = 0;
+                for (var i = 0; i < estrellas.length; i++) {
+                    if ($(estrellas[i]).hasClass("checked")) {
+                        cont++;
+                    }
+                }
+                $("#puntuacion").val(cont);
+                if (cont > 0) {
+                    return true;
+                } else {
+                    alert("Debe puntuar el producto");
+                    return false;
+                }
+
+            });
+            var puntuacion = parseInt(<?php echo round($puntuacion, 0) ?>);
+            for (var i = 0; i < puntuacion; i++) {
+                var text = $("#productRating").text();
+                $("#productRating").text(text + "\u2605");
+            }
+        });
+    </script>
 
 </head>
 
@@ -49,30 +117,30 @@ if (isset($_POST["idProducto"])) {
             <!-- LISTA DE CATEGORÍAS -->
             <div class="col-lg-3">
                 <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
-                <div class="list-group">
+                <nav id='categorias' class="list-group">
                     <a href="#" class="list-group-item active">Category 1</a>
                     <a href="#" class="list-group-item">Category 2</a>
                     <a href="#" class="list-group-item">Category 3</a>
-                </div>
+                </nav>
             </div>
             <!-- /.col-lg-3 -->
             <div class="col-lg-9">
                 <div class="card mt-4">
                     <img id='imgProducto' class="card-img-top img-fluid" src='<?php echo $img ?>' alt="">
                     <div class="card-body">
-                        <h3 class="card-title"><?php echo $producto['nombre']?></h3>
-                        <h4><?php echo $producto['precio']?>€</h4>
-                        <p class="card-text"><?php echo $producto['descripcion']?></p>
-                        <span class="text-warning">&#9733; &#9733; &#9733; &#9733; &#9734;</span>
-                        4.0 estrellas
+                        <h3 class="card-title"><?php echo $producto['nombre'] ?></h3>
+                        <h4><?php echo $producto['precio'] ?>€</h4>
+                        <p class="card-text"><?php echo $producto['descripcion'] ?></p>
+                        <span id="productRating" class="text-warning"></span>
+                        <?php echo number_format($puntuacion, 1) ?> estrellas
                         <br />
                         <br />
                         <form action="./utils/anadirCarrito.php" method="post">
-                            <input type="hidden" name="id" value="<?php echo encriptar($producto['id']);?>">
-                            <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']);?>">
+                            <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
+                            <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']); ?>">
                             <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
                         </form>
-                        
+
                     </div>
                 </div>
                 <!-- /.card caracteristicas -->
@@ -83,9 +151,9 @@ if (isset($_POST["idProducto"])) {
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
                             <?php
-                                foreach ($caracteristicas as $c) {
-                                    echo '<li class="list-group-item"><strong>'.$c["nombre_caracteristica"].":</strong> ".$c["valor"].'</li>';
-                                }
+                            foreach ($caracteristicas as $c) {
+                                echo '<li class="list-group-item"><strong>' . $c["nombre_caracteristica"] . ":</strong> " . $c["valor"] . '</li>';
+                            }
                             ?>
                         </ul>
                     </div>
@@ -98,13 +166,30 @@ if (isset($_POST["idProducto"])) {
                     </div>
                     <div class="card-body">
                         <?php
-                        foreach($valoraciones as $v) {
-                            echo '<p>'.$v['descripcion'].'</p>';
-                            echo '<small>Dicho por: '.$v['email_cliente'].'el'.$v['fecha'].'</small>';
+                        $valorar = true;
+                        foreach ($valoraciones as $v) {
+                            echo "<span class='text-warning'>";
+                            $nota = $v["puntuacion"];
+                            for ($i = 0; $i < $nota; $i++) {
+                                echo "&#9733;";
+                            }
+                            echo "</span>";
+                            echo "<br>";
+                            echo '<p>' . $v['descripcion'] . '</p>';
+                            echo '<small>Por: ' . $v['email_cliente'] . '</small>';
+                            echo "<br>";
+                            echo '<small>Fecha: ' . $v['fecha'] . '</small>';
                             echo "<hr>";
+                            if (isset($_SESSION["email"])) {
+                                if ($_SESSION["email"] == $v["email_cliente"]) {
+                                    $valorar = false;
+                                }
+                            }
+                        }
+                        if (isset($_SESSION["email"]) && ($valorar || empty($valoraciones))) {
+                            mostrarValorar();
                         }
                         ?>
-                        <a id="btn-coment" href="#" class="btn btn-success">Deja un comentario!</a>
                     </div>
                 </div>
                 <!-- fin /.card Opiniones-->
