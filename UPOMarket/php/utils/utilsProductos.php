@@ -72,3 +72,38 @@ function insertarProducto($email, $nombre, $descripcion, $precio, $stoc, $imagen
         }
     }
 }
+
+function listarCaracteristicasProducto($idProducto) {
+    $query = "SELECT * from caracteristicas_productos where id_producto=$idProducto";
+    $result = ejecutarConsulta($query);
+    $caracteristicas = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while($row = mysqli_fetch_assoc($result)) {
+            $caracteristicas[] = $row;
+        }
+    }
+    return $caracteristicas;
+}
+
+function obtenerProducto($idProducto) {
+
+    $query = "SELECT * from productos where id=$idProducto";
+    $result = ejecutarConsulta($query);
+    $producto = null;
+    if (mysqli_num_rows($result) > 0) {
+        $producto = mysqli_fetch_assoc($result);
+    }
+    return $producto;
+}
+
+function listarValoracionesProcucto($idProducto) {
+    $query = "SELECT * from valoraciones where id_producto=$idProducto";
+    $result = ejecutarConsulta($query);
+    $valoraciones = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while($row = mysqli_fetch_assoc($result)) {
+            $valoraciones[] = $row;
+        }
+    }
+    return $valoraciones;
+}

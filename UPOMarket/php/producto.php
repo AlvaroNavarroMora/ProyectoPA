@@ -1,10 +1,29 @@
+<?php
+session_start();
+
+if (isset($_POST["idProducto"])) {
+    include './utils/utilsProductos.php';
+    $idProducto = filter_var($_POST["idProducto"], FILTER_SANITIZE_NUMBER_INT);
+    $producto = obtenerProducto($idProducto);
+    $ruta = "../img/usrFotos/".$_SESSION['email']."/products/";
+    $img = $producto["imagen"];
+    if($img == "ninguna" || $img == "") {
+        $img = $ruta."productDefaultImage.jpg";
+    }else {
+        $img = $ruta.$img;
+    }
+    $caracteristicas = listarCaracteristicasProducto($idProducto);
+    $valoraciones = listarValoracionesProcucto($idProducto);
+    //$categorias = obtenerCategoriasProducto($idProducto);
+}
+?>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Nombre Producto - Upomarket</title>
+    <title><?php echo $producto['nombre']?> - Upomarket</title>
     <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -21,6 +40,7 @@
 <body>
     <?php
     include './header.php';
+    include './utils/encriptar.php';
     ?>
 
     <!-- Page Content -->
@@ -38,13 +58,21 @@
             <!-- /.col-lg-3 -->
             <div class="col-lg-9">
                 <div class="card mt-4">
-                    <img class="card-img-top img-fluid" src="https://www.gugcstudentguild.com.au/wp-content/uploads/2014/05/PROGRAMS-WEB-BYRON_BAY_SURF-900x400px.jpg" alt="">
+                    <img id='imgProducto' class="card-img-top img-fluid" src='<?php echo $img ?>' alt="">
                     <div class="card-body">
-                        <h3 class="card-title">Bono Surf</h3>
-                        <h4>40.99€</h4>
-                        <p class="card-text">Bono de 2 clases para aprender a surfear. Bono de 2 clases para aprender a surfear. Bono de 2 clases para aprender a surfear. Bono de 2 clases para aprender a surfear. Bono de 2 clases para aprender a surfear.</p>
+                        <h3 class="card-title"><?php echo $producto['nombre']?></h3>
+                        <h4><?php echo $producto['precio']?>€</h4>
+                        <p class="card-text"><?php echo $producto['descripcion']?></p>
                         <span class="text-warning">&#9733; &#9733; &#9733; &#9733; &#9734;</span>
                         4.0 estrellas
+                        <br />
+                        <br />
+                        <form action="./utils/anadirCarrito.php" method="post">
+                            <input type="hidden" name="id" value="<?php echo encriptar($producto['id']);?>">
+                            <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']);?>">
+                            <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
+                        </form>
+                        
                     </div>
                 </div>
                 <!-- /.card caracteristicas -->
@@ -54,10 +82,11 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item">40 horas de clase</li>
-                            <li class="list-group-item">Profesor experto</li>
-                            <li class="list-group-item">Certificado gratuito al final del curso</li>
-                            <li class="list-group-item">Evaluaciones y pruebas físicas incluidas</li>
+                            <?php
+                                foreach ($caracteristicas as $c) {
+                                    echo '<li class="list-group-item"><strong>'.$c["nombre_caracteristica"].":</strong> ".$c["valor"].'</li>';
+                                }
+                            ?>
                         </ul>
                     </div>
                 </div>
@@ -68,15 +97,13 @@
                         Opiniones del producto
                     </div>
                     <div class="card-body">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-                        <small class="text-muted">Dicho por: Anonimo en 3/1/17</small>
-                        <hr>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-                        <small class="text-muted">Dicho por: Anonimo en 3/1/17</small>
-                        <hr>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis et enim aperiam inventore, similique necessitatibus neque non! Doloribus, modi sapiente laboriosam aperiam fugiat laborum. Sequi mollitia, necessitatibus quae sint natus.</p>
-                        <small class="text-muted">Dicho por: Anonimo en 3/1/17</small>
-                        <hr>
+                        <?php
+                        foreach($valoraciones as $v) {
+                            echo '<p>'.$v['descripcion'].'</p>';
+                            echo '<small>Dicho por: '.$v['email_cliente'].'el'.$v['fecha'].'</small>';
+                            echo "<hr>";
+                        }
+                        ?>
                         <a id="btn-coment" href="#" class="btn btn-success">Deja un comentario!</a>
                     </div>
                 </div>
@@ -90,5 +117,4 @@
     include '../html/footer.html';
     ?>
 </body>
-
 </html>
