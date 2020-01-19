@@ -22,6 +22,7 @@ function closeCon($link) {
 function ejecutarConsulta($query) {
     try {
         $link = openCon();
+        mysqli_set_charset($link, "utf8");
         $result = mysqli_query($link, $query);
 
         closeCon($link);
