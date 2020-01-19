@@ -15,7 +15,6 @@ if (isset($_POST["idProducto"])) {
     $caracteristicas = listarCaracteristicasProducto($idProducto);
     $valoraciones = listarValoracionesProcucto($idProducto);
     //$categorias = obtenerCategoriasProducto($idProducto);
-    echo print_r($producto);
 }
 ?>
 <head>
@@ -24,7 +23,7 @@ if (isset($_POST["idProducto"])) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Nombre Producto - Upomarket</title>
+    <title><?php echo $producto['nombre']?> - Upomarket</title>
     <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -41,6 +40,7 @@ if (isset($_POST["idProducto"])) {
 <body>
     <?php
     include './header.php';
+    include './utils/encriptar.php';
     ?>
 
     <!-- Page Content -->
@@ -65,6 +65,14 @@ if (isset($_POST["idProducto"])) {
                         <p class="card-text"><?php echo $producto['descripcion']?></p>
                         <span class="text-warning">&#9733; &#9733; &#9733; &#9733; &#9734;</span>
                         4.0 estrellas
+                        <br />
+                        <br />
+                        <form action="./utils/anadirCarrito.php" method="post">
+                            <input type="hidden" name="id" value="<?php echo encriptar($producto['id']);?>">
+                            <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']);?>">
+                            <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
+                        </form>
+                        
                     </div>
                 </div>
                 <!-- /.card caracteristicas -->
@@ -76,7 +84,7 @@ if (isset($_POST["idProducto"])) {
                         <ul class="list-group list-group-flush">
                             <?php
                                 foreach ($caracteristicas as $c) {
-                                    echo '<li class="list-group-item">'.$c["nombre_caracteristica"]." | ".$c["valor"].'</li>';
+                                    echo '<li class="list-group-item"><strong>'.$c["nombre_caracteristica"].":</strong> ".$c["valor"].'</li>';
                                 }
                             ?>
                         </ul>
