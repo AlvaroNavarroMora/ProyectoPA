@@ -34,7 +34,7 @@ function mostrarValorar() {
         <textarea class="form-control" name="valoracion" placeholder="Valora el producto" required></textarea>
         <?php
         for ($index = 1; $index <= 5; $index++) {
-            echo "<span id='puntuacion-$index' class='fa fa-star unchecked'></span>";
+            echo "<span id='puntuacion-$index' class='review fa fa-star unchecked'></span>";
         }
         ?>
         <input id="puntuacion" type="number" name="puntuacion" hidden>
@@ -66,7 +66,7 @@ function mostrarValorar() {
             $(".fa-star").click(function () {
                 var id = $(this).attr('id');
                 var puntuacion = parseInt(id.substring(id.length - 1, id.length));
-                var estrellas = $(".fa-star");
+                var estrellas = $(".review");
                 for (var i = 0; i < estrellas.length; i++) {
                     if (i < puntuacion) {
                         $(estrellas[i]).addClass("checked");
@@ -95,15 +95,15 @@ function mostrarValorar() {
 
             });
             var puntuacion = parseFloat(<?php echo number_format($puntuacion, 2) ?>);
-            var i=0;
-            for (i = 0; i < puntuacion; i++) {
+            var k=0;
+            for (k = 0; k < puntuacion; k++) {
                 var text = $("#productRating").text();
-                if (i < puntuacion && i + 1 > puntuacion)
+                if (k < puntuacion && k + 1 > puntuacion)
                     $("#productRating").append($("<i class='fas fa-star-half-alt'></i>"));
                 else
                     $("#productRating").append($("<i class='fas fa-star'></i>"));
             }
-            for(j=i; j<5; j++) {
+            for(var j=k; j<5; j++) {
                 $("#productRating").append($("<i class='far fa-star'></i>"));
             }
         });
