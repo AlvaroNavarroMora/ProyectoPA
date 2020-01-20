@@ -61,16 +61,30 @@ function productosDeUsuario($email) {
 
 function insertarProducto($email, $nombre, $descripcion, $precio, $stoc, $imagen, $categorias) {
     $queryProducto = "INSERT INTO `productos`(`email_vendedor`, `nombre`, `descripcion`, `precio`, `stock`, `imagen`) VALUES ('$email','$nombre','$descripcion','$precio','$stoc','$imagen')";
-    $result = ejecutarConsulta($query);
+    $insercion = ejecutarConsulta($queryProducto);
 
-    $row = mysqli_fetch_row($result);
-    if ($row) {
-        $id = $row[0];
-        foreach ($categorias as $v) {
-            $queryProductoCategorias = "INSERT INTO `categorias_productos`(`nombre_categoria`, `id_producto`) VALUES ('$id','$v')";
-            ejecutarConsulta($query);
+    if ($insercion) {
+        $queryIdProducto = "SELECT `id` FROM `productos` WHERE `email_vendedor` = '$email' AND `nombre`='$nombre'";
+        $result = ejecutarConsulta($queryIdProducto);
+
+        $salida = true;
+        $row = mysqli_fetch_row($result);
+        if ($row) {
+            $id = $row[0];
+            foreach ($categorias as $v) {
+                $queryProductoCategorias = "INSERT INTO `categorias_productos`(`nombre_categoria`, `id_producto`) VALUES ('$v','$id')";
+                $r = ejecutarConsulta($queryProductoCategorias);
+                if (!$r) {
+                    $salida = false;
+                }
+            }
+        } else {
+            $salida = false;
         }
+    } else {
+        $salida = false;
     }
+    return $salida;
 }
 
 function listarCaracteristicasProducto($idProducto) {
@@ -120,6 +134,7 @@ function buscarProductos($busca) {
     }
     return $productos;
 }
+
 function valorarProducto($email, $idProducto, $puntuacion, $valoracion) {
     $query = "INSERT INTO valoraciones(email_cliente,id_producto,puntuacion,descripcion) VALUES('$email',$idProducto, $puntuacion, '$valoracion')";
     ejecutarConsulta($query);
@@ -128,6 +143,6 @@ function valorarProducto($email, $idProducto, $puntuacion, $valoracion) {
 function obtenerPuntuacionProducto($idProducto) {
     $query = "SELECT AVG(puntuacion) FROM valoraciones where id_producto=$idProducto";
     $result = ejecutarConsulta($query);
-    
+
     return mysqli_fetch_all($result)[0][0];
 }
