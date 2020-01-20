@@ -166,7 +166,6 @@ function mostrarValorar() {
                     </div>
                     <div class="card-body">
                         <?php
-                        $valorar = true;
                         foreach ($valoraciones as $v) {
                             echo "<span class='text-warning'>";
                             $nota = $v["puntuacion"];
@@ -180,13 +179,8 @@ function mostrarValorar() {
                             echo "<br>";
                             echo '<small>Fecha: ' . $v['fecha'] . '</small>';
                             echo "<hr>";
-                            if (isset($_SESSION["email"])) {
-                                if ($_SESSION["email"] == $v["email_cliente"]) {
-                                    $valorar = false;
-                                }
-                            }
                         }
-                        if (isset($_SESSION["email"]) && ($valorar || empty($valoraciones))) {
+                        if (isset($_SESSION["email"])) {
                             mostrarValorar();
                         }
                         ?>
