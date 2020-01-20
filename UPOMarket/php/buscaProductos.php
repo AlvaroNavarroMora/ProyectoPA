@@ -3,10 +3,10 @@ session_start();
 include './utils/utilsProductos.php';
 $categorias = listarCategorias();
 
-if (!isset($_POST["busqueda"])) {
+if (!isset($_GET["busqueda"])) {
     header("location:principal.php");
 }
-$busca = filter_var($_POST["busqueda"], FILTER_SANITIZE_STRING);
+$busca = trim(filter_var($_GET["busqueda"], FILTER_SANITIZE_STRING));
 $productos = buscarProductos($busca);
 if (empty($productos)) {
     $errores[] = "No se ha encontrado ningún producto";
@@ -39,16 +39,20 @@ if (empty($productos)) {
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
         <script>
             $(document).ready(function () {
-                var data = <?php if (isset($data)) echo $data; else echo "null" ?>;
+                var data = <?php if (isset($data)) echo $data;
+else echo "null" ?>;
                 if (data == null) {
                     $("#contenedorTablaProductos").hide();
                 }
                 $('#productos').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    },
                     "data": data,
                     "paging": true,
                     "ordering": true,
                     "searching": false,
-                    "order": [[ 1, "asc" ]],
+                    "order": [[1, "asc"]],
                     "columns": [
                         {"data": "id"},
                         {"data": "nombre"},
@@ -73,7 +77,7 @@ if (empty($productos)) {
     </head>
 
     <body>
-        <form id="formProducto" action="producto.php" method="post" hidden>
+        <form id="formProducto" action="producto.php" method="GET" hidden>
         </form>
         <?php
         include './header.php';
@@ -98,7 +102,7 @@ if (empty($productos)) {
                 <div class="col-lg-9">
                     <!-- /.col-lg-9 -->
                     <!-- Search form -->
-                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="post">
+                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="GET">
                         <div class="input-group">
                             <input id='searchBar' type="text" class="form-control" placeholder="Buscar productos" name='busqueda'>
                             <div class="input-group-append">
