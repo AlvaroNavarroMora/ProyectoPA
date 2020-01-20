@@ -4,17 +4,17 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
     header("location: ./principal.php");
 }
 
+include './utils/utilsProductos.php';
+include './utils/sesionUtils.php';
 
 /* Añadir nombre del formulario registro */
 if (isset($_POST['btnAddProduct'])) {
 
-    print_r($_POST);
-    echo "<br> cambio<br><br><br>";
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
     $producto = filter_var($_POST['producto'], FILTER_SANITIZE_MAGIC_QUOTES);
     $descripcion = filter_var($_POST['descripcion'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $categorias = filter_var($_POST['cats'], FILTER_SANITIZE_MAGIC_QUOTES);
+    $categorias = filter_var_array($_POST['cats'], FILTER_SANITIZE_MAGIC_QUOTES);
     $precio = filter_var($_POST['precio'], FILTER_SANITIZE_MAGIC_QUOTES);
     $stock = filter_var($_POST['stock'], FILTER_SANITIZE_MAGIC_QUOTES);
 
@@ -42,17 +42,21 @@ if (isset($_POST['btnAddProduct'])) {
 
     if (strlen(trim($precio)) < 1) {
         $errores[] = "El campo precio es obligatorio.";
-    } /*elseif (is_float(floatval($precio))) {
-        $errores[] = "El campo precio debe ser un numero.";
-    }*/
+    } /* elseif (is_float(floatval($precio))) {
+      $errores[] = "El campo precio debe ser un numero.";
+      } */
 
     if (strlen(trim($descripcion)) < 1) {
         $errores[] = "El campo descripcion es obligatorio.";
     }
     if (strlen(trim($stock)) < 1) {
         $errores[] = "El campo stock es obligatorio.";
-    } elseif (is_int($stock)) {
-        $errores[] = "El campo stock debe ser un numero entero.";
+    } /* elseif (!is_int($stock)) {
+      $errores[] = "El campo stock debe ser un numero entero.";
+      } */
+
+    if (!comprobarSesionActual($email) || comprobarUsuarioContraseña($email, $password)) {
+        $errores[] = "Credenciales incorrectas";
     }
 
     foreach ($_FILES['files']['error'] as $k => $v) {
@@ -62,19 +66,35 @@ if (isset($_POST['btnAddProduct'])) {
     }
     if (empty($errores)) {
         //Si la insercion falla $credenciales=false, sino $credenciales tendrá el nombre de usuario y su id para guardar la sesion
-        $pathProductos = "../img/usrFotos/$email/productos"; /* Carpeta para almacenar fotos de los productos del usuario */
-        $pathThisProducto = "../img/usrFotos/$email/productos/$producto"; /* Carpeta para almacenar fotos de los productos del usuario */
-        echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-        mkdir($pathProductos);
-        mkdir($pathThisProducto);
+        $pathProductos = "../img/usrFotos/$email/products"; /* Carpeta para almacenar fotos de los productos del usuario */
+        $pathThisProducto = "../img/usrFotos/$email/products/$producto"; /* Carpeta para almacenar fotos de los productos del usuario */
+        if (!is_dir($pathProductos)) {
+            mkdir($pathProductos);
+        }
+        if (!is_dir($pathThisProducto)) {
+            mkdir($pathThisProducto);
+        }
         $paths = "";
         foreach ($_FILES['files']['tmp_name'] as $k => $v) {
-            $path = $pathThisProducto . $_FILES['files']['name'][$k] . time();
-            $paths = $paths . $path . ";";
-            move_uploaded_file($v, $pathThisProducto);
+            //Nombre temporal
+            $tmp_name = $_FILES['files']['tmp_name'][$k];
+            //Nuevo nombre
+            $newName = str_replace(".", time() . ".", $_FILES['files']['name'][$k]);
+            //Ruta destino + nuevo nombre
+            $newPath = $pathThisProducto . '/' . $newName;
+            //Todas las imagenes de un producto
+            $paths = $paths . $newPath . ";";
+            //Mover la imagen al destino
+            move_uploaded_file($tmp_name, $newPath);
         }
-        $haInsertado = insertarProducto($email, $nombre, $descripcion, $precio, $stock, $imagen, $categorias);
-    } else {
+        $haInsertado = insertarProducto($email, $producto, $descripcion, $precio, $stock, $paths, $categorias);
+        if ($haInsertado) {
+            header('Location: ./perfil.php');
+        } else {
+            $errores[] = "Error al guardar los datos";
+        }
+    }
+    if (isset($errores)) {
         print_r($errores);
     }
 }
@@ -125,7 +145,6 @@ if (isset($_POST['btnAddProduct'])) {
     <body>
         <?php
         include './header.php';
-        include './utils/utilsProductos.php'
         ?>  
 
         <!-- Page Content -->
@@ -150,23 +169,23 @@ if (isset($_POST['btnAddProduct'])) {
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="password">Contraseña</label>
-                                <input type="password" class="form-control" name="password" placeholder="Contraseña">
+                                <input type="password" class="form-control" name="password" placeholder="Contraseña" required="true">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="producto">Nombre del producto</label>
-                            <input name="producto" class="form-control"/>
+                            <input id="producto" name="producto" class="form-control" required="true"/>
                             <label for="descripcion">Descripción</label>
-                            <textarea name="descripcion" class="form-control" placeholder="Escriba una descripción del producto" rows="5"></textarea><!--Controlar numero de palabras JS? -->
+                            <textarea name="descripcion" class="form-control" placeholder="Escriba una descripción del producto" rows="5" required="true"></textarea><!--Controlar numero de palabras JS? -->
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label>Característica</label>
-                                <input type="text" class="form-control" name="caracteristicaName" placeholder="Nombre característica">
+                                <input type="text" class="form-control" name="caracteristicaName" placeholder="Nombre característica" required="true">
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Descripción Característica</label>
-                                <input type="text" class="form-control" name="caracteristicaDesc" placeholder="Descripción característica">
+                                <input type="text" class="form-control" name="caracteristicaDesc" placeholder="Descripción característica" required="true">
                             </div>
                         </div>
 
@@ -192,7 +211,7 @@ if (isset($_POST['btnAddProduct'])) {
                         <div>
                             <label>Añade una imagen</label>
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="file" name="files[]" onchange="addImg()" multiple>
+                                <input type="file" class="custom-file-input" id="file" name="files[]" onchange="addImg()" multiple required="true">
                                 <label class="custom-file-label" for="customFile">Selecciona una imagen</label>
 
                                 <div id="filesName" >
@@ -202,16 +221,16 @@ if (isset($_POST['btnAddProduct'])) {
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="precio">Indique el precio de la unidad</label>
-                                    <input name="precio" class="form-control" placeholder="Precio en €"/>
+                                    <input name="precio" class="form-control" placeholder="Precio en €" required="true"/>
                                 </div>
                                 <div class = "form-group col-md-6">
                                     <label for = "stock">Indique el stock del que dispone</label>
-                                    <input name = "stock" type="text" class = "form-control" placeholder = "Stock del producto"/>
+                                    <input name = "stock" type="text" class = "form-control" placeholder = "Stock del producto" required="true"/>
                                 </div>
                             </div>
                             <div class = "form-group">
                                 <div class = "form-check">
-                                    <input class = "form-check-input" type="checkbox" id = "condiciones">
+                                    <input class = "form-check-input" type="checkbox" id = "condiciones" required="true">
                                     <label class = "form-check-label" for = "gridCheck">
                                         Acepto los terminos y condiciones
                                     </label>
