@@ -61,7 +61,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
     </head>
 
     <body>
-        <form id="formProducto" action="producto.php" method="post" hidden>
+        <form id="formProducto" action="producto.php" method="get" hidden>
         </form>
         <?php
         include './header.php';

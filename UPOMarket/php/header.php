@@ -14,7 +14,7 @@ function mostrarSinSesion() {
 function mostrarCliente() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="#"><i class="fa fa-shopping-cart"></i> Cesta</a>
+        <a class="nav-link" href="carrito.php"><i class="fa fa-shopping-cart"></i> Cesta</a>
     </li>
     <li id="profile" class="nav-item">
         <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php

@@ -48,7 +48,7 @@ $categorias = listarCategorias();
 
                 <div class="col-lg-9">
                     <!-- Search form -->
-                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="post">
+                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="GET">
                         <div class="input-group">
                             <input id='searchBar' type="text" class="form-control" placeholder="Buscar productos" name='busqueda'>
                             <div class="input-group-append">

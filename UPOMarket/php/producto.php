@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-if (isset($_POST["idProducto"])) {
+if (isset($_GET["idProducto"])) {
     include './utils/utilsProductos.php';
-    $idProducto = filter_var($_POST["idProducto"], FILTER_SANITIZE_NUMBER_INT);
+    $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $producto = obtenerProducto($idProducto);
     $ruta = "../img/usrFotos/" . $producto["email_vendedor"] . "/products/";
     $img = $producto["imagen"];
@@ -19,26 +19,26 @@ if (isset($_POST["idProducto"])) {
 } else {
     //header("location:principal.php");
 }
-if (isset($_POST["enviarValoracion"])) {
-    $idProducto = filter_var($_POST["idProducto"], FILTER_SANITIZE_NUMBER_INT);
-    $puntuacion_nueva = filter_var($_POST["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
-    $valoracion_nueva = filter_var($_POST["valoracion"], FILTER_SANITIZE_STRING);
+if (isset($_GET["enviarValoracion"])) {
+    $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
+    $puntuacion_nueva = filter_var($_GET["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
+    $valoracion_nueva = trim(filter_var($_GET["valoracion"], FILTER_SANITIZE_STRING));
+    header("location:producto.php?idProducto=$idProducto");
 
     valorarProducto($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
 }
 
 function mostrarValorar() {
     ?>
-    <form id='formValoracionProducto' class="md-form mr-auto mb-4" method="post">
-        <textarea class="form-control" name="valoracion" placeholder="Valora el producto" required>
-        </textarea>
+    <form id='formValoracionProducto' class="md-form mr-auto mb-4" method="GET">
+        <textarea class="form-control" name="valoracion" placeholder="Valora el producto" required></textarea>
         <?php
         for ($index = 1; $index <= 5; $index++) {
             echo "<span id='puntuacion-$index' class='fa fa-star unchecked'></span>";
         }
         ?>
         <input id="puntuacion" type="number" name="puntuacion" hidden>
-        <input name="idProducto" type="number" value="<?php echo $_POST["idProducto"] ?>" hidden>
+        <input name="idProducto" type="number" value="<?php echo $_GET["idProducto"] ?>" hidden>
         <input id="btn-coment" type="submit" name="enviarValoracion" value="Valora el producto!" class="btn btn-success">
     </form>
     <?php
@@ -71,8 +71,7 @@ function mostrarValorar() {
                     if (i < puntuacion) {
                         $(estrellas[i]).addClass("checked");
                         $(estrellas[i]).removeClass("unchecked");
-                    }
-                    else {
+                    } else {
                         $(estrellas[i]).removeClass("checked");
                         $(estrellas[i]).addClass("unchecked");
                     }
@@ -95,10 +94,17 @@ function mostrarValorar() {
                 }
 
             });
-            var puntuacion = parseInt(<?php echo round($puntuacion, 0) ?>);
-            for (var i = 0; i < puntuacion; i++) {
+            var puntuacion = parseFloat(<?php echo number_format($puntuacion, 2) ?>);
+            var i=0;
+            for (i = 0; i < puntuacion; i++) {
                 var text = $("#productRating").text();
-                $("#productRating").text(text + "\u2605");
+                if (i < puntuacion && i + 1 > puntuacion)
+                    $("#productRating").append($("<i class='fas fa-star-half-alt'></i>"));
+                else
+                    $("#productRating").append($("<i class='fas fa-star'></i>"));
+            }
+            for(j=i; j<5; j++) {
+                $("#productRating").append($("<i class='far fa-star'></i>"));
             }
         });
     </script>
@@ -131,7 +137,7 @@ function mostrarValorar() {
                         <h3 class="card-title"><?php echo $producto['nombre'] ?></h3>
                         <h4><?php echo $producto['precio'] ?>€</h4>
                         <p class="card-text"><?php echo $producto['descripcion'] ?></p>
-                        <span id="productRating" class="text-warning"></span>
+                        <div id="productRating" class="text-warning"></div>
                         <?php echo number_format($puntuacion, 1) ?> estrellas
                         <br />
                         <br />
