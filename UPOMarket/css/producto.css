@@ -17,3 +17,16 @@ div.col-lg-9{
 #imgProducto {
     max-height: 300px !important;
 }
+#btn-coment {
+    margin-top: 1%;
+}
+.checked {
+    color: #ffc107;
+}
+.fa-star:hover {
+    cursor: pointer;
+    color: #ffc107;
+}
+.unchecked{
+    color: lightgray;
+}

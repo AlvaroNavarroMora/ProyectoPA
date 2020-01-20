@@ -7,12 +7,30 @@ main.container {
     margin: auto;
     max-width: 75%;
 }
-@media only screen and (max-width: 500px) {
-  #logo_main {
-    display: none;
-  }
+@media only screen and (max-width: 600px) {
+    #searchForm div.input-group {
+        width: 100% !important;
+    }
+    #logo_main {
+        display: none;
+    }
+    #categorias {
+        margin-top: 1% !important;
+    }
 }
 
 #mensajeErrores{
     color: red;
+}
+#carouselExampleIndicators img {
+    max-height: 300px !important;
+}
+#searchForm {
+    margin-top: 3% !important;
+}
+#searchForm div.input-group {
+    width: 70%;
+}
+#searchBar {
+    max-width: 100% !important;
 }

@@ -1,5 +1,7 @@
 <?php
 session_start();
+include './utils/utilsProductos.php';
+$categorias = listarCategorias();
 ?>
 <!DOCTYPE html>
 <html>
@@ -31,11 +33,13 @@ session_start();
             <div class="row">
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
-                    <nav class="list-group">
+                    <nav id='categorias' class="list-group">
                         <ul class="list-unstyled">
-                            <li><a href="#" class="list-group-item">Category 1</a></li>
-                            <li><a href="#" class="list-group-item">Category 2</a></li>
-                            <li><a href="#" class="list-group-item">Category 3</a></li>
+                            <?php
+                            foreach($categorias as $c) {
+                                echo '<li><a href="#" class="list-group-item">'.$c[0].'</a></li>';
+                            }
+                            ?>
                         </ul>
                     </nav>
 
@@ -43,6 +47,17 @@ session_start();
                 <!-- /.col-lg-3 -->
 
                 <div class="col-lg-9">
+                    <!-- Search form -->
+                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="post">
+                        <div class="input-group">
+                            <input id='searchBar' type="text" class="form-control" placeholder="Buscar productos" name='busqueda'>
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                     <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
                         <ol class="carousel-indicators">
                             <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
