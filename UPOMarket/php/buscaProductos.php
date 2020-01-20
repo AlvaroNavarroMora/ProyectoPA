@@ -39,16 +39,20 @@ if (empty($productos)) {
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
         <script>
             $(document).ready(function () {
-                var data = <?php if (isset($data)) echo $data; else echo "null" ?>;
+                var data = <?php if (isset($data)) echo $data;
+else echo "null" ?>;
                 if (data == null) {
                     $("#contenedorTablaProductos").hide();
                 }
                 $('#productos').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    },
                     "data": data,
                     "paging": true,
                     "ordering": true,
                     "searching": false,
-                    "order": [[ 1, "asc" ]],
+                    "order": [[1, "asc"]],
                     "columns": [
                         {"data": "id"},
                         {"data": "nombre"},
