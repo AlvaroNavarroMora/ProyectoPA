@@ -39,8 +39,12 @@ if (empty($productos)) {
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
         <script>
             $(document).ready(function () {
-                var data = <?php if (isset($data)) echo $data;
-else echo "null" ?>;
+                var data = <?php
+if (isset($data))
+    echo $data;
+else
+    echo "null"
+    ?>;
                 if (data == null) {
                     $("#contenedorTablaProductos").hide();
                 }
@@ -69,6 +73,14 @@ else echo "null" ?>;
                             $("#formProducto").append(input);
                             $("#formProducto").submit();
                         });
+                        var cells = $("tbody td");
+                        for (var i = 0; i < cells.length; i++) {
+                            var text = $(cells[i]).text();
+                            var busca = "<?php echo $busca ?>";
+                            var re = new RegExp(busca, 'gi');
+                            cells[i].innerHTML = cells[i].innerHTML.replace(re, "<span class='highlight'>" + busca + "</span>");
+
+                        }
                     }
                 });
             });
@@ -124,13 +136,13 @@ else echo "null" ?>;
                         ?>
                     </h4>
                     <div id='contenedorTablaProductos' class='container'>
-                        <table id="productos" class="table table-striped table-bordered dataTable" style="width:100%">
+                        <table id="productos" class="table table-striped table-bordered15 dataTable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
-                                    <th>Precio</th>
+                                    <th>Precio(&euro;)</th>
                                 </tr>
                             </thead>
                         </table>

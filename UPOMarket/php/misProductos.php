@@ -57,6 +57,16 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                             $("#formProducto").append(input);
                             $("#formProducto").submit();
                         });
+                        var imgs = table.column(5).data();
+                        var rows = $("tbody tr");
+                        for(var i = 0; i<imgs.length; i++) {
+                            var aux = $(rows[i]).children()[5];
+                            var imagen = document.createElement("img");
+                            $(imagen).attr("src","../img/defaultProfile.png");
+                            $(imagen).attr("alt","No disponible");
+                            $(imagen).addClass("mostrarImagen");
+                            aux.replaceChild(imagen,aux.firstChild);
+                        }
                     }
                 });
             });
@@ -90,7 +100,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                                 <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
-                                <th>Precio</th>
+                                <th>Precio(&euro;)</th>
                                 <th>Stock</th>
                                 <th>Imagen</th>
                                 <th>Disponible</th>
