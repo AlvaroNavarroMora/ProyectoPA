@@ -44,7 +44,7 @@ if (isset($_SESSION['email'])) {
                             echo "<div class='alert alert-success'>El carrito está vacío.</div>";
                         } else {
                             ?>
-                            <form method="post" action="./utils/anadirCarrito.php">
+                            <form method="post" action="./utils/anadirEliminarCarrito.php">
                                 <table id="tableProductos" class="table table-light">
                                     <thead>
                                         <tr>
