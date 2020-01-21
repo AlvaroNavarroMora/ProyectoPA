@@ -141,7 +141,7 @@ function mostrarValorar() {
                         <?php echo number_format($puntuacion, 1) ?> estrellas
                         <br />
                         <br />
-                        <form action="./utils/anadirCarrito.php" method="post">
+                        <form action="./utils/anadirEliminarCarrito.php" method="post">
                             <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
                             <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']); ?>">
                             <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
