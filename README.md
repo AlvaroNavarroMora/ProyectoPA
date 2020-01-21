@@ -4,7 +4,7 @@
 
 **UPOMarket** es una tienda online de la [***Universidad Pablo de Olavide***](https://www.upo.es/portal/impe/web/portada/index.html), y concretamente de la ***Escuela Politécnica Superior***. Aquí se podrá obtener todo tipo de material de estudio tanto para los estudiantes como para los docentes, así como artículos de primera necesidad.
 
-![EPS UPO](https://pbs.twimg.com/profile_images/1106112771635245057/NnSrv8Oa_400x400.png)
+![EPS UPO]<img src="https://pbs.twimg.com/profile_images/1204413078856597504/K7kGRHuM_400x400.jpg"/>
 ## Colaboradores
 
 Este proyecto es realizado por el *Grupo XI* de la asignatura de *Programación Avanzada* del **Grado de Ingeniería Informática en Sistemas de Información** de la Universidad Pablo de Olavide.
