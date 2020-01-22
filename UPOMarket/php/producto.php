@@ -95,7 +95,7 @@ function mostrarValorar() {
 
             });
             var puntuacion = parseFloat(<?php echo number_format($puntuacion, 2) ?>);
-            var k=0;
+            var k = 0;
             for (k = 0; k < puntuacion; k++) {
                 var text = $("#productRating").text();
                 if (k < puntuacion && k + 1 > puntuacion)
@@ -103,7 +103,7 @@ function mostrarValorar() {
                 else
                     $("#productRating").append($("<i class='fas fa-star'></i>"));
             }
-            for(var j=k; j<5; j++) {
+            for (var j = k; j < 5; j++) {
                 $("#productRating").append($("<i class='far fa-star'></i>"));
             }
         });
@@ -141,12 +141,40 @@ function mostrarValorar() {
                         <?php echo number_format($puntuacion, 1) ?> estrellas
                         <br />
                         <br />
-                        <form action="./utils/anadirEliminarCarrito.php" method="post">
-                            <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
-                            <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']); ?>">
-                            <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
-                        </form>
-
+                        <?php
+                        if (isset($_SESSION['carrito']) && !empty($_SESSION['carrito'])) {
+                            $index = -1;
+                            foreach ($_SESSION['carrito'] as $indice => $productoSes) {
+                                if ($productoSes['id'] == $producto['id']) {
+                                    $index = $indice;
+                                }
+                            }
+                            if ($index == -1) {
+                                ?>
+                                <form action="./utils/anadirEliminarCarrito.php" method="post">
+                                    <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
+                                    <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']); ?>">
+                                    <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
+                                </form>
+                                <?php
+                            } else {
+                                ?>
+                                <form action="./utils/anadirEliminarCarrito.php" method="post">
+                                    <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
+                                    <button class="btn btn-primary" name="btnEliminarCarritoProducto" value="Eliminar del carrito" type="submit">Eliminar del carrito</button>
+                                </form>
+                                <?php
+                            }
+                        } else {
+                            ?>
+                            <form action="./utils/anadirEliminarCarrito.php" method="post">
+                                <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
+                                <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']); ?>">
+                                <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
+                            </form>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
                 <!-- /.card caracteristicas -->

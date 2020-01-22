@@ -33,12 +33,20 @@ if (isset($_SESSION['email'])) {
             if (!isset($_SESSION['carrito'])) {
                 $_SESSION['carrito'][0] = $producto;
             } else {
+                $index = -1;
+                foreach ($_SESSION['carrito'] as $indice => $productoSes) {
+                    if ($productoSes['id'] == $producto['id']) {
+                        $index = $indice;
+                    }
+                }
+                if ($index != -1) {
+                    alert("El producto ya se encontraba en el carrito");
+                    header('Location: ../producto.php?idProducto=' . $id);
+                }
                 $index = count($_SESSION['carrito']);
                 $_SESSION['carrito'][$index] = $producto;
             }
-            //Volver a la página del produco--------------------------------------------------------------------
-            header('Location: ../principal.php'); //Cambiar por volver a la página del producto del que venimos
-            //--------------------------------------------------------------------------------------------------
+            header('Location: ../producto.php?idProducto=' . $id);
         }
     } else {
         if (isset($_POST['btnEliminarCarrito'])) {
@@ -73,7 +81,36 @@ if (isset($_SESSION['email'])) {
                 header('Location: ../principal.php');
             }
         } else {
-            header('Location: ../principal.php');
+            if (isset($_POST['btnEliminarCarritoProducto'])) {
+                if (isset($_POST['id'])) {
+                    $idProv = desencriptar($_POST['id']);
+                    if (is_numeric($idProv)) {
+                        $id = $idProv;
+                    } else {
+                        $errores[] = "Parece que algo ha ido mal...";
+                    }
+                } else {
+                    $errores[] = "Parece que algo ha ido mal...";
+                }
+                if (isset($errores)) {
+                    alert("Parece que algo ha ido mal...");
+                    header('Location: ../principal.php');
+                } else {
+                    foreach ($_SESSION['carrito'] as $indice => $producto) {
+                        if ($producto['id'] == $id) {
+                            unset($_SESSION['carrito'][$indice]);
+                        }
+                    }
+                    header('Location: ../producto.php?idProducto=' . $id);
+                }
+            } else {
+                if (isset($_POST['procesarCompra'])) {
+                    //TODO
+                }else{
+                    header('Location: ../principal.php');
+                }
+                
+            }
         }
     }
 } else {
