@@ -14,7 +14,7 @@ function mostrarSinSesion() {
 function mostrarCliente() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta</a>
+        <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta <span id="num-productos">(0)</span></a>
     </li>
     <li id="profile" class="nav-item">
         <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
@@ -36,7 +36,7 @@ function mostrarVendedor() {
         <a class="nav-link" href="#">Mis ventas</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta</a>
+        <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta <span id="num-productos">(0)</span></a>
     </li>
     <li id="profile" class="nav-item">
         <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
@@ -62,7 +62,12 @@ function mostrarAdmin() {
     <?php
 }
 ?>
-
+<script>
+    $(document).ready(function() {
+        var num_productos = <?php echo count($_SESSION["carrito"]) ?>;
+        $("#num-productos").text("("+num_productos+")");
+    });
+</script>
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
         <a class="navbar-brand" href="../php/principal.php"><img height="40" src="../img/upomarket_nav.png" alt="upomarket_nav"></a>
