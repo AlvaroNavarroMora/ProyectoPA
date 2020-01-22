@@ -35,9 +35,10 @@ $categorias = listarCategorias();
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav id='categorias' class="list-group">
                         <ul class="list-unstyled">
+                            <h4 class="text-center">Categorías</h4>
                             <?php
                             foreach($categorias as $c) {
-                                echo '<li><a href="#" class="list-group-item">'.$c[0].'</a></li>';
+                                echo '<li><a href="./categoria.php?categoria='.$c[0].'" class="list-group-item">'.$c[0].'</a></li>';
                             }
                             ?>
                         </ul>
