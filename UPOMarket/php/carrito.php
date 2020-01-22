@@ -50,7 +50,6 @@ if (isset($_SESSION['email'])) {
                                         <tr>
                                             <th>Nombre</th>
                                             <th>Descripción</th>
-                                            <th>Imagen</th>
                                             <th>Precio</th>
                                             <th>Cantidad</th>
                                             <th>Subtotal </th>
@@ -59,19 +58,21 @@ if (isset($_SESSION['email'])) {
                                         <?php
                                         $i = 0;
                                         foreach ($_SESSION['carrito'] as $indice => $producto) {
-                                            $query = "SELECT nombre, descripcion, precio, imagen FROM productos WHERE id='" . $producto['id'] . "'";
+                                            $query = "SELECT nombre, descripcion, precio FROM productos WHERE id='" . $producto['id'] . "'";
                                             $result = ejecutarConsulta($query);
                                             if (mysqli_num_rows($result) > 0) {
                                                 $row = mysqli_fetch_array($result);
                                                 if ($row['nombre'] == $producto['nombre']) {
+                                                    echo "<tr>";
                                                     echo "<td>" . $row['nombre'] . "</td>";
                                                     echo "<td>" . $row['descripcion'] . "</td>";
-                                                    echo "<td><img src='" . $row['imagen'] . "' alt='Imagen de producto' /></td>";
                                                     echo "<td>" . $row['precio'] . "</td>";
                                                     echo "<td><input name='cantidad" . $i . "' type='number' id='cantidad" . $i . "' value='" . $producto['cantidad'] . "'/></td>";
                                                     echo "<td id ='subtotal" . $i . "'></td>";
                                                     echo '<input type="hidden" name="idProducto' . $i . '" value="' . encriptar($producto['id']) . '">';
                                                     echo "<td><button  id ='btnEliminarCarrito" . $i . "' name='btnEliminarCarrito' class='btn btn-danger' type='submit' value='" . $i . "' >Eliminar</button></td>";
+                                                    echo "</tr>";
+                                                    
                                                 }
                                             }
                                         }
@@ -79,7 +80,7 @@ if (isset($_SESSION['email'])) {
                                     </thead>
                                     <tr>
                                         <td colspan="4"><h5>Total:</h5></td>
-                                        <td id="precioTotalCarrito" colspan="3"><?php echo number_format(345.293, 2); ?>€</td>
+                                        <td id="precioTotalCarrito" colspan="2"><?php echo number_format(345.293, 2); ?>€</td>
                                     </tr>
                                 </table>
                             </form>

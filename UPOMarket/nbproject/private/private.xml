@@ -5,10 +5,11 @@
         <group>
             <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/css/producto.css</file>
             <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/producto.php</file>
+            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/carrito.php</file>
             <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/login.php</file>
             <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/utils/encriptar.php</file>
+            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/utils/anadirEliminarCarrito.php</file>
             <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/misProductos.php</file>
-            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/utils/anadirCarrito.php</file>
         </group>
     </open-files>
 </project-private>
