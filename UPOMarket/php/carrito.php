@@ -64,7 +64,7 @@ if (isset($_SESSION['email'])) {
                                                 $row = mysqli_fetch_array($result);
                                                 if ($row['nombre'] == $producto['nombre']) {
                                                     echo "<tr>";
-                                                    echo "<td>" . $row['nombre'] . "</td>";
+                                                    echo "<td>" . '<a href="./producto.php?idProducto=' . $producto['id'] . '">' . $row['nombre'] . "</a></td>";
                                                     echo "<td>" . $row['descripcion'] . "</td>";
                                                     echo "<td>" . $row['precio'] . "</td>";
                                                     echo "<td><input name='cantidad" . $i . "' type='number' id='cantidad" . $i . "' value='" . $producto['cantidad'] . "'/></td>";
@@ -72,7 +72,6 @@ if (isset($_SESSION['email'])) {
                                                     echo '<input type="hidden" name="idProducto' . $i . '" value="' . encriptar($producto['id']) . '">';
                                                     echo "<td><button  id ='btnEliminarCarrito" . $i . "' name='btnEliminarCarrito' class='btn btn-danger' type='submit' value='" . $i . "' >Eliminar</button></td>";
                                                     echo "</tr>";
-                                                    
                                                 }
                                             }
                                         }
@@ -83,6 +82,20 @@ if (isset($_SESSION['email'])) {
                                         <td id="precioTotalCarrito" colspan="2"><?php echo number_format(345.293, 2); ?>€</td>
                                     </tr>
                                 </table>
+
+                                <div class="row">
+                                    <div class="divCarrito">
+                                        <h4>Dirección:</h4>
+                                        <p>TODO: Input de dirección</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="divCarrito">
+                                        <input class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" type="submit" value="Procesar Compra" name="procesarCompra"></input>
+                                    </div>
+                                </div>
+
+
                             </form>
                             <?php
                         }
@@ -95,12 +108,7 @@ if (isset($_SESSION['email'])) {
 
                 </div>
                 <!-- /.row -->
-                <div class="row">
-                    <div class="divCarrito">
-                        <h4>Procesar Compra:</h4>
-                        <p>Dirección</p>
-                    </div>
-                </div>
+
             </main>
             <!-- /.container -->
             <?php
