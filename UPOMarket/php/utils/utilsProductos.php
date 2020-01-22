@@ -26,9 +26,12 @@ function listarCategoriasDeProducto($producto) {
 /* Lista los productos que pertenecen a una categoría X */
 
 function listarProductosDeCategoria($categoria) {
-    $query = "SELECT * FROM `productos` as p, `categorias_productos` as ca WHERE p.id=ca.id_producto AND ca.nombre_categoria='$categoria';";
+    $query = "SELECT * FROM `productos` as p, `categorias_productos` as ca WHERE p.id=ca.id_producto AND ca.nombre_categoria='$categoria' and p.disponible=1;";
     $result = ejecutarConsulta($query);
-    $lista = mysqli_fetch_all($result);
+    $lista = Array();
+    while ($row = mysqli_fetch_assoc($result)) {
+        $lista[] = $row;
+    }
     return $lista;
 }
 
@@ -101,7 +104,7 @@ function listarCaracteristicasProducto($idProducto) {
 
 function obtenerProducto($idProducto) {
 
-    $query = "SELECT * from productos where id=$idProducto";
+    $query = "SELECT * from productos where id=$idProducto and disponible=1";
     $result = ejecutarConsulta($query);
     $producto = null;
     if (mysqli_num_rows($result) > 0) {

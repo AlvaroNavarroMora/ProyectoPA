@@ -22,7 +22,7 @@ if (empty($productos)) {
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Inicio-UPOMarket</title>
+        <title>Buscar - UPOMarket</title>
         <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -101,9 +101,10 @@ else
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav id='categorias' class="list-group">
                         <ul class="list-unstyled">
+                            <h4 class="text-center">Categorías</h4>
                             <?php
                             foreach ($categorias as $c) {
-                                echo '<li><a href="#" class="list-group-item">' . $c[0] . '</a></li>';
+                                echo '<li><a href="./categoria.php?categoria=' . $c[0] . '" class="list-group-item">' . $c[0] . '</a></li>';
                             }
                             ?>
                         </ul>
