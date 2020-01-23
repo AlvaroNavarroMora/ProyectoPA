@@ -105,7 +105,17 @@ if (isset($_SESSION['email'])) {
                 }
             } else {
                 if (isset($_POST['procesarCompra'])) {
-                    //TODO
+                    if(isset($_POST['direccion'])){
+                        //Comprobar direccion
+                    }
+                    foreach ($_SESSION['carrito'] as $indice => $producto) {
+                        if(isset($_POST['cantidad'.$indice])){
+                            $cant = filter_var($_POST['cantidad'.$indice], FILTER_SANITIZE_NUMBER_INT);
+                            $_SESSION['carrito'][$indice]['cantidad'] = $cant;
+                        }
+                    }
+                    
+                    header('Location: ../procesarCompra.php');
                 }else{
                     header('Location: ../principal.php');
                 }
