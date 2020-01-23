@@ -17,8 +17,7 @@ if (isset($_GET["idProducto"])) {
         $valoraciones = listarValoracionesProcucto($idProducto);
         $puntuacion = obtenerPuntuacionProducto($idProducto);
         $categorias = listarCategoriasDeProducto($idProducto);
-    }
-    else {
+    } else {
         header("location:principal.php");
     }
 } else {
@@ -129,18 +128,29 @@ function mostrarValorar() {
             <div class="col-lg-3">
                 <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                 <nav id='categorias' class="list-group">
-                        <ul class="list-unstyled">
-                            <h4 class="text-center">Categorías</h4>
-                            <?php
-                            foreach($categorias as $c) {
-                                echo '<li><a href="./categoria.php?categoria='.$c[0].'" class="list-group-item">'.$c[0].'</a></li>';
-                            }
-                            ?>
-                        </ul>
+                    <ul class="list-unstyled">
+                        <h4 class="text-center">Categorías</h4>
+                        <?php
+                        foreach ($categorias as $c) {
+                            echo '<li><a href="./categoria.php?categoria=' . $c[0] . '" class="list-group-item">' . $c[0] . '</a></li>';
+                        }
+                        ?>
+                    </ul>
                 </nav>
             </div>
             <!-- /.col-lg-3 -->
             <div class="col-lg-9">
+                <!-- Search form -->
+                <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="GET">
+                    <div class="input-group">
+                        <input id='searchBar' type="text" class="form-control" placeholder="Buscar productos" name='busqueda'>
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
                 <div class="card mt-4">
                     <img id='imgProducto' class="card-img-top img-fluid" src='<?php echo $img ?>' alt="">
                     <div class="card-body">

@@ -1,3 +1,3 @@
 <?php
-header('Location: ./upomarket.com/php/principal.php');
+header('Location: ./php/principal.php');
 ?>
