@@ -5,6 +5,7 @@ include './utils/encriptar.php';
 session_start();
 if (isset($_SESSION['email'])) {
     ?>
+
     <!DOCTYPE html>
     <html>
         <head>
@@ -12,9 +13,6 @@ if (isset($_SESSION['email'])) {
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
             <meta name="description" content="">
             <meta name="author" content="">
-
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
             <title>UPOMarket-Inicio</title>
             <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -39,9 +37,8 @@ if (isset($_SESSION['email'])) {
                 <div class="row">
 
 
-
                     <div class="divCarrito">
-                        <h3>Mi carrito</h3>
+                        <h3>Resumen de compra</h3>
                         <?php
                         if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
                             echo "<div class='alert alert-success'>El carrito está vacío.</div>";
@@ -56,10 +53,10 @@ if (isset($_SESSION['email'])) {
                                             <th>Precio</th>
                                             <th>Cantidad</th>
                                             <th>Subtotal </th>
-                                            <th>Eliminar </th>
                                         </tr>
                                         <?php
                                         $i = 0;
+                                        $total = 0;
                                         foreach ($_SESSION['carrito'] as $indice => $producto) {
                                             $query = "SELECT nombre, descripcion, precio FROM productos WHERE id='" . $producto['id'] . "'";
                                             $result = ejecutarConsulta($query);
@@ -67,13 +64,13 @@ if (isset($_SESSION['email'])) {
                                                 $row = mysqli_fetch_array($result);
                                                 if ($row['nombre'] == $producto['nombre']) {
                                                     echo "<tr>";
-                                                    echo "<td>" . '<a href="./producto.php?idProducto=' . $producto['id'] . '">' . $row['nombre'] . "</a></td>";
+                                                    echo "<td>" . $row['nombre'] . "</td>";
                                                     echo "<td>" . $row['descripcion'] . "</td>";
                                                     echo "<td>" . $row['precio'] . "</td>";
-                                                    echo "<td><input name='cantidad" . $indice . "' type='number' id='cantidad" . $i . "' value='" . $producto['cantidad'] . "'/></td>";
-                                                    echo "<td id ='subtotal" . $i . "'></td>";
-                                                    echo '<input type="hidden" name="idProducto' . $i . '" value="' . encriptar($producto['id']) . '">';
-                                                    echo "<td><button  id ='btnEliminarCarrito" . $i . "' name='btnEliminarCarrito' class='btn btn-danger' type='submit' value='" . $i . "' >Eliminar</button></td>";
+                                                    echo "<td>" . $producto['cantidad'] . "</td>";
+                                                    $subtotal = $row['precio'] * $producto['cantidad'];
+                                                    $total += $subtotal;
+                                                    echo "<td id ='subtotal" . $i . "'>$subtotal</td>";
                                                     echo "</tr>";
                                                 }
                                                 $i++;
@@ -82,8 +79,8 @@ if (isset($_SESSION['email'])) {
                                         ?>
                                     </thead>
                                     <tr>
-                                        <td colspan="4"><h5>Total:</h5></td>
-                                        <td id="precioTotalCarrito" colspan="2"><?php echo number_format(345.293, 2); ?>€</td>
+                                        <td colspan="3"><strong>Total:</strong></td>
+                                        <td id="precioTotalCarrito" colspan="2"><?php echo number_format($total, 2); ?>€</td>
                                     </tr>
                                 </table>
 
@@ -92,16 +89,25 @@ if (isset($_SESSION['email'])) {
                                     <div class="divCarrito">
                                         <strong>Dirección de envio:</strong>
                                         <br />
-                                        <input type="text" name="direccion" id="inpurDireccion" class="form-control" placeholder="c\ Calle de ejemplo, nº1, Ciudad, Provincia, CP41704" required autofocus />
+                                        Dirección de prueba
                                     </div>
                                 </div>
 
 
-                                <div class="row">
-                                    <div class="divCarrito">
-                                        <input class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" type="submit" value="Procesar Compra" name="procesarCompra"></input>
-                                    </div>
-                                </div>
+                                <!-- Set up a container element for the button -->
+                                <div id="paypal-button-container"></div>
+
+                                <!-- Include the PayPal JavaScript SDK -->
+                                <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+
+                                <script>
+                                    // Render the PayPal button into #paypal-button-container
+                                    paypal.Buttons({
+                                        style: {
+                                            layout: 'horizontal'
+                                        }
+                                    }).render('#paypal-button-container');
+                                </script>
 
 
                             </form>
@@ -111,7 +117,6 @@ if (isset($_SESSION['email'])) {
 
                     </div>
 
-                    <!-- /.row -->
 
 
                 </div>
