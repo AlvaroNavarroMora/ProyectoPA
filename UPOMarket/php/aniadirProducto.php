@@ -9,7 +9,6 @@ include './utils/sesionUtils.php';
 
 /* Añadir nombre del formulario registro */
 if (isset($_POST['btnAddProduct'])) {
-
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
     $producto = filter_var($_POST['producto'], FILTER_SANITIZE_MAGIC_QUOTES);
@@ -120,25 +119,34 @@ if (isset($_POST['btnAddProduct'])) {
         <script src="../frameworks/jquery/jquery.min.js"></script>
         <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" rel="stylesheet" type="text/css"/>
         <script>
 
+            function readURL(input) {
+                $('#preview').empty();
+                var readers = new Array();
+                for (var i = 0; i < input.files.length; i++) {
+                    readers[i] = new FileReader();
+                    if (input.files && input.files[i]) {
+                        readers[i].onload = function (e) {
+                            $('#preview').append("<img src=" + e.target.result + " alt='your image' class='img-thumbnail' />");
+                        }
+                        if (input.files.length == 1) {
+                            $('#imgLab').empty();
+                            $('#imgLab').append(input.files[i].name);
+                        }
 
-
-            function addImg() {
-                var lista = document.getElementsByName('files[]');
-                //console.table(lista[0].files);
-                var misFiles = lista[0].files;
-
-
-                var $divInputs = $('#filesName');
-                $divInputs.empty();
-
-                for (var i = 0; i < misFiles.length; i++) {
-                    //console.log(misFiles[i].name);
-                    $divInputs.append("<label>" + misFiles[i].name + "</label><br>");
+                        readers[i].readAsDataURL(input.files[i]);
+                    }
                 }
-
             }
+            $(document).ready(function () {
+                $(".chosen-select").chosen({disable_search_threshold: 10});
+                $("#file").change(function () {
+                    readURL(this);
+                });
+            });
         </script>
     </head>
 
@@ -151,14 +159,14 @@ if (isset($_POST['btnAddProduct'])) {
         <main class="container">
             <div class="row">
                 <!-- LISTA DE CATEGORÍAS -->
-                <div class="col-lg-3">
-                    <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
-                    <div class="list-group">
-                        <a href="#" class="list-group-item active">Category 1</a>
-                        <a href="#" class="list-group-item">Category 2</a>
-                        <a href="#" class="list-group-item">Category 3</a>
-                    </div>
-                </div>
+                <!--  <div class="col-lg-3">
+                      <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
+                      <div class="list-group">
+                          <a href="#" class="list-group-item active">Category 1</a>
+                          <a href="#" class="list-group-item">Category 2</a>
+                          <a href="#" class="list-group-item">Category 3</a>
+                      </div>
+                  </div>-->
                 <!-- /.col-lg-3 -->
                 <div class="col-lg-9">
                     <form enctype="multipart/form-data" action="#" method="post">
@@ -189,34 +197,35 @@ if (isset($_POST['btnAddProduct'])) {
                             </div>
                         </div>
 
-                        <div class="form-row table-form">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Categorías seleccionadas</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                        <div id="miSelect" class="form-row">
+                            <label>Categorias</label>
+                            
+                            <select name="cats[]" data-placeholder="Seleccione alguna categoria" multiple class="form-control chosen-select" tabindex="-1" >
+                                <option value=""></option>
+                                <?php
+                                $categorias = listarCategorias();
+                                foreach ($categorias as $v) {
+                                    echo "<option type='checkbox' value='" . $v[0] . "'>$v[0]</option>";
+                                }
+                                ?>
 
-                                    <?php
-                                    $categorias = listarCategorias();
-                                    foreach ($categorias as $v) {
-                                        echo "<tr><td class='check-td'><input class='form-check-input' name='cats[]' type='checkbox' value='" . $v[0] . "'>$v[0]</td></tr>";
-                                    }
-                                    ?>
-
-                                </tbody>
-                            </table>
+                            </select>
+                            
                         </div>
+
+
                         <div>
                             <label>Añade una imagen</label>
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="file" name="files[]" onchange="addImg()" multiple required="true">
-                                <label class="custom-file-label" for="customFile">Selecciona una imagen</label>
+                                <input type="file" class="custom-file-input" id="file" name="files[]"  required="true">
+                                <label  id="imgLab" class="custom-file-label" for="customFile">Selecciona una imagen</label>
 
                                 <div id="filesName" >
 
                                 </div>
+                            </div>
+                            <div id="preview">
+
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
