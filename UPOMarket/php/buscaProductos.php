@@ -30,7 +30,7 @@ if (empty($productos)) {
         <link href="../css/footer.css" rel="stylesheet">
         <link href="../css/principal.css" rel="stylesheet">
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-        <link href="../css/misproductos.css" rel="stylesheet">
+        <link href="../css/buscaProductos.css" rel="stylesheet">
 
         <script src="../frameworks/jquery/jquery.min.js"></script>
         <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -128,7 +128,7 @@ else
                     <h4>
                         <?php
                         if (empty($errores)) {
-                            echo 'Se han econtrado ' . count($productos) . " coincidencias para la búsqueda '" . $busca . "':";
+                            echo '<h5>Se han econtrado ' . count($productos) . " coincidencias para la búsqueda '" . $busca . "':</h5>";
                         } else {
                             foreach ($errores as $e) {
                                 echo $e;
