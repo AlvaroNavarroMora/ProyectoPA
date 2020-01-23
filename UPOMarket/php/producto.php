@@ -1,44 +1,49 @@
 <?php
 session_start();
 
-if (isset($_POST["idProducto"])) {
+if (isset($_GET["idProducto"])) {
     include './utils/utilsProductos.php';
-    $idProducto = filter_var($_POST["idProducto"], FILTER_SANITIZE_NUMBER_INT);
+    $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $producto = obtenerProducto($idProducto);
-    $ruta = "../img/usrFotos/" . $producto["email_vendedor"] . "/products/";
-    $img = $producto["imagen"];
-    if ($img == "ninguna" || $img == "") {
-        $img = $ruta . "productDefaultImage.jpg";
-    } else {
-        $img = $ruta . $img;
+    if ($producto) {
+        $ruta = "../img/usrFotos/" . $producto["email_vendedor"] . "/products/";
+        $img = $producto["imagen"];
+        if ($img == "ninguna" || $img == "") {
+            $img = $ruta . "productDefaultImage.jpg";
+        } else {
+            $img = $ruta . $img;
+        }
+        $caracteristicas = listarCaracteristicasProducto($idProducto);
+        $valoraciones = listarValoracionesProcucto($idProducto);
+        $puntuacion = obtenerPuntuacionProducto($idProducto);
+        $categorias = listarCategoriasDeProducto($idProducto);
     }
-    $caracteristicas = listarCaracteristicasProducto($idProducto);
-    $valoraciones = listarValoracionesProcucto($idProducto);
-    $puntuacion = obtenerPuntuacionProducto($idProducto);
-    //$categorias = obtenerCategoriasProducto($idProducto);
+    else {
+        header("location:principal.php");
+    }
 } else {
     //header("location:principal.php");
 }
-if (isset($_POST["enviarValoracion"])) {
-    $idProducto = filter_var($_POST["idProducto"], FILTER_SANITIZE_NUMBER_INT);
-    $puntuacion_nueva = filter_var($_POST["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
-    $valoracion_nueva = filter_var($_POST["valoracion"], FILTER_SANITIZE_STRING);
+if (isset($_GET["enviarValoracion"])) {
+    $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
+    $puntuacion_nueva = filter_var($_GET["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
+    $valoracion_nueva = trim(filter_var($_GET["valoracion"], FILTER_SANITIZE_STRING));
+    header("location:producto.php?idProducto=$idProducto");
 
     valorarProducto($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
 }
 
 function mostrarValorar() {
     ?>
-    <form id='formValoracionProducto' class="md-form mr-auto mb-4" method="post">
-        <textarea class="form-control" name="valoracion" placeholder="Valora el producto" required>
-        </textarea>
+    <form id='formValoracionProducto' class="md-form mr-auto mb-4" method="GET">
+        <textarea class="form-control" name="valoracion" placeholder="Valora el producto" required></textarea>
         <?php
         for ($index = 1; $index <= 5; $index++) {
-            echo "<span id='puntuacion-$index' class='fa fa-star unchecked'></span>";
+            echo "<span id='puntuacion-$index' class='review fa fa-star unchecked'></span>";
         }
         ?>
         <input id="puntuacion" type="number" name="puntuacion" hidden>
-        <input name="idProducto" type="number" value="<?php echo $_POST["idProducto"] ?>" hidden>
+        <input name="idProducto" type="number" value="<?php echo $_GET["idProducto"] ?>" hidden>
         <input id="btn-coment" type="submit" name="enviarValoracion" value="Valora el producto!" class="btn btn-success">
     </form>
     <?php
@@ -66,13 +71,12 @@ function mostrarValorar() {
             $(".fa-star").click(function () {
                 var id = $(this).attr('id');
                 var puntuacion = parseInt(id.substring(id.length - 1, id.length));
-                var estrellas = $(".fa-star");
+                var estrellas = $(".review");
                 for (var i = 0; i < estrellas.length; i++) {
                     if (i < puntuacion) {
                         $(estrellas[i]).addClass("checked");
                         $(estrellas[i]).removeClass("unchecked");
-                    }
-                    else {
+                    } else {
                         $(estrellas[i]).removeClass("checked");
                         $(estrellas[i]).addClass("unchecked");
                     }
@@ -95,10 +99,17 @@ function mostrarValorar() {
                 }
 
             });
-            var puntuacion = parseInt(<?php echo round($puntuacion, 0) ?>);
-            for (var i = 0; i < puntuacion; i++) {
+            var puntuacion = parseFloat(<?php echo number_format($puntuacion, 2) ?>);
+            var k = 0;
+            for (k = 0; k < puntuacion; k++) {
                 var text = $("#productRating").text();
-                $("#productRating").text(text + "\u2605");
+                if (k < puntuacion && k + 1 > puntuacion)
+                    $("#productRating").append($("<i class='fas fa-star-half-alt'></i>"));
+                else
+                    $("#productRating").append($("<i class='fas fa-star'></i>"));
+            }
+            for (var j = k; j < 5; j++) {
+                $("#productRating").append($("<i class='far fa-star'></i>"));
             }
         });
     </script>
@@ -118,9 +129,14 @@ function mostrarValorar() {
             <div class="col-lg-3">
                 <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                 <nav id='categorias' class="list-group">
-                    <a href="#" class="list-group-item active">Category 1</a>
-                    <a href="#" class="list-group-item">Category 2</a>
-                    <a href="#" class="list-group-item">Category 3</a>
+                        <ul class="list-unstyled">
+                            <h4 class="text-center">Categorías</h4>
+                            <?php
+                            foreach($categorias as $c) {
+                                echo '<li><a href="./categoria.php?categoria='.$c[0].'" class="list-group-item">'.$c[0].'</a></li>';
+                            }
+                            ?>
+                        </ul>
                 </nav>
             </div>
             <!-- /.col-lg-3 -->
@@ -131,16 +147,44 @@ function mostrarValorar() {
                         <h3 class="card-title"><?php echo $producto['nombre'] ?></h3>
                         <h4><?php echo $producto['precio'] ?>€</h4>
                         <p class="card-text"><?php echo $producto['descripcion'] ?></p>
-                        <span id="productRating" class="text-warning"></span>
+                        <div id="productRating" class="text-warning"></div>
                         <?php echo number_format($puntuacion, 1) ?> estrellas
                         <br />
                         <br />
-                        <form action="./utils/anadirCarrito.php" method="post">
-                            <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
-                            <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']); ?>">
-                            <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
-                        </form>
-
+                        <?php
+                        if (isset($_SESSION['carrito']) && !empty($_SESSION['carrito'])) {
+                            $index = -1;
+                            foreach ($_SESSION['carrito'] as $indice => $productoSes) {
+                                if ($productoSes['id'] == $producto['id']) {
+                                    $index = $indice;
+                                }
+                            }
+                            if ($index == -1) {
+                                ?>
+                                <form action="./utils/anadirEliminarCarrito.php" method="post">
+                                    <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
+                                    <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']); ?>">
+                                    <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
+                                </form>
+                                <?php
+                            } else {
+                                ?>
+                                <form action="./utils/anadirEliminarCarrito.php" method="post">
+                                    <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
+                                    <button class="btn btn-primary" name="btnEliminarCarritoProducto" value="Eliminar del carrito" type="submit">Eliminar del carrito</button>
+                                </form>
+                                <?php
+                            }
+                        } else {
+                            ?>
+                            <form action="./utils/anadirEliminarCarrito.php" method="post">
+                                <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
+                                <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']); ?>">
+                                <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
+                            </form>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
                 <!-- /.card caracteristicas -->

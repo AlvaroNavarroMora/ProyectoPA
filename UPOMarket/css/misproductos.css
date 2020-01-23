@@ -9,3 +9,11 @@ tbody tr:hover {
     cursor: pointer;
     text-decoration: underline;
 }
+span.highlight {
+    display: inline;
+    background-color: yellow;
+}
+img.mostrarImagen {
+    display:inline-table;
+    max-width: 50px;
+}

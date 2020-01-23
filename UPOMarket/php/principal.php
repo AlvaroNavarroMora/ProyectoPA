@@ -35,9 +35,10 @@ $categorias = listarCategorias();
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav id='categorias' class="list-group">
                         <ul class="list-unstyled">
+                            <h4 class="text-center">Categorías</h4>
                             <?php
                             foreach($categorias as $c) {
-                                echo '<li><a href="#" class="list-group-item">'.$c[0].'</a></li>';
+                                echo '<li><a href="./categoria.php?categoria='.$c[0].'" class="list-group-item">'.$c[0].'</a></li>';
                             }
                             ?>
                         </ul>
@@ -48,7 +49,7 @@ $categorias = listarCategorias();
 
                 <div class="col-lg-9">
                     <!-- Search form -->
-                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="post">
+                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="GET">
                         <div class="input-group">
                             <input id='searchBar' type="text" class="form-control" placeholder="Buscar productos" name='busqueda'>
                             <div class="input-group-append">

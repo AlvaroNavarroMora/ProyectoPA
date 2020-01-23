@@ -40,3 +40,8 @@ footer {
     width:90%;
     margin:0 auto;
 }
+@media only screen and (max-width: 1000px) {
+    ul li p{
+        text-align: center !important;
+    }
+}

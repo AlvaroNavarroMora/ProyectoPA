@@ -3,10 +3,10 @@ session_start();
 include './utils/utilsProductos.php';
 $categorias = listarCategorias();
 
-if (!isset($_POST["busqueda"])) {
+if (!isset($_GET["busqueda"])) {
     header("location:principal.php");
 }
-$busca = filter_var($_POST["busqueda"], FILTER_SANITIZE_STRING);
+$busca = trim(filter_var($_GET["busqueda"], FILTER_SANITIZE_STRING));
 $productos = buscarProductos($busca);
 if (empty($productos)) {
     $errores[] = "No se ha encontrado ningún producto";
@@ -22,7 +22,7 @@ if (empty($productos)) {
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Inicio-UPOMarket</title>
+        <title>Buscar - UPOMarket</title>
         <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -39,16 +39,24 @@ if (empty($productos)) {
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
         <script>
             $(document).ready(function () {
-                var data = <?php if (isset($data)) echo $data; else echo "null" ?>;
+                var data = <?php
+if (isset($data))
+    echo $data;
+else
+    echo "null"
+    ?>;
                 if (data == null) {
                     $("#contenedorTablaProductos").hide();
                 }
                 $('#productos').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    },
                     "data": data,
                     "paging": true,
                     "ordering": true,
                     "searching": false,
-                    "order": [[ 1, "asc" ]],
+                    "order": [[1, "asc"]],
                     "columns": [
                         {"data": "id"},
                         {"data": "nombre"},
@@ -65,6 +73,14 @@ if (empty($productos)) {
                             $("#formProducto").append(input);
                             $("#formProducto").submit();
                         });
+                        var cells = $("tbody td");
+                        for (var i = 0; i < cells.length; i++) {
+                            var text = $(cells[i]).text();
+                            var busca = "<?php echo $busca ?>";
+                            var re = new RegExp(busca, 'gi');
+                            cells[i].innerHTML = cells[i].innerHTML.replace(re, "<span class='highlight'>" + busca + "</span>");
+
+                        }
                     }
                 });
             });
@@ -73,7 +89,7 @@ if (empty($productos)) {
     </head>
 
     <body>
-        <form id="formProducto" action="producto.php" method="post" hidden>
+        <form id="formProducto" action="producto.php" method="GET" hidden>
         </form>
         <?php
         include './header.php';
@@ -85,9 +101,10 @@ if (empty($productos)) {
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav id='categorias' class="list-group">
                         <ul class="list-unstyled">
+                            <h4 class="text-center">Categorías</h4>
                             <?php
                             foreach ($categorias as $c) {
-                                echo '<li><a href="#" class="list-group-item">' . $c[0] . '</a></li>';
+                                echo '<li><a href="./categoria.php?categoria=' . $c[0] . '" class="list-group-item">' . $c[0] . '</a></li>';
                             }
                             ?>
                         </ul>
@@ -98,7 +115,7 @@ if (empty($productos)) {
                 <div class="col-lg-9">
                     <!-- /.col-lg-9 -->
                     <!-- Search form -->
-                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="post">
+                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="GET">
                         <div class="input-group">
                             <input id='searchBar' type="text" class="form-control" placeholder="Buscar productos" name='busqueda'>
                             <div class="input-group-append">
@@ -120,13 +137,13 @@ if (empty($productos)) {
                         ?>
                     </h4>
                     <div id='contenedorTablaProductos' class='container'>
-                        <table id="productos" class="table table-striped table-bordered dataTable" style="width:100%">
+                        <table id="productos" class="table table-striped table-bordered15 dataTable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
-                                    <th>Precio</th>
+                                    <th>Precio(&euro;)</th>
                                 </tr>
                             </thead>
                         </table>
