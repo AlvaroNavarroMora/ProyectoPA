@@ -13,7 +13,7 @@ if (isset($_SESSION['email'])) {
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
             <meta name="description" content="">
             <meta name="author" content="">
-            
+
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -28,12 +28,12 @@ if (isset($_SESSION['email'])) {
             <script src="../frameworks/jquery/jquery.min.js"></script>
             <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
-            <script src="https://www.paypalobjects.com/api/checkout.js"></script><!-- Para paypal -->
-            <script src="../js/carrito.js" type="text/javascript"></script>
-            
+
+
         </head>
 
         <body>
+
             <?php
             include './header.php';
             ?>
@@ -49,73 +49,85 @@ if (isset($_SESSION['email'])) {
                             echo "<div class='alert alert-success'>El carrito está vacío.</div>";
                         } else {
                             ?>
-                            <form method="post" action="./utils/anadirEliminarCarrito.php">
-                                <table id="tableProductos" class="table table-light">
-                                    <thead>
-                                        <tr>
-                                            <th>Nombre</th>
-                                            <th>Descripción</th>
-                                            <th>Precio</th>
-                                            <th>Cantidad</th>
-                                            <th>Subtotal </th>
-                                        </tr>
-                                        <?php
-                                        $i = 0;
-                                        $total = 0;
-                                        foreach ($_SESSION['carrito'] as $indice => $producto) {
-                                            $query = "SELECT nombre, descripcion, precio FROM productos WHERE id='" . $producto['id'] . "'";
-                                            $result = ejecutarConsulta($query);
-                                            if (mysqli_num_rows($result) > 0) {
-                                                $row = mysqli_fetch_array($result);
-                                                if ($row['nombre'] == $producto['nombre']) {
-                                                    echo "<tr>";
-                                                    echo "<td>" . $row['nombre'] . "</td>";
-                                                    echo "<td>" . $row['descripcion'] . "</td>";
-                                                    echo "<td>" . $row['precio'] . "</td>";
-                                                    echo "<td>" . $producto['cantidad'] . "</td>";
-                                                    $subtotal = $row['precio'] * $producto['cantidad'];
-                                                    $total += $subtotal;
-                                                    echo "<td id ='subtotal" . $i . "'>$subtotal</td>";
-                                                    echo "</tr>";
-                                                }
-                                                $i++;
-                                            }
-                                        }
-                                        ?>
-                                    </thead>
+
+                            <table id="tableProductos" class="table table-light">
+                                <thead>
                                     <tr>
-                                        <td colspan="3"><strong>Total:</strong></td>
-                                        <td id="precioTotalCarrito" colspan="2"><?php echo number_format($total, 2); ?>€</td>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                        <th>Subtotal </th>
                                     </tr>
-                                </table>
-
-
-                                <div class="row">
-                                    <div class="divCarrito">
-                                        <strong>Dirección de envio:</strong>
-                                        <br />
-                                        Dirección de prueba
-                                    </div>
-                                </div>
-
-
-                                <!-- Set up a container element for the button -->
-                                <div id="paypal-button-container"></div>
-
-                                <!-- Include the PayPal JavaScript SDK -->
-                                <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
-
-                                <script>
-                                    // Render the PayPal button into #paypal-button-container
-                                    paypal.Buttons({
-                                        style: {
-                                            layout: 'horizontal'
+                                    <?php
+                                    $i = 0;
+                                    $total = 0;
+                                    foreach ($_SESSION['carrito'] as $indice => $producto) {
+                                        $query = "SELECT nombre, descripcion, precio FROM productos WHERE id='" . $producto['id'] . "'";
+                                        $result = ejecutarConsulta($query);
+                                        if (mysqli_num_rows($result) > 0) {
+                                            $row = mysqli_fetch_array($result);
+                                            if ($row['nombre'] == $producto['nombre']) {
+                                                echo "<tr>";
+                                                echo "<td>" . $row['nombre'] . "</td>";
+                                                echo "<td>" . $row['descripcion'] . "</td>";
+                                                echo "<td>" . $row['precio'] . "</td>";
+                                                echo "<td>" . $producto['cantidad'] . "</td>";
+                                                $subtotal = $row['precio'] * $producto['cantidad'];
+                                                $total += $subtotal;
+                                                echo "<td id ='subtotal" . $i . "'>$subtotal</td>";
+                                                echo "</tr>";
+                                            }
+                                            $i++;
                                         }
-                                    }).render('#paypal-button-container');
-                                </script>
+                                    }
+                                    ?>
+                                </thead>
+                                <tr>
+                                    <td colspan="3"><strong>Total:</strong></td>
+                                    <td id="precioTotalCarrito" colspan="2"><?php echo number_format($total, 2); ?>€</td>
+                                </tr>
+                            </table>
 
 
-                            </form>
+                            <div class="row">
+                                <div class="divCarrito">
+                                    <strong>Dirección de envio:</strong>
+                                    <br />
+                                    Dirección de prueba
+                                </div>
+                            </div>
+
+
+                            <script src="https://www.paypal.com/sdk/js?client-id=Aag_BV9saCzCn3jZU7nRT-_qMd-sJuXnc9VKSeM5li-IXLAGDi2zUsiRtPpTu3Tvr46fIq9Ce6KSjkug"></script>
+
+                            <div id="paypal-button-container"></div>
+
+                            <script>paypal.Buttons().render('paypal-button-container');</script>
+
+                            <script>
+                                paypal.Buttons({
+                                    createOrder: function (data, actions) {
+                                        // This function sets up the details of the transaction, including the amount and line item details.
+                                        return actions.order.create({
+                                            purchase_units: [{
+                                                    amount: {
+                                                        value: '0.01'
+                                                    }
+                                                }]
+                                        });
+                                    },
+                                    onApprove: function (data, actions) {
+                                        // This function captures the funds from the transaction.
+                                        return actions.order.capture().then(function (details) {
+                                            // This function shows a transaction success message to your buyer.
+                                            alert('Transaction completed by ' + details.payer.name.given_name);
+                                        });
+                                    }
+                                }).render('#paypal-button-container');
+                                //This function displays Smart Payment Buttons on your web page.
+                            </script>
+
                             <?php
                         }
                         ?>
