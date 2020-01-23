@@ -2,6 +2,7 @@
 session_start();
 include './utils/utilsProductos.php';
 $categorias = listarCategorias();
+
 if (isset($_GET["categoria"])) {
     $categoria = trim(filter_var($_GET["categoria"], FILTER_SANITIZE_STRING));
     $productosCategoria = listarProductosDeCategoria($categoria);
@@ -9,10 +10,15 @@ if (isset($_GET["categoria"])) {
 
 function mostrarProducto($producto) {
     $puntuacion = obtenerPuntuacionProducto($producto["id"]);
+    if (file_exists($producto["imagen"])) {
+        $img = $producto["imagen"];
+    } else {
+        $img = "../img/productDefaultImage.jpg";
+    }
     ?>
     <div class = "col-lg-4 col-md-6 mb-4">
         <div class = "card h-100">
-            <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><img class = "card-img-top" src = "http://placehold.it/700x400" alt = ""></a>
+            <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><img class = "card-img-top" src = "<?php echo $img ?>" alt = ""></a>
             <div class = "card-body">
                 <h4 class = "card-title">
                     <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><?php echo $producto["nombre"] ?></a>
@@ -52,7 +58,7 @@ function mostrarProducto($producto) {
                 var estrellas = $(".stars");
                 for (var i = 0; i < estrellas.length; i++) {
                     var puntuacion = parseFloat($(estrellas[i]).first().text());
-                    if(isNaN(puntuacion)) {
+                    if (isNaN(puntuacion)) {
                         puntuacion = 0;
                     }
                     var k = 0;
@@ -99,28 +105,19 @@ function mostrarProducto($producto) {
                 <!-- /.col-lg-3 -->
 
                 <div class="col-lg-9">
-                    <!-- Search form -->
-                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="GET">
-                        <div class="input-group">
-                            <input id='searchBar' type="text" class="form-control" placeholder="Buscar productos" name='busqueda'>
-                            <div class="input-group-append">
-                                <button class="btn btn-secondary" type="submit">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                        <?php
-                        if (!empty($productosCategoria)) {
-                            echo '<div class="row">';
-                            foreach ($productosCategoria as $producto) {
-                                mostrarProducto($producto);
-                            }
-                            echo '</div>';
-                        } else {
-                            echo "<h5>No hay productos para mostrar.</h5";
+                    <?php
+                    include './barraBusqueda.php';
+                    
+                    if (!empty($productosCategoria)) {
+                        echo '<div class="row">';
+                        foreach ($productosCategoria as $producto) {
+                            mostrarProducto($producto);
                         }
-                        ?>
+                        echo '</div>';
+                    } else {
+                        echo "<h5>No hay productos para mostrar.</h5";
+                    }
+                    ?>
                 </div>
                 <!-- /.col-lg-9 -->
 
