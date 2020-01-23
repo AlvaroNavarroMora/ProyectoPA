@@ -14,7 +14,7 @@ function mostrarSinSesion() {
 function mostrarCliente() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta <span id="num-productos">(0)</span></a>
+        <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta <span id="num-productos"></span></a>
     </li>
     <li id="profile" class="nav-item">
         <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
@@ -36,7 +36,7 @@ function mostrarVendedor() {
         <a class="nav-link" href="#">Mis ventas</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta <span id="num-productos">(0)</span></a>
+        <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta <span id="num-productos"></span></a>
     </li>
     <li id="profile" class="nav-item">
         <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
@@ -64,7 +64,7 @@ function mostrarAdmin() {
 ?>
 <script>
     $(document).ready(function() {
-        var num_productos = <?php echo count($_SESSION["carrito"]) ?>;
+        var num_productos = <?php if(isset($_SESSION["carrito"])){ echo count($_SESSION["carrito"]);}else {echo 0;} ?>;
         $("#num-productos").text("("+num_productos+")");
     });
 </script>
