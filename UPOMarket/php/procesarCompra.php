@@ -13,6 +13,9 @@ if (isset($_SESSION['email'])) {
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
             <meta name="description" content="">
             <meta name="author" content="">
+            
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
             <title>UPOMarket-Inicio</title>
             <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -25,7 +28,9 @@ if (isset($_SESSION['email'])) {
             <script src="../frameworks/jquery/jquery.min.js"></script>
             <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
+            <script src="https://www.paypalobjects.com/api/checkout.js"></script><!-- Para paypal -->
             <script src="../js/carrito.js" type="text/javascript"></script>
+            
         </head>
 
         <body>
@@ -98,7 +103,7 @@ if (isset($_SESSION['email'])) {
                                 <div id="paypal-button-container"></div>
 
                                 <!-- Include the PayPal JavaScript SDK -->
-                                <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+                                <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
 
                                 <script>
                                     // Render the PayPal button into #paypal-button-container
