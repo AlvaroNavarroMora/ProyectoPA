@@ -110,19 +110,17 @@ function mostrarProducto($producto) {
                             </div>
                         </div>
                     </form>
-                    <div class="row">
                         <?php
                         if (!empty($productosCategoria)) {
+                            echo '<div class="row">';
                             foreach ($productosCategoria as $producto) {
                                 mostrarProducto($producto);
                             }
+                            echo '</div>';
                         } else {
-                            echo "No hay productos para mostrar.";
+                            echo "<h5>No hay productos para mostrar.</h5";
                         }
                         ?>
-                    </div>
-                    <!-- /.row -->
-
                 </div>
                 <!-- /.col-lg-9 -->
 
