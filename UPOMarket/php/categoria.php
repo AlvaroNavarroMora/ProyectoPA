@@ -17,7 +17,7 @@ function mostrarProducto($producto) {
                 <h4 class = "card-title">
                     <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><?php echo $producto["nombre"] ?></a>
                 </h4>
-                <h5>$24.99</h5>
+                <h5><?php echo $producto["precio"] ?>&euro;</h5>
                 <p class = "card-text"><?php echo $producto["descripcion"] ?></p>
             </div>
             <div class = "card-footer">
