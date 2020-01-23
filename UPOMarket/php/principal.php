@@ -2,6 +2,29 @@
 session_start();
 include './utils/utilsProductos.php';
 $categorias = listarCategorias();
+$productos = listarProductos();
+$productosCarrusel = listarTopVentas(3);
+
+function mostrarProducto($producto) {
+    $puntuacion = obtenerPuntuacionProducto($producto["id"]);
+    ?>
+    <div class = "col-lg-4 col-md-6 mb-4">
+        <div class = "card h-100">
+            <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><img class = "card-img-top" src = "http://placehold.it/700x400" alt = ""></a>
+            <div class = "card-body">
+                <h4 class = "card-title">
+                    <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><?php echo $producto["nombre"] ?></a>
+                </h4>
+                <h5><?php echo $producto["precio"] ?>&euro;</h5>
+                <p class = "card-text"><?php echo $producto["descripcion"] ?></p>
+            </div>
+            <div class = "card-footer">
+                <small class = "text-muted stars"><span hidden><?php echo $puntuacion ?></span></small>
+            </div>
+        </div>
+    </div>
+    <?php
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -22,6 +45,28 @@ $categorias = listarCategorias();
         <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
 
+        <script>
+            $(document).ready(function () {
+                var estrellas = $(".stars");
+                for (var i = 0; i < estrellas.length; i++) {
+                    var puntuacion = parseFloat($(estrellas[i]).first().text());
+                    if (isNaN(puntuacion)) {
+                        puntuacion = 0;
+                    }
+                    var k = 0;
+                    for (k = 0; k < puntuacion; k++) {
+                        if (k < puntuacion && k + 1 > puntuacion)
+                            $(estrellas[i]).append($("<i class='fas fa-star-half-alt'></i>"));
+                        else
+                            $(estrellas[i]).append($("<i class='fas fa-star'></i>"));
+                    }
+                    for (var j = k; j < 5; j++) {
+                        $(estrellas[i]).append($("<i class='far fa-star'></i>"));
+                    }
+                }
+            });
+        </script>
+
     </head>
 
     <body>
@@ -37,8 +82,8 @@ $categorias = listarCategorias();
                         <ul class="list-unstyled">
                             <h4 class="text-center">Categorías</h4>
                             <?php
-                            foreach($categorias as $c) {
-                                echo '<li><a href="./categoria.php?categoria='.$c[0].'" class="list-group-item">'.$c[0].'</a></li>';
+                            foreach ($categorias as $c) {
+                                echo '<li><a href="./categoria.php?categoria=' . $c[0] . '" class="list-group-item">' . $c[0] . '</a></li>';
                             }
                             ?>
                         </ul>
@@ -59,24 +104,33 @@ $categorias = listarCategorias();
                             </div>
                         </div>
                     </form>
-                    <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                        </ol>
-                        <div class="carousel-inner" role="listbox">
-                            <div class="carousel-item active">
-                                <img class="d-block img-fluid" src="http://placehold.it/900x350" alt="First slide">
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block img-fluid" src="http://placehold.it/900x350" alt="Second slide">
-                            </div>
-                            <div class="carousel-item">
-                                <img class="d-block img-fluid" src="http://placehold.it/900x350" alt="Third slide">
-                            </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <?php
+                    if (!empty($productosCarrusel)) {
+                        echo '<div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">';
+                        echo '<ol class="carousel-indicators">';
+                        foreach ($productosCarrusel as $key => $producto) {
+                            echo '<li data-target="#carouselExampleIndicators" data-slide-to="' . $key . '" ';
+                            if ($key == 0) {
+                                echo 'class="active"';
+                            }
+                            echo '></li>';
+                        }
+                        echo '</ol>';
+
+                        echo '<div class="carousel-inner" role="listbox">';
+                        foreach ($productosCarrusel as $key => $value) {
+                            echo '
+                                    <div class="carousel-item ';
+                            if ($key === 0) {
+                                echo 'active';
+                            }
+                            echo '"><a href="./producto.php?idProducto='.$value["id"].'">
+                                        <img width="1000" class="d-block img-fluid" src="../img/productDefaultImage.jpg" alt="Imagen carrusel '.$key.'">
+                                    </a>
+                                    </div>';
+                        }
+                        echo '</div>';
+                        echo '<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="sr-only">Previous</span>
                         </a>
@@ -84,106 +138,19 @@ $categorias = listarCategorias();
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="sr-only">Next</span>
                         </a>
-                    </div>
-
+                    </div>';
+                    }
+                    ?>
                     <div class="row">
-
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100">
-                                <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <a href="#">Item One</a>
-                                    </h4>
-                                    <h5>$24.99</h5>
-                                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur!</p>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100">
-                                <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <a href="#">Item Two</a>
-                                    </h4>
-                                    <h5>$24.99</h5>
-                                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur! Lorem ipsum dolor sit amet.</p>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100">
-                                <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <a href="#">Item Three</a>
-                                    </h4>
-                                    <h5>$24.99</h5>
-                                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur!</p>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100">
-                                <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <a href="#">Item Four</a>
-                                    </h4>
-                                    <h5>$24.99</h5>
-                                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur!</p>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100">
-                                <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <a href="#">Item Five</a>
-                                    </h4>
-                                    <h5>$24.99</h5>
-                                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur! Lorem ipsum dolor sit amet.</p>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100">
-                                <a href="#"><img class="card-img-top" src="http://placehold.it/700x400" alt=""></a>
-                                <div class="card-body">
-                                    <h4 class="card-title">
-                                        <a href="#">Item Six</a>
-                                    </h4>
-                                    <h5>$24.99</h5>
-                                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur!</p>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
-                                </div>
-                            </div>
-                        </div>
-
+                        <?php
+                        if (!empty($productos)) {
+                            foreach ($productos as $producto) {
+                                mostrarProducto($producto);
+                            }
+                        } else {
+                            echo "No hay productos para mostrar.";
+                        }
+                        ?>
                     </div>
                     <!-- /.row -->
 

@@ -35,6 +35,18 @@ function listarProductosDeCategoria($categoria) {
     return $lista;
 }
 
+/* Lista todos los productos disponibles */
+
+function listarProductos() {
+    $query = "SELECT * FROM productos WHERE disponible=1";
+    $result = ejecutarConsulta($query);
+    $lista = Array();
+    while ($row = mysqli_fetch_assoc($result)) {
+        $lista[] = $row;
+    }
+    return $lista;
+}
+
 /* order Type debe ser ASC (ascendente) o DESC (Descendente) */
 
 function listarProductosPorPrecio($orderType = "ASC") {
@@ -148,4 +160,16 @@ function obtenerPuntuacionProducto($idProducto) {
     $result = ejecutarConsulta($query);
 
     return mysqli_fetch_all($result)[0][0];
+}
+
+function listarTopVentas($top) {
+    $query = "SELECT p.id, p.imagen FROM lineas_de_pedido lp,productos p WHERE lp.id_producto=p.id AND p.disponible=1 GROUP BY id_producto ORDER BY count(*) DESC limit $top";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
 }
