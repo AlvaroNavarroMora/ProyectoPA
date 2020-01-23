@@ -5,17 +5,22 @@ if (isset($_GET["idProducto"])) {
     include './utils/utilsProductos.php';
     $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $producto = obtenerProducto($idProducto);
-    $ruta = "../img/usrFotos/" . $producto["email_vendedor"] . "/products/";
-    $img = $producto["imagen"];
-    if ($img == "ninguna" || $img == "") {
-        $img = $ruta . "productDefaultImage.jpg";
-    } else {
-        $img = $ruta . $img;
+    if ($producto) {
+        $ruta = "../img/usrFotos/" . $producto["email_vendedor"] . "/products/";
+        $img = $producto["imagen"];
+        if ($img == "ninguna" || $img == "") {
+            $img = $ruta . "productDefaultImage.jpg";
+        } else {
+            $img = $ruta . $img;
+        }
+        $caracteristicas = listarCaracteristicasProducto($idProducto);
+        $valoraciones = listarValoracionesProcucto($idProducto);
+        $puntuacion = obtenerPuntuacionProducto($idProducto);
+        $categorias = listarCategoriasDeProducto($idProducto);
     }
-    $caracteristicas = listarCaracteristicasProducto($idProducto);
-    $valoraciones = listarValoracionesProcucto($idProducto);
-    $puntuacion = obtenerPuntuacionProducto($idProducto);
-    //$categorias = obtenerCategoriasProducto($idProducto);
+    else {
+        header("location:principal.php");
+    }
 } else {
     //header("location:principal.php");
 }
@@ -124,9 +129,14 @@ function mostrarValorar() {
             <div class="col-lg-3">
                 <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                 <nav id='categorias' class="list-group">
-                    <a href="#" class="list-group-item active">Category 1</a>
-                    <a href="#" class="list-group-item">Category 2</a>
-                    <a href="#" class="list-group-item">Category 3</a>
+                        <ul class="list-unstyled">
+                            <h4 class="text-center">Categorías</h4>
+                            <?php
+                            foreach($categorias as $c) {
+                                echo '<li><a href="./categoria.php?categoria='.$c[0].'" class="list-group-item">'.$c[0].'</a></li>';
+                            }
+                            ?>
+                        </ul>
                 </nav>
             </div>
             <!-- /.col-lg-3 -->
