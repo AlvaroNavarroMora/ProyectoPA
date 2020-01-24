@@ -28,6 +28,8 @@ if (isset($_SESSION['email'])) {
         </head>
 
         <body>
+            <script src="https://www.paypal.com/sdk/js?client-id=Aag_BV9saCzCn3jZU7nRT-_qMd-sJuXnc9VKSeM5li-IXLAGDi2zUsiRtPpTu3Tvr46fIq9Ce6KSjkug"></script>
+
             <?php
             include './header.php';
             ?>

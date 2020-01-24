@@ -4,8 +4,12 @@ include "./utils/manejadorBD.php";
 include './utils/encriptar.php';
 session_start();
 if (isset($_SESSION['email'])) {
+    if (isset($_SESSION['direccion'])) {
+        $direccion = isset($_SESSION['direccion']);
+    } else {
+        header('Location: ./principal.php');
+    }
     ?>
-
     <!DOCTYPE html>
     <html>
         <head>
@@ -94,7 +98,7 @@ if (isset($_SESSION['email'])) {
                                 <div class="divCarrito">
                                     <strong>Dirección de envio:</strong>
                                     <br />
-                                    Dirección de prueba
+                                    <?php echo $direccion; ?>
                                 </div>
                             </div>
 
@@ -107,21 +111,50 @@ if (isset($_SESSION['email'])) {
 
                             <script>
                                 paypal.Buttons({
+                                    style: {
+                                        size: 'small',
+                                        color: 'gold',
+                                        shape: 'pill',
+                                    },
                                     createOrder: function (data, actions) {
                                         // This function sets up the details of the transaction, including the amount and line item details.
                                         return actions.order.create({
+                                            payer: {
+                                                email_address: '<?php echo $_SESSION['email']; ?>'
+                                            },
                                             purchase_units: [{
                                                     amount: {
-                                                        value: '0.01'
+                                                        value: '<?php echo $total; ?>'
+                                                    },
+                                                    description: 'Transacción de UPOMarket',
+
+                                                    shipping: {
+                                                        address: {
+                                                            address_line_1: '<?php echo $direccion; ?>'
+                                                        }
                                                     }
-                                                }]
-                                        });
+                                                }],
+
+                                            items: [
+        <?php
+        $coma = "";
+        foreach ($_SESSION['carrito'] as $indice => $producto) {
+            echo $coma;
+            $coma = ",";
+            echo "{name: '" . $producto['id'] . "', quantity: '" . $producto['cantidad'] . "' }";
+        }
+        ?>
+                                            ]
+
+                                        }
+                                        );
                                     },
                                     onApprove: function (data, actions) {
                                         // This function captures the funds from the transaction.
                                         return actions.order.capture().then(function (details) {
-                                            // This function shows a transaction success message to your buyer.
                                             alert('Transaction completed by ' + details.payer.name.given_name);
+                                            // Call your server to save the transaction
+                                            window.location = "verificador.php?paymentToken=" + data.paymentToken + "&paymentID=" + data.paymentID;
                                         });
                                     }
                                 }).render('#paypal-button-container');
@@ -144,6 +177,8 @@ if (isset($_SESSION['email'])) {
             <?php
             include '../html/footer.html';
             ?>
+
+
         </body>
 
     </html>
