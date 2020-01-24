@@ -146,6 +146,25 @@ if (isset($_POST['btnAddProduct'])) {
                 $("#file").change(function () {
                     readURL(this);
                 });
+                $('#add_field').click(function (e) {
+                    e.preventDefault(); //prevenir nnuevos clicks
+
+                    $('#caracteristicas').append(
+                            "<div class='form-row'>\n\
+                                <div class='col'>\
+                                    <input type='text' class='form-control' name='caracteristicaName[]' placeholder='Nombre característica'required='true'>\
+                                </div>\
+                                <div class='col'>\
+                                    <input type='text' class='form-control' name='caracteristicaDesc[]' placeholder='Descripción característica' required='true'>\
+                                </div><a href='#' class='remover_campo'>Remover</a>\n\
+                            </div>");
+                });
+                // Remover o div anterior
+                $('#caracteristicas').on("click", ".remover_campo", function (e) {
+                    e.preventDefault();
+                    $(this).parent('div').remove();
+                    x--;
+                });
             });
         </script>
     </head>
@@ -186,20 +205,27 @@ if (isset($_POST['btnAddProduct'])) {
                             <label for="descripcion">Descripción</label>
                             <textarea name="descripcion" class="form-control" placeholder="Escriba una descripción del producto" rows="5" required="true"></textarea><!--Controlar numero de palabras JS? -->
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label>Característica</label>
-                                <input type="text" class="form-control" name="caracteristicaName" placeholder="Nombre característica" required="true">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>Descripción Característica</label>
-                                <input type="text" class="form-control" name="caracteristicaDesc" placeholder="Descripción característica" required="true">
+                        <button type="button" id="add_field" class="btn btn-primary">Agregar</button>
+                        <div id="caracteristicas">
+
+                            <div class="form-row">
+                                <!-- <div class="form-group col-md-6">-->
+
+                                <div class="col">
+                                    <label>Característica</label>
+                                    <input type="text" class="form-control" name="caracteristicaName[]" placeholder="Nombre característica" required="true">
+                                </div>
+                                <div class="col">
+                                    <label>Descripción Característica</label>
+                                    <input type="text" class="form-control" name="caracteristicaDesc[]" placeholder="Descripción característica" required="true">
+                                </div>
+
                             </div>
                         </div>
 
                         <div id="miSelect" class="form-row">
                             <label>Categorias</label>
-                            
+
                             <select name="cats[]" data-placeholder="Seleccione alguna categoria" multiple class="form-control chosen-select" tabindex="-1" >
                                 <option value=""></option>
                                 <?php
@@ -210,44 +236,44 @@ if (isset($_POST['btnAddProduct'])) {
                                 ?>
 
                             </select>
-                            
-                        </div>
 
+                        </div>
 
                         <div>
-                            <label>Añade una imagen</label>
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="file" name="files[]"  required="true">
-                                <label  id="imgLab" class="custom-file-label" for="customFile">Selecciona una imagen</label>
+                            <div>
+                                <label>Añade una imagen</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="file" name="files[]"  required="true">
+                                    <label  id="imgLab" class="custom-file-label" for="customFile">Selecciona una imagen</label>
 
-                                <div id="filesName" >
+                                    <div id="filesName" >
+
+                                    </div>
+                                </div>
+                                <div id="preview">
 
                                 </div>
-                            </div>
-                            <div id="preview">
-
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="precio">Indique el precio de la unidad</label>
-                                    <input name="precio" class="form-control" placeholder="Precio en €" required="true"/>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="precio">Indique el precio de la unidad</label>
+                                        <input name="precio" class="form-control" placeholder="Precio en €" required="true"/>
+                                    </div>
+                                    <div class = "form-group col-md-6">
+                                        <label for = "stock">Indique el stock del que dispone</label>
+                                        <input name = "stock" type="text" class = "form-control" placeholder = "Stock del producto" required="true"/>
+                                    </div>
                                 </div>
-                                <div class = "form-group col-md-6">
-                                    <label for = "stock">Indique el stock del que dispone</label>
-                                    <input name = "stock" type="text" class = "form-control" placeholder = "Stock del producto" required="true"/>
+                                <div class = "form-group">
+                                    <div class = "form-check">
+                                        <input class = "form-check-input" type="checkbox" id = "condiciones" required="true">
+                                        <label class = "form-check-label" for = "gridCheck">
+                                            Acepto los terminos y condiciones
+                                        </label>
+                                    </div>
                                 </div>
+                                <button name="btnAddProduct" type="submit" class="btn btn-primary">Crear</button>
+                                <!-- /.col-lg-9 -->
                             </div>
-                            <div class = "form-group">
-                                <div class = "form-check">
-                                    <input class = "form-check-input" type="checkbox" id = "condiciones" required="true">
-                                    <label class = "form-check-label" for = "gridCheck">
-                                        Acepto los terminos y condiciones
-                                    </label>
-                                </div>
-                            </div>
-                            <button name="btnAddProduct" type="submit" class="btn btn-primary">Crear</button>
-                            <!-- /.col-lg-9 -->
-                        </div>
                     </form>
                 </div>
             </div>
