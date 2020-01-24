@@ -107,7 +107,7 @@ if (isset($_SESSION['email'])) {
 
                             <div id="paypal-button-container"></div>
 
-                            <script>paypal.Buttons().render('paypal-button-container');</script>
+                            
 
                             <script>
                                 paypal.Buttons({
