@@ -28,6 +28,8 @@ if (isset($_SESSION['email'])) {
         </head>
 
         <body>
+            <script src="https://www.paypal.com/sdk/js?client-id=Aag_BV9saCzCn3jZU7nRT-_qMd-sJuXnc9VKSeM5li-IXLAGDi2zUsiRtPpTu3Tvr46fIq9Ce6KSjkug"></script>
+
             <?php
             include './header.php';
             ?>
@@ -89,7 +91,7 @@ if (isset($_SESSION['email'])) {
                                     <div class="divCarrito">
                                         <strong>Dirección de envio:</strong>
                                         <br />
-                                        <input type="text" name="direccion" id="inpurDireccion" class="form-control" placeholder="c\ Calle de ejemplo, nº1, Ciudad, Provincia, CP41704" required autofocus />
+                                        <input type="text" name="direccion" id="inpurDireccion" class="form-control" placeholder="c\ Calle de ejemplo, nº1, Ciudad, Provincia, CP41704" />
                                     </div>
                                 </div>
 

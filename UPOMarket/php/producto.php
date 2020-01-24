@@ -3,22 +3,20 @@ session_start();
 
 if (isset($_GET["idProducto"])) {
     include './utils/utilsProductos.php';
+    
     $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $producto = obtenerProducto($idProducto);
     if ($producto) {
-        $ruta = "../img/usrFotos/" . $producto["email_vendedor"] . "/products/";
-        $img = $producto["imagen"];
-        if ($img == "ninguna" || $img == "") {
-            $img = $ruta . "productDefaultImage.jpg";
+        if (file_exists($producto["imagen"])) {
+            $img = $producto["imagen"];
         } else {
-            $img = $ruta . $img;
+            $img = "../img/productDefaultImage.jpg";
         }
         $caracteristicas = listarCaracteristicasProducto($idProducto);
         $valoraciones = listarValoracionesProcucto($idProducto);
         $puntuacion = obtenerPuntuacionProducto($idProducto);
-        $categorias = listarCategoriasDeProducto($idProducto);
-    }
-    else {
+        $categoriasProducto = listarCategoriasDeProducto($idProducto);
+    } else {
         header("location:principal.php");
     }
 } else {
@@ -118,6 +116,7 @@ function mostrarValorar() {
 
 <body>
     <?php
+    $categorias = listarCategorias();
     include './header.php';
     include './utils/encriptar.php';
     ?>
@@ -129,18 +128,21 @@ function mostrarValorar() {
             <div class="col-lg-3">
                 <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                 <nav id='categorias' class="list-group">
-                        <ul class="list-unstyled">
-                            <h4 class="text-center">Categorías</h4>
-                            <?php
-                            foreach($categorias as $c) {
-                                echo '<li><a href="./categoria.php?categoria='.$c[0].'" class="list-group-item">'.$c[0].'</a></li>';
-                            }
-                            ?>
-                        </ul>
+                    <ul class="list-unstyled">
+                        <h4 class="text-center">Categorías</h4>
+                        <?php
+                        foreach ($categoriasProducto as $c) {
+                            echo '<li><a href="./categoria.php?categoria=' . $c[0] . '" class="list-group-item">' . $c[0] . '</a></li>';
+                        }
+                        ?>
+                    </ul>
                 </nav>
             </div>
             <!-- /.col-lg-3 -->
             <div class="col-lg-9">
+                <?php
+                include './barraBusqueda.php';
+                ?>
                 <div class="card mt-4">
                     <img id='imgProducto' class="card-img-top img-fluid" src='<?php echo $img ?>' alt="">
                     <div class="card-body">

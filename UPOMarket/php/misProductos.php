@@ -21,7 +21,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
         <link href="../css/principal.css" rel="stylesheet">
         <link href="../css/header.css" rel="stylesheet">
         <link href="../css/footer.css" rel="stylesheet">
-        <link href="../css/misproductos.css" rel="stylesheet">
+        <link href="../css/misProductos.css" rel="stylesheet">
 
         <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>

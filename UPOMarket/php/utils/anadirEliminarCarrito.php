@@ -105,21 +105,22 @@ if (isset($_SESSION['email'])) {
                 }
             } else {
                 if (isset($_POST['procesarCompra'])) {
-                    if(isset($_POST['direccion'])){
-                        //Comprobar direccion
+                    if (isset($_POST['direccion'])) {
+                        $direccion = filter_var($_POST['direccion'], FILTER_SANITIZE_MAGIC_QUOTES);
+                    } else {
+                        header("Location: ../principal.php");
                     }
                     foreach ($_SESSION['carrito'] as $indice => $producto) {
-                        if(isset($_POST['cantidad'.$indice])){
-                            $cant = filter_var($_POST['cantidad'.$indice], FILTER_SANITIZE_NUMBER_INT);
+                        if (isset($_POST['cantidad' . $indice])) {
+                            $cant = filter_var($_POST['cantidad' . $indice], FILTER_SANITIZE_NUMBER_INT);
                             $_SESSION['carrito'][$indice]['cantidad'] = $cant;
                         }
                     }
-                    
+                    $_SESSION['direccion'] = $direccion;
                     header('Location: ../procesarCompra.php');
-                }else{
+                } else {
                     header('Location: ../principal.php');
                 }
-                
             }
         }
     }
