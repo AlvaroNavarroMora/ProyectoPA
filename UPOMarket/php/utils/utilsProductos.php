@@ -139,7 +139,21 @@ function listarValoracionesProcucto($idProducto) {
 
 function buscarProductos($busca) {
     $string = strtolower($busca);
-    $query = "SELECT * FROM productos where LOWER(nombre) LIKE '%$string%' or LOWER(descripcion) LIKE '%$string%' and disponible=1";
+    $query = "SELECT * FROM productos where LOWER(nombre) LIKE '%$string%' or LOWER(descripcion) LIKE '%$string%' AND disponible=1";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
+}
+
+function buscarProductosCategoria($busca, $categoria) {
+    $string = strtolower($busca);
+    $query = "SELECT * FROM productos p, categorias_productos c where p.id=c.id_producto AND c.nombre_categoria='$categoria' "
+            . "AND (LOWER(p.nombre) LIKE '%$string%' or LOWER(p.descripcion) LIKE '%$string%') AND p.disponible=1";
     $result = ejecutarConsulta($query);
     $productos = Array();
     if (mysqli_num_rows($result) > 0) {

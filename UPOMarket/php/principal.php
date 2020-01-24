@@ -7,10 +7,16 @@ $productosCarrusel = listarTopVentas(3);
 
 function mostrarProducto($producto) {
     $puntuacion = obtenerPuntuacionProducto($producto["id"]);
+    $puntuacion = obtenerPuntuacionProducto($producto["id"]);
+    if (file_exists($producto["imagen"])) {
+        $img = $producto["imagen"];
+    } else {
+        $img = "../img/productDefaultImage.jpg";
+    }
     ?>
     <div class = "col-lg-4 col-md-6 mb-4">
         <div class = "card h-100">
-            <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><img class = "card-img-top" src = "http://placehold.it/700x400" alt = ""></a>
+            <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><img class = "card-img-top" src = "<?php echo $img ?>" alt = ""></a>
             <div class = "card-body">
                 <h4 class = "card-title">
                     <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><?php echo $producto["nombre"] ?></a>
@@ -93,18 +99,9 @@ function mostrarProducto($producto) {
                 <!-- /.col-lg-3 -->
 
                 <div class="col-lg-9">
-                    <!-- Search form -->
-                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="GET">
-                        <div class="input-group">
-                            <input id='searchBar' type="text" class="form-control" placeholder="Buscar productos" name='busqueda'>
-                            <div class="input-group-append">
-                                <button class="btn btn-secondary" type="submit">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
                     <?php
+                    include './barraBusqueda.php';
+                    
                     if (!empty($productosCarrusel)) {
                         echo '<div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">';
                         echo '<ol class="carousel-indicators">';
@@ -124,8 +121,8 @@ function mostrarProducto($producto) {
                             if ($key === 0) {
                                 echo 'active';
                             }
-                            echo '"><a href="./producto.php?idProducto='.$value["id"].'">
-                                        <img width="1000" class="d-block img-fluid" src="../img/productDefaultImage.jpg" alt="Imagen carrusel '.$key.'">
+                            echo '"><a href="./producto.php?idProducto=' . $value["id"] . '">
+                                        <img width="1000" class="d-block img-fluid" src="../img/productDefaultImage.jpg" alt="Imagen carrusel ' . $key . '">
                                     </a>
                                     </div>';
                         }

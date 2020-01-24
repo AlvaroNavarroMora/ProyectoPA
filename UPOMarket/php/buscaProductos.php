@@ -7,7 +7,13 @@ if (!isset($_GET["busqueda"])) {
     header("location:principal.php");
 }
 $busca = trim(filter_var($_GET["busqueda"], FILTER_SANITIZE_STRING));
-$productos = buscarProductos($busca);
+$categoria = trim(filter_var($_GET["categoria"], FILTER_SANITIZE_STRING));
+if(empty($categoria)) {
+    $productos = buscarProductos($busca);
+}
+else {
+    $productos = buscarProductosCategoria($busca, $categoria);
+}
 if (empty($productos)) {
     $errores[] = "No se ha encontrado ningún producto";
 } else {
@@ -114,28 +120,16 @@ else
 
                 <div class="col-lg-9">
                     <!-- /.col-lg-9 -->
-                    <!-- Search form -->
-                    <form id='searchForm' class="form-inline md-form mr-auto mb-4" action='buscaProductos.php' method="GET">
-                        <div class="input-group">
-                            <input id='searchBar' type="text" class="form-control" placeholder="Buscar productos" name='busqueda'>
-                            <div class="input-group-append">
-                                <button class="btn btn-secondary" type="subimt">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <h4>
-                        <?php
-                        if (empty($errores)) {
-                            echo '<h5>Se han econtrado ' . count($productos) . " coincidencias para la búsqueda '" . $busca . "':</h5>";
-                        } else {
-                            foreach ($errores as $e) {
-                                echo $e;
-                            }
+                    <?php
+                    include './barraBusqueda.php';
+                    if (empty($errores)) {
+                        echo '<h5>Se han econtrado ' . count($productos) . " coincidencias para la búsqueda '" . $busca . "':</h5>";
+                    } else {
+                        foreach ($errores as $e) {
+                            echo $e;
                         }
-                        ?>
-                    </h4>
+                    }
+                    ?>
                     <div id='contenedorTablaProductos' class='container'>
                         <table id="productos" class="table table-striped table-bordered15 dataTable" style="width:100%">
                             <thead>
