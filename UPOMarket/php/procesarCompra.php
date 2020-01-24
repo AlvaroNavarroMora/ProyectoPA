@@ -15,7 +15,7 @@ if (isset($_SESSION['email'])) {
         $productos = obtenerProductosCarrito($ids);
         $array_productos = Array();
         $total = 0;
-        foreach ($productos as $key=>$p) {
+        foreach ($productos as $key => $p) {
             $id = $p["id"];
             $neededObject = array_filter(
                     $_SESSION["carrito"],
@@ -120,21 +120,15 @@ if (isset($_SESSION['email'])) {
                                 </div>
                             </div>
 
-
                             <script src="https://www.paypal.com/sdk/js?client-id=Aag_BV9saCzCn3jZU7nRT-_qMd-sJuXnc9VKSeM5li-IXLAGDi2zUsiRtPpTu3Tvr46fIq9Ce6KSjkug&currency=EUR"></script>
 
                             <div id="paypal-button-container"></div>
 
-<<<<<<< Updated upstream
-                            
-=======
                             <script>
                                 $(document).ready(function () {
                                     paypal.Buttons();
                                 });
                             </script>
->>>>>>> Stashed changes
-
                             <script>
                                 paypal.Buttons({
                                     style: {
@@ -143,8 +137,16 @@ if (isset($_SESSION['email'])) {
                                         shape: 'pill'
                                     },
                                     createOrder: function (data, actions) {
-        // This function sets up the details of the transaction, including the amount and line item details.
+                                        // This function sets up the details of the transaction, including the amount and line item details.
                                         return actions.order.create(<?php echo json_encode(buildRequestBody($total, $array_productos)); ?>);
+                                    },
+                                    onApprove: function (data, actions) {
+                                        // This function captures the funds from the transaction.
+                                        return actions.order.capture().then(function (details) {
+                                            alert('Transaction completed by ' + details.payer.name.given_name);
+                                            // Call your server to save the transaction
+                                            window.location = "verificador.php?paymentToken=" + data.paymentToken + "&paymentID=" + data.paymentID;
+                                        });
                                     }
                                 }).render('#paypal-button-container');
                             </script>
@@ -154,9 +156,6 @@ if (isset($_SESSION['email'])) {
                         ?>
 
                     </div>
-
-
-
                 </div>
                 <!-- /.row -->
 
@@ -166,7 +165,6 @@ if (isset($_SESSION['email'])) {
             include '../html/footer.html';
             ?>
 
-
         </body>
 
     </html>
@@ -174,7 +172,6 @@ if (isset($_SESSION['email'])) {
     <?php
 } else {
     header('Location: ./principal.php');
-    ;
 }
 
 function buildRequestBody($total, $items) {
