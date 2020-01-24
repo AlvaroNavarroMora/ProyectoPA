@@ -103,7 +103,7 @@ function insertarProducto($email, $nombre, $descripcion, $precio, $stoc, $imagen
 }
 
 function listarCaracteristicasProducto($idProducto) {
-    $query = "SELECT * from caracteristicas_productos where id_producto=$idProducto";
+    $query = "SELECT * FROM caracteristicas_productos WHERE id_producto=$idProducto";
     $result = ejecutarConsulta($query);
     $caracteristicas = Array();
     if (mysqli_num_rows($result) > 0) {
@@ -116,7 +116,7 @@ function listarCaracteristicasProducto($idProducto) {
 
 function obtenerProducto($idProducto) {
 
-    $query = "SELECT * from productos where id=$idProducto and disponible=1";
+    $query = "SELECT * FROM productos WHERE id=$idProducto AND disponible=1";
     $result = ejecutarConsulta($query);
     $producto = null;
     if (mysqli_num_rows($result) > 0) {
@@ -126,7 +126,7 @@ function obtenerProducto($idProducto) {
 }
 
 function listarValoracionesProcucto($idProducto) {
-    $query = "SELECT * from valoraciones where id_producto=$idProducto";
+    $query = "SELECT * FROM valoraciones WHERE id_producto=$idProducto";
     $result = ejecutarConsulta($query);
     $valoraciones = Array();
     if (mysqli_num_rows($result) > 0) {
@@ -152,7 +152,7 @@ function buscarProductos($busca) {
 
 function buscarProductosCategoria($busca, $categoria) {
     $string = strtolower($busca);
-    $query = "SELECT * FROM productos p, categorias_productos c where p.id=c.id_producto AND c.nombre_categoria='$categoria' "
+    $query = "SELECT * FROM productos p, categorias_productos c WHERE p.id=c.id_producto AND c.nombre_categoria='$categoria' "
             . "AND (LOWER(p.nombre) LIKE '%$string%' or LOWER(p.descripcion) LIKE '%$string%') AND p.disponible=1";
     $result = ejecutarConsulta($query);
     $productos = Array();
@@ -170,7 +170,7 @@ function valorarProducto($email, $idProducto, $puntuacion, $valoracion) {
 }
 
 function obtenerPuntuacionProducto($idProducto) {
-    $query = "SELECT AVG(puntuacion) FROM valoraciones where id_producto=$idProducto";
+    $query = "SELECT AVG(puntuacion) FROM valoraciones WHERE id_producto=$idProducto";
     $result = ejecutarConsulta($query);
 
     return mysqli_fetch_all($result)[0][0];
@@ -178,6 +178,19 @@ function obtenerPuntuacionProducto($idProducto) {
 
 function listarTopVentas($top) {
     $query = "SELECT p.id, p.imagen FROM lineas_de_pedido lp,productos p WHERE lp.id_producto=p.id AND p.disponible=1 GROUP BY id_producto ORDER BY count(*) DESC limit $top";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
+}
+
+function obtenerProductosCarrito($idProductos) {
+
+    $query = "SELECT id, nombre, descripcion, precio from productos WHERE id in (".implode(",",array_map('intval', $idProductos)).") AND disponible=1";
     $result = ejecutarConsulta($query);
     $productos = Array();
     if (mysqli_num_rows($result) > 0) {
