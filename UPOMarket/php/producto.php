@@ -177,7 +177,7 @@ function mostrarValorar() {
                                 </form>
                                 <?php
                             }
-                        } else {
+                        } else if(isset($_SESSION["email"])) {
                             ?>
                             <form action="./utils/anadirEliminarCarrito.php" method="post">
                                 <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">

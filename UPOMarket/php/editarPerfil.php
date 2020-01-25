@@ -164,7 +164,7 @@ if (isset($_SESSION['email'])) {
                 $row = mysqli_fetch_array($result);
                 $psswdHash = $row['password'];
                 if (password_verify($actualpsswd, $psswdHash)) {
-                    $newpsswdhash = password_hash($actualpsswd, PASSWORD_DEFAULT);
+                    $newpsswdhash = password_hash($newpsswd, PASSWORD_DEFAULT);
                     if (isset($_POST['vendedor'])) {
                         $sentencia = "UPDATE usuarios SET nombre='$nombre', password='$newpsswdhash', tipo='vendedor', foto='" . $imgName . "' WHERE email='" . $_SESSION['email'] . "'";
                         $pathProductos = "../img/usrFotos/".$_SESSION['email']."/products";

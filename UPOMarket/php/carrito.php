@@ -4,9 +4,11 @@ include "./utils/utilsProductos.php";
 include './utils/encriptar.php';
 session_start();
 if (isset($_SESSION['email'])) {
-    $ids = Array();
-    foreach ($_SESSION["carrito"] as $p) {
-        $ids[] = $p["id"];
+    if (isset($_SESSION["carrito"])) {
+        $ids = Array();
+        foreach ($_SESSION["carrito"] as $p) {
+            $ids[] = $p["id"];
+        }
     }
     if (!empty($ids)) {
         $direcciones = listarMisDirecciones($_SESSION["email"]);
