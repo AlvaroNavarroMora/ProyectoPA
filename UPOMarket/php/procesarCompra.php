@@ -147,16 +147,17 @@ if (isset($_SESSION['email'])) {
                                 return actions.order.capture().then(function (details) {
                                     alert('Transaction completed by ' + details.payer.name.given_name);
         <?php
-        $parametros = "?" . encriptar("clave") . "=" . encriptar("ProgramacionAvanzada") . "&" . encriptar("email") . "=" .
-                encriptar($_SESSION['email'] . "&" . encriptar("direccion") . "=" . encriptar($_SESSION['direccion']));
+        $parametros = base64_encode(encriptar("clave")) . "=" . base64_encode(encriptar("ProgramacionAvanzada")) . "&" . base64_encode(encriptar("email")) . "=" .
+                base64_encode(encriptar($_SESSION['email']) . "&" . base64_encode(encriptar("direccion")) . "=" . base64_encode(encriptar($_SESSION['direccion'])));
         $i = 0;
         foreach ($productos as $producto) {
-            $parametros .= "&" . encriptar("producto" . $i) . "=" . encriptar($producto['id']) . "&" . encriptar("cantidad" . $i) . "=" . encriptar($producto['cantidad']);
+            $parametros .= "&" . base64_encode(encriptar("producto" . $i)) . "=" . base64_encode(encriptar($producto['id'])) . "&" . base64_encode(encriptar("cantidad" . $i)) . "=" . base64_encode(encriptar($producto['cantidad']));
             $i++;
         }
         ?>
                                     // Call your server to save the transaction
-                                    window.location = "finalizarCompra.php" + <?php echo $parametros ?>;
+                                    var url = "<?php echo $parametros; ?>";
+                                    window.location = "finalizarCompra.php?" + url;
                                 });
                             }
                         }).render('#paypal-button-container');

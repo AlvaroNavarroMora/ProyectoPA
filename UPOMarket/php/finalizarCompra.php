@@ -16,13 +16,13 @@ if (isset($_SESSION['email'])) {
                             "cantidad" => desencriptar($_GET[encriptar("cantidad" . $i)]));
                         $i++;
                     }
-                    $query = "INSERT INTO pedidos (email_cliente, id_direccion, fecha) VALUES('" . $email . ", " . $direccion . "', '" . date("d/m/Y", time()) . "')";
+                    $query = "INSERT INTO pedidos (email_cliente, id_direccion) VALUES('$email','$direccion')";
                     $link = openCon();
                     $result = mysqli_query($link, $query);
                     $idPedido = mysqli_insert_id($con);
                     foreach ($productos as $producto) {
                         $query = "INSERT INTO lineas_de_pedido (id_pedido, id_producto, cantidad, estado) "
-                                . "VALUES('$idPedido', '" . $producto['id'] . "', '" . $producto['cantidad'] . "', 'Procesado'";
+                                . "VALUES('$idPedido', '" . $producto['id'] . "', '" . $producto['cantidad'] . ")";
                         $result = mysqli_query($con, $query);
                     }
                     mysqli_close($link);
