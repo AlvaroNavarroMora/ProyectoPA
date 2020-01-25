@@ -39,56 +39,95 @@ function mostrarPerfil($nombre, $email, $tipo) {
                         <p class="list-group-item active">Opciones</p>
                         <a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a>
                         <a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a>
-                        <a href="editarDireccion.php" class="list-group-item">Editar Dirección de Envío</a>
+                        <a href="editarDireccion.php" class="list-group-item">Direcciones</a>
                         <a href="cambiarContrasenia.php" class="list-group-item">Cambiar Contraseña</a>
-                        <?php if($tipo == "cliente"){
+                        <?php if ($tipo == "cliente") {
                             ?>
-                        <a href="convertirseEnVendedor.php" class="list-group-item">Convertirse en vendedor</a>
-                            <?php
-                        }?>
+                            <a href="convertirseEnVendedor.php" class="list-group-item">Convertirse en vendedor</a>
+                        <?php }
+                        ?>
                     </div>
                 </div>
-                <!-- /.col-lg-3 -->
 
-                <div class="col-lg-9">
-                    <div id="contenedorPerfil">
-                        <div class="card mt-4">
-                            <div class="card-body">
-                                <h3 class="card-title">Perfil</h3>
+
+                <div class="col-lg-3">
+
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h3 class="card-title">Perfil</h3>
+                            <?php
+                            $query = "SELECT foto FROM usuarios WHERE email='" . $_SESSION['email'] . "' AND (foto is not null)";
+                            $result = ejecutarConsulta($query);
+                            if (mysqli_num_rows($result) > 0) {
+                                $row = mysqli_fetch_array($result);
+                                $rutaImg = $row['foto'];
+                                echo '<img src="../img/usrFotos/' . $_SESSION['email'] . "/" . $rutaImg . '" alt="Imagen de perfil" id="imgPerfil"/>';
+                            } else {
+                                echo '<img src="../img/defaultProfile.png" alt="Imagen de perfil" id="imgPerfil"/>';
+                            }
+                            ?>
+                            <h6 class="labelPerfil">Nombre:</h6>
+                            <p>
                                 <?php
-                                $query = "SELECT foto FROM usuarios WHERE email='" . $_SESSION['email'] . "' AND (foto is not null)";
-                                $result = ejecutarConsulta($query);
-                                if (mysqli_num_rows($result) > 0) {
-                                    $row = mysqli_fetch_array($result);
-                                    $rutaImg = $row['foto'];
-                                    echo '<img src="../img/usrFotos/' . $_SESSION['email'] . "/" . $rutaImg . '" alt="Imagen de perfil" id="imgPerfil"/>';
-                                } else {
-                                    echo '<img src="../img/defaultProfile.png" alt="Imagen de perfil" id="imgPerfil"/>';
-                                }
+                                echo $nombre;
                                 ?>
-                                <h6 class="labelPerfil">Nombre:</h6>
-                                <p>
-                                    <?php
-                                    echo $nombre;
-                                    ?>
-                                </p>
-                                <h6 class="labelPerfil">Email:</h6>
-                                <p>
-                                    <?php
-                                    echo $email;
-                                    ?>
-                                </p>
-                                <h6 class="labelPerfil">Tipo de Usuario:</h6>
-                                <p>
-                                    <?php
-                                    echo $tipo;
-                                    ?>
-                                </p>
-                            </div>
+                            </p>
+                            <h6 class="labelPerfil">Email:</h6>
+                            <p>
+                                <?php
+                                echo $email;
+                                ?>
+                            </p>
+                            <h6 class="labelPerfil">Tipo de Usuario:</h6>
+                            <p>
+                                <?php
+                                echo $tipo;
+                                ?>
+                            </p>
                         </div>
                     </div>
+
                 </div>
                 <!-- /.col-lg-9 -->
+
+                <div class="col" id="contenedorDirecciones">
+
+                    <h3 id="titDirecciones">Mis direcciones</h3>
+
+                    <?php
+                    $query = "SELECT direccion_cliente FROM direcciones_clientes WHERE email_cliente='" . $_SESSION['email'] . "'";
+                    $result = ejecutarConsulta($query);
+                    if (mysqli_num_rows($result) <= 0) {
+                        echo "<p>No tiene ninguna dirección registrada aún, para poder realizar una compra registre una.</p>";
+                    } else {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $dirId = $row['direccion_cliente'];
+                            $sentencia = "SELECT nombre, linea_1, linea_2, provincia, ciudad, cp FROM direcciones WHERE id='" . $dirId . "'";
+                            $result2 = ejecutarConsulta($sentencia);
+                            $row2 = mysqli_fetch_array($result2);
+                            ?>
+                            <div class="card mt-4 mr-4 d-inline-block col-lg-4">
+                                <div class="card-body">
+                                    <label><strong>Nombre</strong></label>
+                                    <p><?php echo $row2['nombre'];?></p>
+                                    <label><strong>Línea 1</strong></label>
+                                    <p><?php echo $row2['linea_1'];?></p>
+                                    <label><strong>Línea 2</strong></label>
+                                    <p><?php echo $row2['linea_2'];?></p>
+                                    <label><strong>Ciudad</strong></label>
+                                    <p><?php echo $row2['ciudad'];?></p>
+                                    <label><strong>Provincia</strong></label>
+                                    <p><?php echo $row2['provincia'];?></p>
+                                    <label><strong>Código Postal</strong></label>
+                                    <p><?php echo $row2['cp'];?></p>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                    }
+                    ?>
+
+                </div>
             </div>
 
         </main>
