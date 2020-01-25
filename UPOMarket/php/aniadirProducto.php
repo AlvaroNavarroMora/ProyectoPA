@@ -9,16 +9,19 @@ include './utils/sesionUtils.php';
 
 /* Añadir nombre del formulario registro */
 if (isset($_POST['btnAddProduct'])) {
+    print_r($_POST);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
     $producto = filter_var($_POST['producto'], FILTER_SANITIZE_MAGIC_QUOTES);
     $descripcion = filter_var($_POST['descripcion'], FILTER_SANITIZE_MAGIC_QUOTES);
     $categorias = filter_var_array($_POST['cats'], FILTER_SANITIZE_MAGIC_QUOTES);
+    $caracteristicaName = filter_var_array($_POST['caracteristicaName'], FILTER_SANITIZE_MAGIC_QUOTES);
+    $caracteristicaDesc = filter_var_array($_POST['caracteristicaDesc'], FILTER_SANITIZE_MAGIC_QUOTES);
     $precio = filter_var($_POST['precio'], FILTER_SANITIZE_MAGIC_QUOTES);
     $stock = filter_var($_POST['stock'], FILTER_SANITIZE_MAGIC_QUOTES);
 
 
-    if ($stock === false || $password === false || $precio === false || $email === false || $descripcion === false || $producto === false) {
+    if ($stock === false || $password === false || $precio === false || $email === false || $descripcion === false || $producto === false || $caracteristicaName === false || $caracteristicaDesc == false) {
         $errores[] = "Error con los datos del formulario";
     }
 
@@ -41,21 +44,49 @@ if (isset($_POST['btnAddProduct'])) {
 
     if (strlen(trim($precio)) < 1) {
         $errores[] = "El campo precio es obligatorio.";
-    } /* elseif (is_float(floatval($precio))) {
-      $errores[] = "El campo precio debe ser un numero.";
-      } */
+    } elseif (floatval($precio) <= 0) {
+        $errores[] = "El campo precio debe valer más de 0";
+    }
 
     if (strlen(trim($descripcion)) < 1) {
         $errores[] = "El campo descripcion es obligatorio.";
     }
     if (strlen(trim($stock)) < 1) {
         $errores[] = "El campo stock es obligatorio.";
-    } /* elseif (!is_int($stock)) {
-      $errores[] = "El campo stock debe ser un numero entero.";
-      } */
-
+    } 
+    if (sizeof($categorias) < 1) {
+        $errores[] = "Debe añadir al menos una categoría";
+    } else {
+        for ($i = 0; $i < count($categorias); $i++) {
+            if (strlen($categorias[$i]) < 1) {
+                $errores[] = "El nombre de la categoria $i debe ser más largo";
+            }
+        }
+    }
+    if (!isset($_POST['condiciones'])) {
+        $errores[] = "Debe aceptar los términos y condiciones";
+    }
+    if (sizeof($caracteristicaName) < 1 || sizeof($caracteristicaDesc) < 1) {
+        $errores[] = "Debe añadir al menos una característica";
+    }
+    if (sizeof($caracteristicaName) != sizeof($caracteristicaDesc)) {
+        $errores[] = "Debe haber tantas características como descripciones";
+    } else {
+        for ($i = 0; $i < count($caracteristicaName); $i++) {
+            if (strlen($caracteristicaName[$i]) < 1) {
+                $errores[] = "El nombre de la característica $i debe ser más largo";
+            }
+            if (strlen($caracteristicaDesc[$i]) < 1) {
+                $errores[] = "La descripción de la característica $i debe ser más largo";
+            }
+        }
+    }
     if (!comprobarSesionActual($email) || comprobarUsuarioContraseña($email, $password)) {
         $errores[] = "Credenciales incorrectas";
+    } else {
+        if (comprobarUsuarioProducto($email, $producto)) {
+            $errores[] = "Ya tiene un producto con ese nombre";
+        }
     }
 
     foreach ($_FILES['files']['error'] as $k => $v) {
@@ -86,7 +117,7 @@ if (isset($_POST['btnAddProduct'])) {
             //Mover la imagen al destino
             move_uploaded_file($tmp_name, $newPath);
         }
-        $haInsertado = insertarProducto($email, $producto, $descripcion, $precio, $stock, $paths, $categorias);
+        $haInsertado = insertarProducto($email, $producto, $descripcion, $precio, $stock, $paths, $categorias, $caracteristicaName, $caracteristicaDesc);
         if ($haInsertado) {
             header('Location: ./perfil.php');
         } else {
@@ -151,10 +182,10 @@ if (isset($_POST['btnAddProduct'])) {
 
                     $('#caracteristicas').append(
                             "<div class='form-row'>\n\
-                                <div class='col'>\
+                                <div class='col-md-4 mb-3'>\
                                     <input type='text' class='form-control' name='caracteristicaName[]' placeholder='Nombre característica'required='true'>\
                                 </div>\
-                                <div class='col'>\
+                                <div class='col-md-4 mb-3'>\
                                     <input type='text' class='form-control' name='caracteristicaDesc[]' placeholder='Descripción característica' required='true'>\
                                 </div><a href='#' class='remover_campo'>Remover</a>\n\
                             </div>");
@@ -163,7 +194,7 @@ if (isset($_POST['btnAddProduct'])) {
                 $('#caracteristicas').on("click", ".remover_campo", function (e) {
                     e.preventDefault();
                     $(this).parent('div').remove();
-                    x--;
+
                 });
             });
         </script>
@@ -177,17 +208,19 @@ if (isset($_POST['btnAddProduct'])) {
         <!-- Page Content -->
         <main class="container">
             <div class="row">
-                <!-- LISTA DE CATEGORÍAS -->
-                <!--  <div class="col-lg-3">
-                      <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
-                      <div class="list-group">
-                          <a href="#" class="list-group-item active">Category 1</a>
-                          <a href="#" class="list-group-item">Category 2</a>
-                          <a href="#" class="list-group-item">Category 3</a>
-                      </div>
-                  </div>-->
-                <!-- /.col-lg-3 -->
+
                 <div class="col-lg-9">
+                    <?php
+                    if (isset($errores)) {
+                        echo "<div class = 'alert alert-danger'><ul>";
+                        echo "<h6>Upss, parece que algo ha salido mal.</h6>";
+                        foreach ($errores as $e)
+                            echo "<li>$e</li>";
+                        echo '</ul>';
+                        echo "</div>";
+                    }
+                    ?>  
+
                     <form enctype="multipart/form-data" action="#" method="post">
                         <div class="form-row">
                             <div class="form-group col-md-6">
@@ -207,25 +240,20 @@ if (isset($_POST['btnAddProduct'])) {
                         </div>
                         <button type="button" id="add_field" class="btn btn-primary">Agregar</button>
                         <div id="caracteristicas">
-
                             <div class="form-row">
                                 <!-- <div class="form-group col-md-6">-->
-
-                                <div class="col">
+                                <div class="col-md-4 mb-3">
                                     <label>Característica</label>
                                     <input type="text" class="form-control" name="caracteristicaName[]" placeholder="Nombre característica" required="true">
                                 </div>
-                                <div class="col">
+                                <div class="col-md-4 mb-3">
                                     <label>Descripción Característica</label>
                                     <input type="text" class="form-control" name="caracteristicaDesc[]" placeholder="Descripción característica" required="true">
                                 </div>
-
                             </div>
                         </div>
-
                         <div id="miSelect" class="form-row">
                             <label>Categorias</label>
-
                             <select name="cats[]" data-placeholder="Seleccione alguna categoria" multiple class="form-control chosen-select" tabindex="-1" >
                                 <option value=""></option>
                                 <?php
@@ -234,24 +262,18 @@ if (isset($_POST['btnAddProduct'])) {
                                     echo "<option type='checkbox' value='" . $v[0] . "'>$v[0]</option>";
                                 }
                                 ?>
-
                             </select>
-
                         </div>
-
                         <div>
                             <div>
                                 <label>Añade una imagen</label>
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="file" name="files[]"  required="true">
                                     <label  id="imgLab" class="custom-file-label" for="customFile">Selecciona una imagen</label>
-
                                     <div id="filesName" >
-
                                     </div>
                                 </div>
                                 <div id="preview">
-
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
@@ -265,7 +287,7 @@ if (isset($_POST['btnAddProduct'])) {
                                 </div>
                                 <div class = "form-group">
                                     <div class = "form-check">
-                                        <input class = "form-check-input" type="checkbox" id = "condiciones" required="true">
+                                        <input class = "form-check-input" type="checkbox" name="condiciones" id = "condiciones" required="true">
                                         <label class = "form-check-label" for = "gridCheck">
                                             Acepto los terminos y condiciones
                                         </label>
