@@ -25,9 +25,9 @@ if (isset($_SESSION['email'])) {
             $encontrado = array_values($neededObject);
             $cantidad = $encontrado[0]["cantidad"];
             $array_productos[] = Array("name" => $p["nombre"], "description" => $p["descripcion"],
-                "sku" => "sku" . $p["id"], 'unit_amount' => Array("currency_code" => "EUR", "value" => $p["precio"]),
+                "sku" => "sku" . $p["id"], 'unit_amount' => Array("currency_code" => "EUR", "value" => round($p["precio"],2)),
                 "quantity" => $cantidad);
-            $total += $p["precio"] * $cantidad;
+            $total += round($p["precio"],2) * $cantidad;
             $productos[$key]["cantidad"] = $cantidad;
         }
     } else {
@@ -77,7 +77,6 @@ if (isset($_SESSION['email'])) {
                             echo "<div class='alert alert-success'>El carrito está vacío.</div>";
                         } else {
                             ?>
-
                             <table id="tableProductos" class="table table-light">
                                 <thead>
                                     <tr>
@@ -137,7 +136,7 @@ if (isset($_SESSION['email'])) {
                                     },
                                     createOrder: function (data, actions) {
                                         // This function sets up the details of the transaction, including the amount and line item details.
-                                        return actions.order.create(<?php echo json_encode(buildRequestBody($total, $array_productos)); ?>);
+                                        return actions.order.create(<?php echo json_encode(buildRequestBody(round($total,2), $array_productos)); ?>);
                                     },
                                     onApprove: function (data, actions) {
                                         // This function captures the funds from the transaction.
@@ -178,8 +177,8 @@ function buildRequestBody($total, $items) {
         'intent' => 'CAPTURE',
         'application_context' =>
         array(
-            'brand_name' => 'EXAMPLE INC',
-            'locale' => 'en-US',
+            'brand_name' => 'UPOMarket',
+            'locale' => 'es-ES',
             'landing_page' => 'BILLING',
             'shipping_preferences' => 'SET_PROVIDED_ADDRESS',
             'user_action' => 'PAY_NOW',
