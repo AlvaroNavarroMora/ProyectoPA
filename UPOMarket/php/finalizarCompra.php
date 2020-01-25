@@ -78,7 +78,7 @@ if (!isset($idPedido)) {
                                     <th>Subtotal </th>
                                 </tr>
                             </thead>
-                            <!-- ----------Rellenar tabla con los datos de la compra---------------- -->
+                       
                             <?php
                             $i = 0;
                             $subtotal = 0;
