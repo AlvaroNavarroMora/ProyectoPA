@@ -106,7 +106,7 @@ if (isset($_SESSION['email'])) {
             } else {
                 if (isset($_POST['procesarCompra'])) {
                     if (isset($_POST['direccion'])) {
-                        $direccion = filter_var($_POST['direccion'], FILTER_SANITIZE_MAGIC_QUOTES);
+                        $direccion = filter_var($_POST['direccion'], FILTER_SANITIZE_NUMBER_INT);
                     } else {
                         header("Location: ../principal.php");
                     }

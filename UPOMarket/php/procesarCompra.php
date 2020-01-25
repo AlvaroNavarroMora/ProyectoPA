@@ -6,7 +6,7 @@ session_start();
 
 if (isset($_SESSION['email'])) {
     if (isset($_SESSION['direccion'])) {
-        $direccion = isset($_SESSION['direccion']);
+        $direccion = obtenerDireccion(filter_var($_SESSION['direccion'], FILTER_SANITIZE_NUMBER_INT));
         $ids = Array();
         foreach ($_SESSION["carrito"] as $p) {
             $ids[] = $p["id"];
@@ -30,7 +30,7 @@ if (isset($_SESSION['email'])) {
             $productos[$key]["cantidad"] = $cantidad;
         }
     } else {
-        header('Location: ./principal.php');
+        header('Location: ./carrito.php');
     }
     ?>
     <!DOCTYPE html>
@@ -56,7 +56,6 @@ if (isset($_SESSION['email'])) {
             <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
 
-
         </head>
 
         <body>
@@ -68,9 +67,9 @@ if (isset($_SESSION['email'])) {
             <main class="container">
                 <div class="row">
 
-
                     <div class="divCarrito">
                         <h3>Resumen de compra</h3>
+                        <hr>
                         <?php
                         if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
                             echo "<div class='alert alert-success'>El carrito está vacío.</div>";
@@ -81,44 +80,53 @@ if (isset($_SESSION['email'])) {
                                     <tr>
                                         <th>Nombre</th>
                                         <th>Descripción</th>
-                                        <th>Precio</th>
-                                        <th>Cantidad</th>
-                                        <th>Subtotal </th>
+                                        <th class='text-center'>Precio(&euro;)</th>
+                                        <th class='text-center'>Cantidad</th>
+                                        <th class='text-center'>Subtotal(&euro;)</th>
                                     </tr>
+                                </thead>
+                                <tbody>
                                     <?php
-                                    $i = 0;
                                     $subtotal = 0;
-                                    foreach ($productos as $producto) {
+                                    foreach ($productos as $index => $producto) {
                                         echo "<tr>";
                                         echo "<td>" . $producto['nombre'] . "</td>";
                                         echo "<td>" . $producto['descripcion'] . "</td>";
-                                        echo "<td>" . $producto['precio'] . "</td>";
-                                        echo "<td>" . $producto['cantidad'] . "</td>";
+                                        echo "<td class='text-center'>" . $producto['precio'] . "</td>";
+                                        echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
                                         $subtotal = $producto['precio'] * $producto['cantidad'];
-                                        echo "<td id ='subtotal" . $i . "'>$subtotal</td>";
+                                        echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
                                         echo "</tr>";
-
-                                        $i++;
                                     }
                                     ?>
-                                </thead>
-                                <tr>
-                                    <td colspan="3"><strong>Total:</strong></td>
-                                    <td id="precioTotalCarrito" colspan="2"><?php echo number_format($total, 2); ?>€</td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="4"><strong>Total:</strong></td>
+                                        <td id="precioTotalCarrito" class='text-center'><?php echo number_format($total, 2); ?>&euro;</td>
+                                    </tr>
+                                </tbody>
                             </table>
-
-
+                            <hr>
                             <div class="row">
                                 <div class="divCarrito">
-                                    <strong>Dirección de envio:</strong>
+                                    <h5 class="und">Dirección de envio</h5>
                                     <br />
-                                    <?php echo $direccion; ?>
+                                    <?php
+                                    echo "<strong>Dirección:</strong> " . $direccion["linea_1"];
+                                    if (!empty($direccion["linea_2"])) {
+                                        echo " - " . $direccion["linea_2"];
+                                    } else {
+                                        $direccion["linea_2"] = "";
+                                    }
+                                    echo "<br>";
+                                    echo "<strong>Provincia:</strong> " . $direccion["provincia"] . "<br>";
+                                    echo "<strong>Ciudad:</strong> " . $direccion["ciudad"] . "<br>";
+                                    echo "<strong>Código Postal:</strong> " . $direccion["cp"];
+                                    ?>
                                 </div>
                             </div>
 
                             <script src="https://www.paypal.com/sdk/js?client-id=Aag_BV9saCzCn3jZU7nRT-_qMd-sJuXnc9VKSeM5li-IXLAGDi2zUsiRtPpTu3Tvr46fIq9Ce6KSjkug&currency=EUR"></script>
-
+                            <hr>
                             <div id="paypal-button-container"></div>
 
                             <script>
@@ -135,14 +143,15 @@ if (isset($_SESSION['email'])) {
                                     },
                                     createOrder: function (data, actions) {
                                         // This function sets up the details of the transaction, including the amount and line item details.
-                                        return actions.order.create(<?php echo json_encode(buildRequestBody(round($total, 2), $array_productos)); ?>);
+
+                                        return actions.order.create(<?php echo json_encode(buildRequestBody(round($total, 2), $array_productos, $direccion)); ?>);
                                     },
                                     onApprove: function (data, actions) {
                                         // This function captures the funds from the transaction.
                                         return actions.order.capture().then(function (details) {
                                             alert('Transaction completed by ' + details.payer.name.given_name);
         <?php
-        $parametros = "?" . encriptar("clave") . "=" . encriptar("ProgramacionAvanzada") . "&" . encriptar("email") . "=" .
+        $parametros = "?" .encriptar("clave") . "=" . encriptar("ProgramacionAvanzada") . "&" . encriptar("email") . "=" .
                 encriptar($_SESSION['email'] . "&" . encriptar("direccion") . "=" . encriptar($_SESSION['direccion']));
         $i = 0;
         foreach ($productos as $producto) {
@@ -151,7 +160,7 @@ if (isset($_SESSION['email'])) {
         }
         ?>
                                             // Call your server to save the transaction
-                                            window.location = "finalizarCompra.php" + <?php echo $parametros; ?>;
+                                            window.location = "finalizarCompra.php" + <?php echo $parametros ?>;
                                         });
                                     }
                                 }).render('#paypal-button-container');
@@ -180,7 +189,7 @@ if (isset($_SESSION['email'])) {
     header('Location: ./principal.php');
 }
 
-function buildRequestBody($total, $items) {
+function buildRequestBody($total, $items, $direccion) {
     return array(
         'intent' => 'CAPTURE',
         'application_context' =>
@@ -244,11 +253,11 @@ function buildRequestBody($total, $items) {
                     'method' => 'Seur',
                     'address' =>
                     array(
-                        'address_line_1' => '123 Townsend St',
-                        'address_line_2' => 'Floor 6',
-                        'admin_area_2' => 'San Francisco',
-                        'admin_area_1' => 'CA',
-                        'postal_code' => '94107',
+                        'address_line_1' => $direccion["linea_1"],
+                        'address_line_2' => $direccion["linea_2"],
+                        'admin_area_2' => $direccion["ciudad"],
+                        'admin_area_1' => $direccion["provincia"],
+                        'postal_code' => $direccion["cp"],
                         'country_code' => 'ES',
                     ),
                 ),

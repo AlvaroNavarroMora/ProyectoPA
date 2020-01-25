@@ -1,9 +1,36 @@
 <?php
 include "./utils/sesionUtils.php";
-include "./utils/manejadorBD.php";
+include "./utils/utilsProductos.php";
 include './utils/encriptar.php';
 session_start();
 if (isset($_SESSION['email'])) {
+    if (isset($_SESSION["carrito"])) {
+        $ids = Array();
+        foreach ($_SESSION["carrito"] as $p) {
+            $ids[] = $p["id"];
+        }
+    }
+    if (!empty($ids)) {
+        $direcciones = listarMisDirecciones($_SESSION["email"]);
+        $productos = obtenerProductosCarrito($ids);
+        $array_productos = Array();
+        $total = 0;
+        foreach ($productos as $key => $p) {
+            $id = $p["id"];
+            $neededObject = array_filter(
+                    $_SESSION["carrito"], function ($e) use ($id) {
+                return $e["id"] === $id;
+            }
+            );
+            $encontrado = array_values($neededObject);
+            $cantidad = $encontrado[0]["cantidad"];
+            $array_productos[] = Array("name" => $p["nombre"], "description" => $p["descripcion"],
+                "sku" => "sku" . $p["id"], 'unit_amount' => Array("currency_code" => "EUR", "value" => round($p["precio"], 2)),
+                "quantity" => $cantidad);
+            $total += round($p["precio"], 2) * $cantidad;
+            $productos[$key]["cantidad"] = $cantidad;
+        }
+    }
     ?>
     <!DOCTYPE html>
     <html>
@@ -25,6 +52,12 @@ if (isset($_SESSION['email'])) {
             <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
             <script src="../js/carrito.js" type="text/javascript"></script>
+
+            <script>
+                $(document).ready(function () {
+
+                });
+            </script>
         </head>
 
         <body>
@@ -41,6 +74,7 @@ if (isset($_SESSION['email'])) {
 
                     <div class="divCarrito">
                         <h3>Mi carrito</h3>
+                        <hr>
                         <?php
                         if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
                             echo "<div class='alert alert-success'>El carrito está vacío.</div>";
@@ -52,57 +86,62 @@ if (isset($_SESSION['email'])) {
                                         <tr>
                                             <th>Nombre</th>
                                             <th>Descripción</th>
-                                            <th>Precio</th>
-                                            <th>Cantidad</th>
-                                            <th>Subtotal </th>
-                                            <th>Eliminar </th>
+                                            <th class='text-center'>Precio(&euro;)</th>
+                                            <th class='text-center'>Cantidad</th>
+                                            <th class='text-center'>Subtotal(&euro;)</th>
+                                            <th class='text-center'>Eliminar </th>
                                         </tr>
+                                    </thead>
+                                    <tbody>
                                         <?php
-                                        $i = 0;
-                                        foreach ($_SESSION['carrito'] as $indice => $producto) {
-                                            $query = "SELECT nombre, descripcion, precio FROM productos WHERE id='" . $producto['id'] . "'";
-                                            $result = ejecutarConsulta($query);
-                                            if (mysqli_num_rows($result) > 0) {
-                                                $row = mysqli_fetch_array($result);
-                                                if ($row['nombre'] == $producto['nombre']) {
-                                                    echo "<tr>";
-                                                    echo "<td>" . '<a href="./producto.php?idProducto=' . $producto['id'] . '">' . $row['nombre'] . "</a></td>";
-                                                    echo "<td>" . $row['descripcion'] . "</td>";
-                                                    echo "<td>" . $row['precio'] . "</td>";
-                                                    echo "<td><input name='cantidad" . $indice . "' type='number' id='cantidad" . $i . "' value='" . $producto['cantidad'] . "'/></td>";
-                                                    echo "<td id ='subtotal" . $i . "'></td>";
-                                                    echo '<input type="hidden" name="idProducto' . $i . '" value="' . encriptar($producto['id']) . '">';
-                                                    echo "<td><button  id ='btnEliminarCarrito" . $i . "' name='btnEliminarCarrito' class='btn btn-danger' type='submit' value='" . $i . "' >Eliminar</button></td>";
-                                                    echo "</tr>";
-                                                }
-                                                $i++;
-                                            }
+                                        $subtotal = 0;
+                                        foreach ($productos as $index => $producto) {
+                                            echo "<tr>";
+                                            echo "<td>" . $producto['nombre'] . "</td>";
+                                            echo "<td>" . $producto['descripcion'] . "</td>";
+                                            echo "<td class='text-center'>" . $producto['precio'] . "</td>";
+                                            echo "<td class='text-center'><input name='cantidad" . $index . "' type='number' id='cantidad" . $index . "' value='" . $producto['cantidad'] . "' class='form-control cantidad' min='0' max='" . $producto["stock"] . "'/></td>";
+                                            $subtotal = $producto['precio'] * $producto['cantidad'];
+                                            echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
+                                            echo '<input type="hidden" name="idProducto' . $index . '" value="' . encriptar($producto['id']) . '">';
+                                            echo "<td class='text-center'><button  id ='btnEliminarCarrito" . $index . "' name='btnEliminarCarrito' class='btn btn-sm btn-danger' type='submit' value='" . $index . "' >Eliminar</button></td>";
+
+                                            echo "</tr>";
                                         }
                                         ?>
-                                    </thead>
-                                    <tr>
-                                        <td colspan="4"><h5>Total:</h5></td>
-                                        <td id="precioTotalCarrito" colspan="2"><?php echo number_format(345.293, 2); ?>€</td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="5"><strong>Total:</strong></td>
+                                            <td id="precioTotalCarrito" class="text-center"><?php echo number_format($total, 2); ?>€</td>
+                                        </tr>
+                                    </tbody>
                                 </table>
-
-
-                                <div class="row">
-                                    <div class="divCarrito">
-                                        <strong>Dirección de envio:</strong>
-                                        <br />
-                                        <input type="text" name="direccion" id="inpurDireccion" class="form-control" placeholder="c\ Calle de ejemplo, nº1, Ciudad, Provincia, CP41704" />
-                                    </div>
-                                </div>
-
+                                <hr>
 
                                 <div class="row">
                                     <div class="divCarrito">
-                                        <input class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" type="submit" value="Procesar Compra" name="procesarCompra"></input>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for='inputDireccion'><strong>Dirección de envio:</strong></label>
+                                            </div>
+                                            <select name="direccion" id="inputDireccion" class="custom-select" required>
+                                                <option disabled selected>--Seleccionar--</option>
+                                                <?php
+                                                foreach ($direcciones as $d) {
+                                                    echo "<option value='" . $d["id"] . "'>" . $d["nombre"] . "</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                        <a class="btn btn-sm btn-secondary" href="./aniadirDireccion.php" role="button">Añadir una dirección nueva</a>
                                     </div>
                                 </div>
+                                <hr>
 
-
+                                <div class="row">
+                                    <div class="divCarrito">
+                                        <input class="btn btn-md btn-primary btn-block text-uppercase" type="submit" value="Procesar Compra" name="procesarCompra"></input>
+                                    </div>
+                                </div>
                             </form>
                             <?php
                         }
@@ -128,6 +167,5 @@ if (isset($_SESSION['email'])) {
     <?php
 } else {
     header('Location: ./principal.php');
-    ;
 }
 ?>
