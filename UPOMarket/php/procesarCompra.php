@@ -2,7 +2,6 @@
 include "./utils/sesionUtils.php";
 include './utils/encriptar.php';
 include './utils/utilsProductos.php';
-
 session_start();
 
 if (isset($_SESSION['email'])) {
@@ -45,7 +44,7 @@ if (isset($_SESSION['email'])) {
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-            <title>UPOMarket-Inicio</title>
+            <title>UPOMarket-Procesar Compra</title>
             <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
             <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
             <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -88,19 +87,16 @@ if (isset($_SESSION['email'])) {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $i = 0;
                                     $subtotal = 0;
-                                    foreach ($productos as $producto) {
+                                    foreach ($productos as $index => $producto) {
                                         echo "<tr>";
                                         echo "<td>" . $producto['nombre'] . "</td>";
                                         echo "<td>" . $producto['descripcion'] . "</td>";
                                         echo "<td class='text-center'>" . $producto['precio'] . "</td>";
                                         echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
                                         $subtotal = $producto['precio'] * $producto['cantidad'];
-                                        echo "<td id ='subtotal" . $i . "' class='text-center'>$subtotal</td>";
+                                        echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
                                         echo "</tr>";
-
-                                        $i++;
                                     }
                                     ?>
                                     <tr>
@@ -147,14 +143,24 @@ if (isset($_SESSION['email'])) {
                                     },
                                     createOrder: function (data, actions) {
                                         // This function sets up the details of the transaction, including the amount and line item details.
+
                                         return actions.order.create(<?php echo json_encode(buildRequestBody(round($total, 2), $array_productos, $direccion)); ?>);
                                     },
                                     onApprove: function (data, actions) {
                                         // This function captures the funds from the transaction.
                                         return actions.order.capture().then(function (details) {
                                             alert('Transaction completed by ' + details.payer.name.given_name);
+        <?php
+        $parametros = "?" . encriptar("clave") . "=" . encriptar("ProgramacionAvanzada") . "&" . encriptar("email") . "=" .
+                encriptar($_SESSION['email'] . "&" . encriptar("direccion") . "=" . encriptar($_SESSION['direccion']));
+        $i = 0;
+        foreach ($productos as $producto) {
+            $parametros .= "&" . encriptar("producto" . $i) . "=" . encriptar($producto['id']) . "&" . encriptar("cantidad" . $i) . "=" . encriptar($producto['cantidad']);
+            $i++;
+        }
+        ?>
                                             // Call your server to save the transaction
-                                            //window.location = "finalizarCompra.php?paymentToken=" + data.paymentToken + "&paymentID=" + data.paymentID;
+                                            window.location = "finalizarCompra.php" + <?php echo $parametros; ?>;
                                         });
                                     }
                                 }).render('#paypal-button-container');

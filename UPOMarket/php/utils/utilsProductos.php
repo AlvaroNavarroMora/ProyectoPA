@@ -74,7 +74,21 @@ function productosDeUsuario($email) {
     return $lista;
 }
 
-function insertarProducto($email, $nombre, $descripcion, $precio, $stoc, $imagen, $categorias) {
+/* Devuelve true si existe un producto con ese nombre y ese usuario */
+
+function comprobarUsuarioProducto($email, $producto) {
+    $query = "SELECT * FROM `productos` WHERE `email_vendedor`='$email' and `nombre`='$producto'";
+    $result = ejecutarConsulta($query);
+    $salida = false;
+
+    $aux = mysqli_fetch_all($result);
+    if (sizeof($aux) > 0) {
+        $salida = true;
+    }
+    return $salida;
+}
+
+function insertarProducto($email, $nombre, $descripcion, $precio, $stoc, $imagen, $categorias, $caracteristicaName, $caracteristicaDesc) {
     $queryProducto = "INSERT INTO `productos`(`email_vendedor`, `nombre`, `descripcion`, `precio`, `stock`, `imagen`) VALUES ('$email','$nombre','$descripcion','$precio','$stoc','$imagen')";
     $insercion = ejecutarConsulta($queryProducto);
 
@@ -91,6 +105,18 @@ function insertarProducto($email, $nombre, $descripcion, $precio, $stoc, $imagen
                 $r = ejecutarConsulta($queryProductoCategorias);
                 if (!$r) {
                     $salida = false;
+                    echo "here";
+                }
+            }
+
+            for ($i = 0; $i < count($caracteristicaName); $i++) {
+                $cn = $caracteristicaName[$i];
+                $cd = $caracteristicaDesc[$i];
+                $queryProductoCaracteristicas = "INSERT INTO `caracteristicas_productos`(`id_producto`, `nombre_caracteristica`, `valor`) VALUES ('$id','$cn','$cd')";
+                $r = ejecutarConsulta($queryProductoCaracteristicas);
+                if (!$r) {
+                    $salida = false;
+                    echo "herehere";
                 }
             }
         } else {
