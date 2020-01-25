@@ -36,8 +36,8 @@ function mostrarPerfil($nombre, $email, $tipo) {
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <div class="list-group">
-                        <a href="#" class="list-group-item active">Category 1</a>
-                        <a href="#" class="list-group-item">Category 2</a>
+                        <a href="./perfil.php" class="list-group-item active">Mis Datos</a>
+                        <a href="./aniadirDireccion.php" class="list-group-item">Añadir Dirección</a>
                         <a href="#" class="list-group-item">Category 3</a>
                     </div>
                 </div>

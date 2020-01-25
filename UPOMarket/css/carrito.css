@@ -1,3 +1,9 @@
 .divCarrito{
     margin: 30px;
 }
+input.cantidad {
+    max-width: 100px;
+}
+#inputDireccion {
+    max-width: 200px;
+}

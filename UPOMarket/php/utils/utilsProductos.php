@@ -141,7 +141,6 @@ function listarCaracteristicasProducto($idProducto) {
 }
 
 function obtenerProducto($idProducto) {
-
     $query = "SELECT * FROM productos WHERE id=$idProducto AND disponible=1";
     $result = ejecutarConsulta($query);
     $producto = null;
@@ -215,8 +214,7 @@ function listarTopVentas($top) {
 }
 
 function obtenerProductosCarrito($idProductos) {
-
-    $query = "SELECT id, nombre, descripcion, precio from productos WHERE id in (" . implode(",", array_map('intval', $idProductos)) . ") AND disponible=1";
+    $query = "SELECT * from productos WHERE id in (" . implode(",", array_map('intval', $idProductos)) . ") AND disponible=1;";
     $result = ejecutarConsulta($query);
     $productos = Array();
     if (mysqli_num_rows($result) > 0) {
@@ -225,4 +223,26 @@ function obtenerProductosCarrito($idProductos) {
         }
     }
     return $productos;
+}
+
+function listarMisDirecciones($email) {
+    $query = "SELECT d.id, d.nombre from direcciones_clientes dc,direcciones d WHERE dc.email_cliente='$email' and dc.direccion_cliente=d.id;";
+    $result = ejecutarConsulta($query);
+    $direcciones = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $direcciones[] = $row;
+        }
+    }
+    return $direcciones;
+}
+
+function obtenerDireccion($idDireccion) {
+    $query = "SELECT * FROM direcciones WHERE id=$idDireccion;";
+    $result = ejecutarConsulta($query);
+    $direccion = null;
+    if (mysqli_num_rows($result) > 0) {
+        $direccion = mysqli_fetch_assoc($result);
+    }
+    return $direccion;
 }
