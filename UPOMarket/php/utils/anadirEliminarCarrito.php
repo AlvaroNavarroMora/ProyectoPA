@@ -3,6 +3,7 @@
 session_start();
 if (isset($_SESSION['email'])) {
     include './encriptar.php';
+
     if (isset($_POST['btnAgregarCarrito'])) {
         if (isset($_POST['id'])) {
             $idProv = desencriptar($_POST['id']);
@@ -108,13 +109,19 @@ if (isset($_SESSION['email'])) {
                     if (isset($_POST['direccion'])) {
                         $direccion = filter_var($_POST['direccion'], FILTER_SANITIZE_NUMBER_INT);
                     } else {
-                        header("Location: ../principal.php");
+                        header("Location: ../carrito.php");
                     }
-                    foreach ($_SESSION['carrito'] as $indice => $producto) {
-                        if (isset($_POST['cantidad' . $indice])) {
-                            $cant = filter_var($_POST['cantidad' . $indice], FILTER_SANITIZE_NUMBER_INT);
-                            $_SESSION['carrito'][$indice]['cantidad'] = $cant;
+                    $index = 0;
+                    while (isset($_POST["cantidad" . $index])) {
+                        if (isset($_POST["idProducto" . $index])) {
+                            $id = desencriptar($_POST["idProducto" . $index]);
+                            foreach ($_SESSION["carrito"] as $i=>$item) {
+                                if ($item["id"] == $id) {
+                                    $_SESSION["carrito"][$i]["cantidad"] = $_POST["cantidad" . $index];
+                                }
+                            }
                         }
+                        $index++;
                     }
                     $_SESSION['direccion'] = $direccion;
                     header('Location: ../procesarCompra.php');
