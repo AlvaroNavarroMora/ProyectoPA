@@ -151,7 +151,7 @@ if (isset($_SESSION['email'])) {
                                         return actions.order.capture().then(function (details) {
                                             alert('Transaction completed by ' + details.payer.name.given_name);
         <?php
-        $parametros = "?" . encriptar("clave") . "=" . encriptar("ProgramacionAvanzada") . "&" . encriptar("email") . "=" .
+        $parametros = "?" .encriptar("clave") . "=" . encriptar("ProgramacionAvanzada") . "&" . encriptar("email") . "=" .
                 encriptar($_SESSION['email'] . "&" . encriptar("direccion") . "=" . encriptar($_SESSION['direccion']));
         $i = 0;
         foreach ($productos as $producto) {
@@ -160,7 +160,7 @@ if (isset($_SESSION['email'])) {
         }
         ?>
                                             // Call your server to save the transaction
-                                            window.location = "finalizarCompra.php" + <?php echo $parametros; ?>;
+                                            window.location = "finalizarCompra.php" + <?php echo $parametros ?>;
                                         });
                                     }
                                 }).render('#paypal-button-container');
