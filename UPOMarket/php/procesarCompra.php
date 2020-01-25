@@ -1,11 +1,35 @@
 <?php
 include "./utils/sesionUtils.php";
-include "./utils/manejadorBD.php";
 include './utils/encriptar.php';
+include './utils/utilsProductos.php';
+
 session_start();
+
 if (isset($_SESSION['email'])) {
     if (isset($_SESSION['direccion'])) {
         $direccion = isset($_SESSION['direccion']);
+        $ids = Array();
+        foreach ($_SESSION["carrito"] as $p) {
+            $ids[] = $p["id"];
+        }
+        $productos = obtenerProductosCarrito($ids);
+        $array_productos = Array();
+        $total = 0;
+        foreach ($productos as $key => $p) {
+            $id = $p["id"];
+            $neededObject = array_filter(
+                    $_SESSION["carrito"], function ($e) use ($id) {
+                return $e["id"] === $id;
+            }
+            );
+            $encontrado = array_values($neededObject);
+            $cantidad = $encontrado[0]["cantidad"];
+            $array_productos[] = Array("name" => $p["nombre"], "description" => $p["descripcion"],
+                "sku" => "sku" . $p["id"], 'unit_amount' => Array("currency_code" => "EUR", "value" => number_format($p["precio"],2)),
+                "quantity" => $cantidad);
+            $total += $p["precio"] * $cantidad;
+            $productos[$key]["cantidad"] = $cantidad;
+        }
     } else {
         header('Location: ./principal.php');
     }
@@ -52,8 +76,8 @@ if (isset($_SESSION['email'])) {
                         if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
                             echo "<div class='alert alert-success'>El carrito está vacío.</div>";
                         } else {
+                            echo print_r($_SESSION["carrito"]);
                             ?>
-
                             <table id="tableProductos" class="table table-light">
                                 <thead>
                                     <tr>
@@ -65,25 +89,18 @@ if (isset($_SESSION['email'])) {
                                     </tr>
                                     <?php
                                     $i = 0;
-                                    $total = 0;
-                                    foreach ($_SESSION['carrito'] as $indice => $producto) {
-                                        $query = "SELECT nombre, descripcion, precio FROM productos WHERE id='" . $producto['id'] . "'";
-                                        $result = ejecutarConsulta($query);
-                                        if (mysqli_num_rows($result) > 0) {
-                                            $row = mysqli_fetch_array($result);
-                                            if ($row['nombre'] == $producto['nombre']) {
-                                                echo "<tr>";
-                                                echo "<td>" . $row['nombre'] . "</td>";
-                                                echo "<td>" . $row['descripcion'] . "</td>";
-                                                echo "<td>" . $row['precio'] . "</td>";
-                                                echo "<td>" . $producto['cantidad'] . "</td>";
-                                                $subtotal = $row['precio'] * $producto['cantidad'];
-                                                $total += $subtotal;
-                                                echo "<td id ='subtotal" . $i . "'>$subtotal</td>";
-                                                echo "</tr>";
-                                            }
-                                            $i++;
-                                        }
+                                    $subtotal = 0;
+                                    foreach ($productos as $producto) {
+                                        echo "<tr>";
+                                        echo "<td>" . $producto['nombre'] . "</td>";
+                                        echo "<td>" . $producto['descripcion'] . "</td>";
+                                        echo "<td>" . $producto['precio'] . "</td>";
+                                        echo "<td>" . $producto['cantidad'] . "</td>";
+                                        $subtotal += $producto['precio'] * $producto['cantidad'];
+                                        echo "<td id ='subtotal" . $i . "'>$subtotal</td>";
+                                        echo "</tr>";
+
+                                        $i++;
                                     }
                                     ?>
                                 </thead>
@@ -102,63 +119,35 @@ if (isset($_SESSION['email'])) {
                                 </div>
                             </div>
 
-
-                            <script src="https://www.paypal.com/sdk/js?client-id=Aag_BV9saCzCn3jZU7nRT-_qMd-sJuXnc9VKSeM5li-IXLAGDi2zUsiRtPpTu3Tvr46fIq9Ce6KSjkug"></script>
+                            <script src="https://www.paypal.com/sdk/js?client-id=Aag_BV9saCzCn3jZU7nRT-_qMd-sJuXnc9VKSeM5li-IXLAGDi2zUsiRtPpTu3Tvr46fIq9Ce6KSjkug&currency=EUR"></script>
 
                             <div id="paypal-button-container"></div>
 
-                            <script>paypal.Buttons().render('paypal-button-container');</script>
-
+                            <script>
+                                $(document).ready(function () {
+                                    paypal.Buttons();
+                                });
+                            </script>
                             <script>
                                 paypal.Buttons({
                                     style: {
                                         size: 'small',
                                         color: 'gold',
-                                        shape: 'pill',
+                                        shape: 'pill'
                                     },
                                     createOrder: function (data, actions) {
                                         // This function sets up the details of the transaction, including the amount and line item details.
-                                        return actions.order.create({
-                                            payer: {
-                                                email_address: '<?php echo $_SESSION['email']; ?>'
-                                            },
-                                            purchase_units: [{
-                                                    amount: {
-                                                        value: '<?php echo $total; ?>'
-                                                    },
-                                                    description: 'Transacción de UPOMarket',
-
-                                                    shipping: {
-                                                        address: {
-                                                            address_line_1: '<?php echo $direccion; ?>'
-                                                        }
-                                                    }
-                                                }],
-
-                                            items: [
-        <?php
-        $coma = "";
-        foreach ($_SESSION['carrito'] as $indice => $producto) {
-            echo $coma;
-            $coma = ",";
-            echo "{name: '" . $producto['id'] . "', quantity: '" . $producto['cantidad'] . "' }";
-        }
-        ?>
-                                            ]
-
-                                        }
-                                        );
+                                        return actions.order.create(<?php echo json_encode(buildRequestBody($total, $array_productos)); ?>);
                                     },
                                     onApprove: function (data, actions) {
                                         // This function captures the funds from the transaction.
                                         return actions.order.capture().then(function (details) {
                                             alert('Transaction completed by ' + details.payer.name.given_name);
                                             // Call your server to save the transaction
-                                            window.location = "verificador.php?paymentToken=" + data.paymentToken + "&paymentID=" + data.paymentID;
+                                            //window.location = "finalizarCompra.php?paymentToken=" + data.paymentToken + "&paymentID=" + data.paymentID;
                                         });
                                     }
                                 }).render('#paypal-button-container');
-                                //This function displays Smart Payment Buttons on your web page.
                             </script>
 
                             <?php
@@ -166,9 +155,6 @@ if (isset($_SESSION['email'])) {
                         ?>
 
                     </div>
-
-
-
                 </div>
                 <!-- /.row -->
 
@@ -178,7 +164,6 @@ if (isset($_SESSION['email'])) {
             include '../html/footer.html';
             ?>
 
-
         </body>
 
     </html>
@@ -186,6 +171,82 @@ if (isset($_SESSION['email'])) {
     <?php
 } else {
     header('Location: ./principal.php');
-    ;
+}
+
+function buildRequestBody($total, $items) {
+    return array(
+        'intent' => 'CAPTURE',
+        'application_context' =>
+        array(
+            'brand_name' => 'UPOMarket',
+            'locale' => 'es-ES',
+            'landing_page' => 'BILLING',
+            'shipping_preferences' => 'SET_PROVIDED_ADDRESS',
+            'user_action' => 'PAY_NOW',
+        ),
+        'purchase_units' =>
+        array(
+            0 =>
+            array(
+                'amount' =>
+                array(
+                    'currency_code' => 'EUR',
+                    'value' => $total,
+                    'breakdown' =>
+                    array(
+                        'item_total' =>
+                        array(
+                            'currency_code' => 'EUR',
+                            'value' => $total,
+                        ),
+                    /* 'shipping' =>
+                      array(
+                      'currency_code' => 'EUR',
+                      'value' => '20.00',
+                      ),
+                      'tax_total' =>
+                      array(
+                      'currency_code' => 'EUR',
+                      'value' => '20.00',
+                      ), */
+                    ),
+                ),
+                'items' => $items,
+                /* array(
+                  0 =>
+                  array(
+                  'name' => 'T-Shirt',
+                  'description' => 'Green XL',
+                  'sku' => 'sku01',
+                  'unit_amount' =>
+                  array(
+                  'currency_code' => 'EUR',
+                  'value' => '500.00',
+                  ),
+                  'tax' =>
+                  array(
+                  'currency_code' => 'EUR',
+                  'value' => '20.00',
+                  ),
+                  'quantity' => '1',
+                  'category' => 'PHYSICAL_GOODS',
+                  ),
+                  ), */
+                'shipping' =>
+                array(
+                    'method' => 'Seur',
+                    'address' =>
+                    array(
+                        'address_line_1' => '123 Townsend St',
+                        'address_line_2' => 'Floor 6',
+                        'admin_area_2' => 'San Francisco',
+                        'admin_area_1' => 'CA',
+                        'postal_code' => '94107',
+                        'country_code' => 'ES',
+                    ),
+                ),
+            ),
+        ),
+    );
 }
 ?>
