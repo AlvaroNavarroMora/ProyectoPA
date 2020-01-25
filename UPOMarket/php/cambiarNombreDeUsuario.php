@@ -39,7 +39,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
                         <p class="list-group-item active">Opciones</p>
                         <a href="perfil.php" class="list-group-item">Ver Perfil</a>
                         <a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a>
-                        <a href="editarDireccion.php" class="list-group-item">Editar Dirección de Envío</a>
+                        <a href="editarDireccion.php" class="list-group-item">Direcciones</a>
                         <a href="cambiarContrasenia.php" class="list-group-item">Cambiar Contraseña</a>
                         <?php if ($tipo == "cliente") {
                             ?>
@@ -50,7 +50,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
                 </div>
                 <!-- /.col-lg-3 -->
 
-                <div class="col-lg-9">
+                <div class="col-lg-3">
                     <div id="contenedorPerfil">
                         <div class="card mt-4">
                             <div class="card-body">

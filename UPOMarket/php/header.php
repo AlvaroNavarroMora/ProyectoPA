@@ -57,15 +57,25 @@ function mostrarAdmin() {
             ?></a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" href="./perfil.php">Mi Perfil</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="./conflictos.php">Conflictos</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" href="./utils/cerrarSesion.php">Cerrar Sesión</a>
     </li>
     <?php
 }
 ?>
 <script>
-    $(document).ready(function() {
-        var num_productos = <?php if(isset($_SESSION["carrito"])){ echo count($_SESSION["carrito"]);}else {echo 0;} ?>;
-        $("#num-productos").text("("+num_productos+")");
+    $(document).ready(function () {
+        var num_productos = <?php if (isset($_SESSION["carrito"])) {
+    echo count($_SESSION["carrito"]);
+} else {
+    echo 0;
+} ?>;
+        $("#num-productos").text("(" + num_productos + ")");
     });
 </script>
 <nav class="navbar navbar-expand-lg fixed-top">
