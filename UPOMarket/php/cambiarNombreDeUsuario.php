@@ -37,15 +37,15 @@ function mostrarPerfil($nombre, $email, $tipo) {
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <div class="list-group">
                         <p class="list-group-item active">Opciones</p>
+                        <a href="perfil.php" class="list-group-item">Ver Perfil</a>
                         <a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a>
-                        <a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a>
                         <a href="editarDireccion.php" class="list-group-item">Editar Dirección de Envío</a>
                         <a href="cambiarContrasenia.php" class="list-group-item">Cambiar Contraseña</a>
-                        <?php if($tipo == "cliente"){
+                        <?php if ($tipo == "cliente") {
                             ?>
-                        <a href="convertirseEnVendedor.php" class="list-group-item">Convertirse en vendedor</a>
-                            <?php
-                        }?>
+                            <a href="convertirseEnVendedor.php" class="list-group-item">Convertirse en vendedor</a>
+                        <?php }
+                        ?>
                     </div>
                 </div>
                 <!-- /.col-lg-3 -->
@@ -54,36 +54,43 @@ function mostrarPerfil($nombre, $email, $tipo) {
                     <div id="contenedorPerfil">
                         <div class="card mt-4">
                             <div class="card-body">
-                                <h3 class="card-title">Perfil</h3>
-                                <?php
-                                $query = "SELECT foto FROM usuarios WHERE email='" . $_SESSION['email'] . "' AND (foto is not null)";
-                                $result = ejecutarConsulta($query);
-                                if (mysqli_num_rows($result) > 0) {
-                                    $row = mysqli_fetch_array($result);
-                                    $rutaImg = $row['foto'];
-                                    echo '<img src="../img/usrFotos/' . $_SESSION['email'] . "/" . $rutaImg . '" alt="Imagen de perfil" id="imgPerfil"/>';
-                                } else {
-                                    echo '<img src="../img/defaultProfile.png" alt="Imagen de perfil" id="imgPerfil"/>';
-                                }
-                                ?>
-                                <h6 class="labelPerfil">Nombre:</h6>
-                                <p>
+                                <h3 class="card-title">Perfil
+                                </h3>
+                                <form class="form-signin" action="#" method="post" enctype="multipart/form-data">
                                     <?php
-                                    echo $nombre;
+                                    $query = "SELECT foto FROM usuarios WHERE email='" . $_SESSION['email'] . "' AND (foto is not null)";
+                                    $result = ejecutarConsulta($query);
+                                    if (mysqli_num_rows($result) > 0) {
+                                        $row = mysqli_fetch_array($result);
+                                        $rutaImg = $row['foto'];
+                                        echo '<img src="../img/usrFotos/' . $_SESSION['email'] . "/" . $rutaImg . '" alt="Imagen de perfil" id="imgPerfil"/>';
+                                    } else {
+                                        echo '<img src="../img/defaultProfile.png" alt="Imagen de perfil" id="imgPerfil"/>';
+                                    }
                                     ?>
-                                </p>
-                                <h6 class="labelPerfil">Email:</h6>
-                                <p>
-                                    <?php
-                                    echo $email;
-                                    ?>
-                                </p>
-                                <h6 class="labelPerfil">Tipo de Usuario:</h6>
-                                <p>
-                                    <?php
-                                    echo $tipo;
-                                    ?>
-                                </p>
+
+
+                                    <h6 class="labelPerfil">Nombre:</h6>
+                                    <p>
+                                        <?php
+                                        echo '<input name="nombre" type="text" id="inputNombre" class="form-control" placeholder="Nombre" required autofocus value="' . $_SESSION['nombre'] . '">';
+                                        ?>
+                                    </p>
+                                    <h6 class="labelPerfil">Email:</h6>
+                                    <p>
+                                        <?php
+                                        echo $email;
+                                        ?>
+                                    </p>
+                                    <h6 class="labelPerfil">Tipo de Usuario:</h6>
+                                    <p>
+                                        <?php
+                                        echo $tipo;
+                                        ?>
+                                    </p>
+
+                                    <input class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" type="submit" value="Confirmar" name="cambiarNombre"></input>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -116,6 +123,24 @@ if (isset($_SESSION['email'])) {
         $nombre = $row['nombre'];
         $email = $row['email'];
         $tipo = $row['tipo'];
+        
+    }
+
+    if (isset($_POST['cambiarNombre'])) {
+
+        if (isset($_POST['nombre'])) {
+            $nombre = filter_var($_POST['nombre'], FILTER_SANITIZE_MAGIC_QUOTES);
+        } else {
+            $errores[] = "Nombre no válido";
+        }
+        
+        if (!isset($errores) && $nombre != "") {
+            $sentencia = "UPDATE usuarios SET nombre='" . $nombre . "' WHERE email='" . $_SESSION['email'] . "'";
+            $result = ejecutarConsulta($sentencia);
+            $_SESSION['nombre'] = $nombre;
+        }
+        header('Location: ./perfil.php');
+    }else{
         mostrarPerfil($nombre, $email, $tipo);
     }
 } else {
