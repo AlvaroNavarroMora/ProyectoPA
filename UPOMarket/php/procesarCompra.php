@@ -18,8 +18,7 @@ if (isset($_SESSION['email'])) {
         foreach ($productos as $key => $p) {
             $id = $p["id"];
             $neededObject = array_filter(
-                    $_SESSION["carrito"],
-                    function ($e) use ($id) {
+                    $_SESSION["carrito"], function ($e) use ($id) {
                 return $e["id"] === $id;
             }
             );
@@ -145,7 +144,7 @@ if (isset($_SESSION['email'])) {
                                         return actions.order.capture().then(function (details) {
                                             alert('Transaction completed by ' + details.payer.name.given_name);
                                             // Call your server to save the transaction
-                                            window.location = "verificador.php?paymentToken=" + data.paymentToken + "&paymentID=" + data.paymentID;
+                                            //window.location = "finalizarCompra.php?paymentToken=" + data.paymentToken + "&paymentID=" + data.paymentID;
                                         });
                                     }
                                 }).render('#paypal-button-container');
@@ -192,13 +191,13 @@ function buildRequestBody($total, $items) {
                 'amount' =>
                 array(
                     'currency_code' => 'EUR',
-                    'value' => number_format($total, 2),
+                    'value' => $total,
                     'breakdown' =>
                     array(
                         'item_total' =>
                         array(
                             'currency_code' => 'EUR',
-                            'value' => number_format($total, 2),
+                            'value' => $total,
                         ),
                     /* 'shipping' =>
                       array(
