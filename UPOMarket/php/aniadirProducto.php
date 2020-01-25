@@ -53,7 +53,7 @@ if (isset($_POST['btnAddProduct'])) {
     }
     if (strlen(trim($stock)) < 1) {
         $errores[] = "El campo stock es obligatorio.";
-    } 
+    }
     if (sizeof($categorias) < 1) {
         $errores[] = "Debe añadir al menos una categoría";
     } else {
@@ -104,7 +104,6 @@ if (isset($_POST['btnAddProduct'])) {
         if (!is_dir($pathThisProducto)) {
             mkdir($pathThisProducto);
         }
-        $paths = "";
         foreach ($_FILES['files']['tmp_name'] as $k => $v) {
             //Nombre temporal
             $tmp_name = $_FILES['files']['tmp_name'][$k];
@@ -112,12 +111,10 @@ if (isset($_POST['btnAddProduct'])) {
             $newName = str_replace(".", time() . ".", $_FILES['files']['name'][$k]);
             //Ruta destino + nuevo nombre
             $newPath = $pathThisProducto . '/' . $newName;
-            //Todas las imagenes de un producto
-            $paths = $paths . $newPath . ";";
             //Mover la imagen al destino
             move_uploaded_file($tmp_name, $newPath);
         }
-        $haInsertado = insertarProducto($email, $producto, $descripcion, $precio, $stock, $paths, $categorias, $caracteristicaName, $caracteristicaDesc);
+        $haInsertado = insertarProducto($email, $producto, $descripcion, $precio, $stock, $newPath, $categorias, $caracteristicaName, $caracteristicaDesc);
         if ($haInsertado) {
             header('Location: ./perfil.php');
         } else {

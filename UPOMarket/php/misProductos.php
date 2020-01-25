@@ -32,7 +32,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
             $(document).ready(function () {
                 var data = <?php echo $data ?>;
                 $('#productos').DataTable({
-                    "language":{
+                    "language": {
                         "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
                     },
                     "data": data,
@@ -59,17 +59,24 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                         });
                         var imgs = table.column(5).data();
                         var rows = $("tbody tr");
-                        for(var i = 0; i<imgs.length; i++) {
+                        /*modif acp*/
+                        for (var i = 0; i < imgs.length; i++) {
                             var aux = $(rows[i]).children()[5];
+
+                            path = data[i]['imagen'];
                             var imagen = document.createElement("img");
-                            $(imagen).attr("src","../img/defaultProfile.png");
-                            $(imagen).attr("alt","No disponible");
+                            $(imagen).attr("src", path);
+                            $(imagen).attr("alt", "No disponible");
+                            $(imagen).attr("onerror", "reemplazarImg(this)");
                             $(imagen).addClass("mostrarImagen");
-                            aux.replaceChild(imagen,aux.firstChild);
-                        }
+                            aux.replaceChild(imagen, aux.firstChild);
+                        }/*Fin modif acp*/
                     }
                 });
             });
+            function reemplazarImg(img) {
+                $(img).attr("src", "../img/productDefaultImage.jpg");
+            }
         </script>
     </head>
 
