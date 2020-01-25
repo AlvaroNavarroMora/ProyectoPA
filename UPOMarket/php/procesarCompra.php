@@ -26,7 +26,7 @@ if (isset($_SESSION['email'])) {
             $encontrado = array_values($neededObject);
             $cantidad = $encontrado[0]["cantidad"];
             $array_productos[] = Array("name" => $p["nombre"], "description" => $p["descripcion"],
-                "sku" => "sku" . $p["id"], 'unit_amount' => Array("currency_code" => "EUR", "value" => $p["precio"]),
+                "sku" => "sku" . $p["id"], 'unit_amount' => Array("currency_code" => "EUR", "value" => number_format($p["precio"],2)),
                 "quantity" => $cantidad);
             $total += $p["precio"] * $cantidad;
             $productos[$key]["cantidad"] = $cantidad;
@@ -77,8 +77,8 @@ if (isset($_SESSION['email'])) {
                         if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
                             echo "<div class='alert alert-success'>El carrito está vacío.</div>";
                         } else {
+                            echo print_r($_SESSION["carrito"]);
                             ?>
-
                             <table id="tableProductos" class="table table-light">
                                 <thead>
                                     <tr>
@@ -179,8 +179,8 @@ function buildRequestBody($total, $items) {
         'intent' => 'CAPTURE',
         'application_context' =>
         array(
-            'brand_name' => 'EXAMPLE INC',
-            'locale' => 'en-US',
+            'brand_name' => 'UPOMarket',
+            'locale' => 'es-ES',
             'landing_page' => 'BILLING',
             'shipping_preferences' => 'SET_PROVIDED_ADDRESS',
             'user_action' => 'PAY_NOW',
