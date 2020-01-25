@@ -40,7 +40,7 @@ if (isset($_SESSION['email'])) {
             <meta name="description" content="">
             <meta name="author" content="">
 
-            <title>UPOMarket-Inicio</title>
+            <title>MiCesta - UPOMarket</title>
             <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
             <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
             <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -52,11 +52,45 @@ if (isset($_SESSION['email'])) {
             <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
             <script src="../js/carrito.js" type="text/javascript"></script>
-
             <script>
                 $(document).ready(function () {
+                    $("#inputDireccion").change(function () {
+                        var error = $("#error-direccion");
+                        if (error != null) {
+                            $(error).remove();
+                        }
+                    });
+                    $("input.cantidad").change(function () {
+                        var cantidad = parseInt($(this).val());
+                        var id = $(this).attr("id");
+                        var index = parseInt(id.split("-")[1]);
+                        var rows = $("tr.producto");
+                        var modificada = $(rows)[index];
+                        var cells = $(modificada).children();
+                        var precio = parseFloat($(cells[2]).text());
+                        $(cells[4]).text(precio * cantidad);
+                        var total = 0;
+                        for (var i = 0; i < rows.length; i++) {
+                            var cell = $(rows[i]).children()[4];
+                            total += parseFloat($(cell).text());
+                        }
+                        $("#precioTotalCarrito").text(total.toFixed(2));
 
+                    });
                 });
+                function validaDireccion() {
+                    var direccion = $("#inputDireccion");
+                    var val = $("#inputDireccion option:selected").val();
+                    if (val == "") {
+                        var a = document.getElementById("error-direccion");
+                        if (a == null) {
+                            direccion.parent().after($("<div id='error-direccion' class='alert alert-danger' role='alert'>Debe seleccionar una dirección para continuar con la compra</div>"));
+                        }
+                        return false;
+                    } else {
+                        $("#formCarrito").submit();
+                    }
+                }
             </script>
         </head>
 
@@ -68,10 +102,7 @@ if (isset($_SESSION['email'])) {
             ?>
             <!-- Page Content -->
             <main class="container">
-                <div class="row">
-
-
-
+                <form id="formCarrito" method="post" action="./utils/anadirEliminarCarrito.php">
                     <div class="divCarrito">
                         <h3>Mi carrito</h3>
                         <hr>
@@ -80,81 +111,68 @@ if (isset($_SESSION['email'])) {
                             echo "<div class='alert alert-success'>El carrito está vacío.</div>";
                         } else {
                             ?>
-                            <form method="post" action="./utils/anadirEliminarCarrito.php">
-                                <table id="tableProductos" class="table table-light">
-                                    <thead>
-                                        <tr>
-                                            <th>Nombre</th>
-                                            <th>Descripción</th>
-                                            <th class='text-center'>Precio(&euro;)</th>
-                                            <th class='text-center'>Cantidad</th>
-                                            <th class='text-center'>Subtotal(&euro;)</th>
-                                            <th class='text-center'>Eliminar </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $subtotal = 0;
-                                        foreach ($productos as $index => $producto) {
-                                            echo "<tr>";
-                                            echo "<td>" . $producto['nombre'] . "</td>";
-                                            echo "<td>" . $producto['descripcion'] . "</td>";
-                                            echo "<td class='text-center'>" . $producto['precio'] . "</td>";
-                                            echo "<td class='text-center'><input name='cantidad" . $index . "' type='number' id='cantidad" . $index . "' value='" . $producto['cantidad'] . "' class='form-control cantidad' min='0' max='" . $producto["stock"] . "'/></td>";
-                                            $subtotal = $producto['precio'] * $producto['cantidad'];
-                                            echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
-                                            echo '<input type="hidden" name="idProducto' . $index . '" value="' . encriptar($producto['id']) . '">';
-                                            echo "<td class='text-center'><button  id ='btnEliminarCarrito" . $index . "' name='btnEliminarCarrito' class='btn btn-sm btn-danger' type='submit' value='" . $index . "' >Eliminar</button></td>";
+                            <table id="tableProductos" class="table table-light">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                        <th class='text-center'>Precio(&euro;)</th>
+                                        <th class='text-center'>Cantidad</th>
+                                        <th class='text-center'>Subtotal(&euro;)</th>
+                                        <th class='text-center'>Eliminar </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $subtotal = 0;
+                                    foreach ($productos as $index => $producto) {
+                                        echo "<tr class='producto'>";
+                                        echo "<td>" . $producto['nombre'] . "</td>";
+                                        echo "<td>" . $producto['descripcion'] . "</td>";
+                                        echo "<td class='text-center'>" . $producto['precio'] . "</td>";
+                                        echo "<td class='text-center'><input name='cantidad" . $index . "' type='number' id='cantidad-" . $index . "' value='" . $producto['cantidad'] . "' class='form-control cantidad' min='1' max='" . $producto["stock"] . "'/></td>";
+                                        $subtotal = $producto['precio'] * $producto['cantidad'];
+                                        echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
+                                        echo '<input type="hidden" name="idProducto' . $index . '" value="' . encriptar($producto['id']) . '">';
+                                        echo "<td class='text-center'><button  id ='btnEliminarCarrito" . $index . "' name='btnEliminarCarrito' class='btn btn-sm btn-danger' type='submit' value='" . $index . "' >Eliminar</button></td>";
 
-                                            echo "</tr>";
-                                        }
-                                        ?>
-                                        <tr>
-                                            <td colspan="5"><strong>Total:</strong></td>
-                                            <td id="precioTotalCarrito" class="text-center"><?php echo number_format($total, 2); ?>€</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <hr>
+                                        echo "</tr>";
+                                    }
+                                    ?>
+                                    <tr>
+                                        <td colspan="5"><strong>Total:</strong></td>
+                                        <td class="text-center"><span id="precioTotalCarrito"><?php echo number_format($total, 2); ?></span>€</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <hr>
 
-                                <div class="row">
-                                    <div class="divCarrito">
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                                <label class="input-group-text" for='inputDireccion'><strong>Dirección de envio:</strong></label>
-                                            </div>
-                                            <select name="direccion" id="inputDireccion" class="custom-select" required>
-                                                <option disabled selected>--Seleccionar--</option>
-                                                <?php
-                                                foreach ($direcciones as $d) {
-                                                    echo "<option value='" . $d["id"] . "'>" . $d["nombre"] . "</option>";
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                        <a class="btn btn-sm btn-secondary" href="./aniadirDireccion.php" role="button">Añadir una dirección nueva</a>
-                                    </div>
+                        <div class="divCarrito">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for='inputDireccion'><strong>Dirección de envio:</strong></label>
                                 </div>
-                                <hr>
+                                <select name="direccion" id="inputDireccion" class="custom-select">
+                                    <option value="" disabled selected>--Seleccionar--</option>
+                                    <?php
+                                    foreach ($direcciones as $d) {
+                                        echo "<option value='" . $d["id"] . "'>" . $d["nombre"] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <a class="btn btn-sm btn-secondary" href="./aniadirDireccion.php" role="button">Añadir una dirección nueva</a>
+                        </div>
+                        <hr>
 
-                                <div class="row">
-                                    <div class="divCarrito">
-                                        <input class="btn btn-md btn-primary btn-block text-uppercase" type="submit" value="Procesar Compra" name="procesarCompra"></input>
-                                    </div>
-                                </div>
-                            </form>
-                            <?php
-                        }
-                        ?>
-
-                    </div>
-
-                    <!-- /.row -->
-
-
-                </div>
-                <!-- /.row -->
-
+                        <div class="divCarrito">
+                            <input id="btnProcesarCompra" class="btn btn-md btn-primary btn-block text-uppercase form-control" type="submit" onclick="return validaDireccion()" value="Procesar Compra" name="procesarCompra">
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </form>
             </main>
             <!-- /.container -->
             <?php

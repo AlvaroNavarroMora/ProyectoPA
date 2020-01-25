@@ -55,7 +55,6 @@ if (isset($_SESSION['email'])) {
             <script src="../frameworks/jquery/jquery.min.js"></script>
             <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
-
         </head>
 
         <body>
@@ -65,93 +64,90 @@ if (isset($_SESSION['email'])) {
             ?>
             <!-- Page Content -->
             <main class="container">
-                <div class="row">
-
+                <div class="divCarrito">
+                    <h3>Resumen de compra</h3>
+                    <hr>
+                    <?php
+                    if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
+                        echo "<div class='alert alert-success'>El carrito está vacío.</div>";
+                    } else {
+                        ?>
+                        <table id="tableProductos" class="table table-light">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th class='text-center'>Precio(&euro;)</th>
+                                    <th class='text-center'>Cantidad</th>
+                                    <th class='text-center'>Subtotal(&euro;)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $subtotal = 0;
+                                foreach ($productos as $index => $producto) {
+                                    echo "<tr>";
+                                    echo "<td>" . $producto['nombre'] . "</td>";
+                                    echo "<td>" . $producto['descripcion'] . "</td>";
+                                    echo "<td class='text-center'>" . $producto['precio'] . "</td>";
+                                    echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
+                                    $subtotal = $producto['precio'] * $producto['cantidad'];
+                                    echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
+                                    echo "</tr>";
+                                }
+                                ?>
+                                <tr>
+                                    <td colspan="4"><strong>Total:</strong></td>
+                                    <td id="precioTotalCarrito" class='text-center'><?php echo number_format($total, 2); ?>&euro;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr>
                     <div class="divCarrito">
-                        <h3>Resumen de compra</h3>
-                        <hr>
+                        <h5 class="und">Dirección de envio</h5>
+                        <br />
                         <?php
-                        if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
-                            echo "<div class='alert alert-success'>El carrito está vacío.</div>";
+                        echo "<strong>Dirección:</strong> " . $direccion["linea_1"];
+                        if (!empty($direccion["linea_2"])) {
+                            echo " - " . $direccion["linea_2"];
                         } else {
-                            ?>
-                            <table id="tableProductos" class="table table-light">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Descripción</th>
-                                        <th class='text-center'>Precio(&euro;)</th>
-                                        <th class='text-center'>Cantidad</th>
-                                        <th class='text-center'>Subtotal(&euro;)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $subtotal = 0;
-                                    foreach ($productos as $index => $producto) {
-                                        echo "<tr>";
-                                        echo "<td>" . $producto['nombre'] . "</td>";
-                                        echo "<td>" . $producto['descripcion'] . "</td>";
-                                        echo "<td class='text-center'>" . $producto['precio'] . "</td>";
-                                        echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
-                                        $subtotal = $producto['precio'] * $producto['cantidad'];
-                                        echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
-                                        echo "</tr>";
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td colspan="4"><strong>Total:</strong></td>
-                                        <td id="precioTotalCarrito" class='text-center'><?php echo number_format($total, 2); ?>&euro;</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <hr>
-                            <div class="row">
-                                <div class="divCarrito">
-                                    <h5 class="und">Dirección de envio</h5>
-                                    <br />
-                                    <?php
-                                    echo "<strong>Dirección:</strong> " . $direccion["linea_1"];
-                                    if (!empty($direccion["linea_2"])) {
-                                        echo " - " . $direccion["linea_2"];
-                                    } else {
-                                        $direccion["linea_2"] = "";
-                                    }
-                                    echo "<br>";
-                                    echo "<strong>Provincia:</strong> " . $direccion["provincia"] . "<br>";
-                                    echo "<strong>Ciudad:</strong> " . $direccion["ciudad"] . "<br>";
-                                    echo "<strong>Código Postal:</strong> " . $direccion["cp"];
-                                    ?>
-                                </div>
-                            </div>
+                            $direccion["linea_2"] = "";
+                        }
+                        echo "<br>";
+                        echo "<strong>Provincia:</strong> " . $direccion["provincia"] . "<br>";
+                        echo "<strong>Ciudad:</strong> " . $direccion["ciudad"] . "<br>";
+                        echo "<strong>Código Postal:</strong> " . $direccion["cp"];
+                        ?>
+                    </div>
 
-                            <script src="https://www.paypal.com/sdk/js?client-id=Aag_BV9saCzCn3jZU7nRT-_qMd-sJuXnc9VKSeM5li-IXLAGDi2zUsiRtPpTu3Tvr46fIq9Ce6KSjkug&currency=EUR"></script>
-                            <hr>
-                            <div id="paypal-button-container"></div>
+                    <script src="https://www.paypal.com/sdk/js?client-id=Aag_BV9saCzCn3jZU7nRT-_qMd-sJuXnc9VKSeM5li-IXLAGDi2zUsiRtPpTu3Tvr46fIq9Ce6KSjkug&currency=EUR"></script>
+                    <hr>
+                    <div id="paypal-button-container"></div>
 
-                            <script>
-                                $(document).ready(function () {
-                                    paypal.Buttons();
-                                });
-                            </script>
-                            <script>
-                                paypal.Buttons({
-                                    style: {
-                                        size: 'small',
-                                        color: 'gold',
-                                        shape: 'pill'
-                                    },
-                                    createOrder: function (data, actions) {
-                                        // This function sets up the details of the transaction, including the amount and line item details.
+                    <script>
+                        $(document).ready(function () {
+                            paypal.Buttons();
+                        });
+                    </script>
+                    <script>
+                        paypal.Buttons({
+                            style: {
+                                size: 'small',
+                                color: 'gold',
+                                shape: 'pill'
+                            },
+                            createOrder: function (data, actions) {
+                                // This function sets up the details of the transaction, including the amount and line item details.
 
-                                        return actions.order.create(<?php echo json_encode(buildRequestBody(round($total, 2), $array_productos, $direccion)); ?>);
-                                    },
-                                    onApprove: function (data, actions) {
-                                        // This function captures the funds from the transaction.
-                                        return actions.order.capture().then(function (details) {
-                                            alert('Transaction completed by ' + details.payer.name.given_name);
+                                return actions.order.create(<?php echo json_encode(buildRequestBody(round($total, 2), $array_productos, $direccion)); ?>);
+                            },
+                            onApprove: function (data, actions) {
+                                // This function captures the funds from the transaction.
+                                return actions.order.capture().then(function (details) {
+                                    alert('Transaction completed by ' + details.payer.name.given_name);
         <?php
-        $parametros = "?" .encriptar("clave") . "=" . encriptar("ProgramacionAvanzada") . "&" . encriptar("email") . "=" .
+        $parametros = "?" . encriptar("clave") . "=" . encriptar("ProgramacionAvanzada") . "&" . encriptar("email") . "=" .
                 encriptar($_SESSION['email'] . "&" . encriptar("direccion") . "=" . encriptar($_SESSION['direccion']));
         $i = 0;
         foreach ($productos as $producto) {
@@ -159,28 +155,28 @@ if (isset($_SESSION['email'])) {
             $i++;
         }
         ?>
-                                            // Call your server to save the transaction
-                                            window.location = "finalizarCompra.php" + <?php echo $parametros ?>;
-                                        });
-                                    }
-                                }).render('#paypal-button-container');
-                            </script>
+                                    // Call your server to save the transaction
+                                    window.location = "finalizarCompra.php" + <?php echo $parametros ?>;
+                                });
+                            }
+                        }).render('#paypal-button-container');
+                    </script>
 
-                            <?php
-                        }
-                        ?>
+                    <?php
+                }
+                ?>
 
-                    </div>
-                </div>
-                <!-- /.row -->
+            </div>
+        </div>
+        <!-- /.row -->
 
-            </main>
-            <!-- /.container -->
-            <?php
-            include '../html/footer.html';
-            ?>
+    </main>
+    <!-- /.container -->
+    <?php
+    include '../html/footer.html';
+    ?>
 
-        </body>
+    </body>
 
     </html>
 
