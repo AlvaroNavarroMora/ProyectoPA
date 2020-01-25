@@ -41,3 +41,6 @@ td,tr{
     color: #495057;
     width:100%;
 }
+.alert{
+    margin-top: 20px;
+}

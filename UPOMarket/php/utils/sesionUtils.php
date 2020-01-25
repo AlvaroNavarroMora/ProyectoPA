@@ -16,11 +16,17 @@ function comprobarSesionActual($email) {
 
 function comprobarUsuarioContraseña($email, $password) {
 
-    $sentencia = "SELECT password FROM usuarios WHERE email = '" . $email . "'";
+    $sentencia = "SELECT email, password, nombre, tipo FROM usuarios WHERE email = '" . $email . "'";
+    
     $result = ejecutarConsulta($sentencia);
 
     $row = mysqli_fetch_array($result);
     //obtener $psswdHash de la BD
     $psswdHash = $row['password'];
-    return password_verify($password, $psswdHash);
+    $salida = false;
+    if (password_verify($password, $psswdHash)) {
+        $salida = 0;
+    }
+
+    return $salida;
 }
