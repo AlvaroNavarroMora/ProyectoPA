@@ -40,7 +40,7 @@ function mostrarPerfil($nombre, $email, $tipo, $errores = null) {
                         <a href="perfil.php" class="list-group-item">Ver Perfil</a>
                         <a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a>
                         <a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a>
-                        <a href="editarDireccion.php" class="list-group-item">Editar Dirección de Envío</a>
+                        <a href="editarDireccion.php" class="list-group-item">Direcciones</a>
                         <?php if ($tipo == "cliente") {
                             ?>
                             <a href="convertirseEnVendedor.php" class="list-group-item">Convertirse en vendedor</a>
@@ -50,7 +50,7 @@ function mostrarPerfil($nombre, $email, $tipo, $errores = null) {
                 </div>
                 <!-- /.col-lg-3 -->
 
-                <div class="col-lg-9">
+                <div class="col-lg-3">
                     <div id="contenedorPerfil">
                         <div class="card mt-4">
                             <div class="card-body">
