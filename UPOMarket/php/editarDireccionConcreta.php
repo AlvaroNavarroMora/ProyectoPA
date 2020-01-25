@@ -6,15 +6,30 @@ if (!isset($_SESSION['email'])) {
 
 include './utils/manejadorBD.php';
 include './utils/sesionUtils.php';
+include './utils/encriptar.php';
+$row = null;
+if (isset($_GET['dir'])) {
+    $dirId = filter_var(desencriptar(base64_decode($_GET['dir'])), FILTER_SANITIZE_NUMBER_INT);
+    if (!is_numeric($dirId)) {
+        $errores[] = "Parece que algo no ha ido bien";
+    } else {
+        $query = "SELECT * FROM direcciones WHERE id='" . $dirId . "'";
+        $result = ejecutarConsulta($query);
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_array($result);
+        }
+    }
+}
 
 /* Añadir nombre del formulario registro */
-if (isset($_POST['btnAddDireccion'])) {
+if (isset($_POST['btnEditDireccion'])) {
     $direccion1 = trim(filter_var($_POST['direccion1'], FILTER_SANITIZE_STRING));
     $direccion2 = trim(filter_var($_POST['direccion2'], FILTER_SANITIZE_STRING));
     $provincia = trim(filter_var($_POST['provincia'], FILTER_SANITIZE_STRING));
     $ciudad = trim(filter_var($_POST['ciudad'], FILTER_SANITIZE_STRING));
     $cp = filter_var($_POST['cp'], FILTER_SANITIZE_NUMBER_INT);
     $nombre = trim(filter_var($_POST['nombre'], FILTER_SANITIZE_STRING));
+    $dirId = filter_var(desencriptar(base64_decode($_POST['dir'])), FILTER_SANITIZE_MAGIC_QUOTES);
 
     if (strlen($direccion1) < 1) {
         $errores[] = "El campo Direccion es obligatorio.";
@@ -33,10 +48,10 @@ if (isset($_POST['btnAddDireccion'])) {
     }
 
     if (empty($errores)) {
-        if (aniadirDireccion($_SESSION["email"], $nombre, $direccion1, $direccion2, $provincia, $ciudad, $cp)) {
+        if (editarDireccion($dirId, $_SESSION["email"], $nombre, $direccion1, $direccion2, $provincia, $ciudad, $cp)) {
             header("location:./perfil.php");
         } else {
-            $errores[] = "No se pudo aniadir la direccion";
+            $errores[] = "No se pudo editar la direccion";
         }
     }
 
@@ -47,25 +62,22 @@ if (isset($_POST['btnAddDireccion'])) {
     }
 }
 
-function aniadirDireccion($email, $nombre, $direccion1, $direccion2, $provincia, $ciudad, $cp) {
+function editarDireccion($dirId, $email, $nombre, $direccion1, $direccion2, $provincia, $ciudad, $cp) {
     $correcto = false;
     $conn = openCon();
     mysqli_set_charset($conn, "utf8");
     if (!$conn) {
         die("No se pudo conectar a la Base de Datos");
     }
-    $query = "INSERT INTO direcciones (nombre,linea_1,linea_2,provincia,ciudad,cp) VALUES('$nombre','$direccion1','$direccion2','$provincia','$ciudad',$cp)";
+    $query = "UPDATE direcciones SET nombre='$nombre', linea_1='$direccion1', linea_2='$direccion2', provincia='$provincia', ciudad='$ciudad', cp='$cp' WHERE id='".$dirId."'";
     mysqli_query($conn, $query);
-    $id_direccion = mysqli_insert_id($conn);
-    if ($id_direccion > 0) {
-        $query = "INSERT INTO direcciones_clientes (email_cliente, direccion_cliente) VALUES('$email','$id_direccion')";
-        mysqli_query($conn, $query);
-        if(mysqli_affected_rows($conn) > 0) {
-            $correcto = true;
-        }
+    $affectedRows = mysqli_affected_rows($conn);
+    if ($affectedRows > 0) {
+        
+        $correcto = true;
     }
     closeCon($conn);
-    
+
     return $correcto;
 }
 ?>
@@ -92,9 +104,9 @@ function aniadirDireccion($email, $nombre, $direccion1, $direccion2, $provincia,
     </head>
 
     <body>
-        <?php
-        include './header.php';
-        ?>  
+<?php
+include './header.php';
+?>  
 
         <!-- Page Content -->
         <main class="container">
@@ -105,31 +117,32 @@ function aniadirDireccion($email, $nombre, $direccion1, $direccion2, $provincia,
                     <form enctype="multipart/form-data" action="#" method="post">
                         <div class="form-group">
                             <label for="direccion1">Dirección</label>
-                            <input id="producto" name="direccion1" class="form-control" required="true" placeholder="Calle, número, piso, puerta"/>
+                            <input id="producto" value="<?php echo $row['linea_1']; ?>" name="direccion1" class="form-control" required="true" placeholder="Calle, número, piso, puerta"/>
                             <label for="direccion2">Dirección</label>
-                            <input id="producto" name="direccion2" class="form-control" placeholder="Opcional"/>
+                            <input id="producto" value="<?php echo $row['linea_2']; ?>" name="direccion2" class="form-control" placeholder="Opcional"/>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="provincia">Provincia</label>
-                                <input type="text" class="form-control" name="provincia" placeholder="Provincia" required="true">
+                                <input type="text" value="<?php echo $row['provincia']; ?>" class="form-control" name="provincia" placeholder="Provincia" required="true">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="ciudad">Ciudad</label>
-                                <input type="text" class="form-control" name="ciudad" placeholder="Ciudad" required="true">
+                                <input type="text" value="<?php echo $row['ciudad']; ?>" class="form-control" name="ciudad" placeholder="Ciudad" required="true">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="cp">Código Postal</label>
-                                <input type="text" class="form-control" name="cp" placeholder="CP" required="true">
+                                <input type="text" value="<?php echo $row['cp']; ?>" class="form-control" name="cp" placeholder="CP" required="true">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="provincia">Nombre</label>
-                                <input type="text" class="form-control" name="nombre" placeholder="Guarda un nombre para esta dirección" required="true">
+                                <input type="text" value="<?php echo $row['nombre']; ?>" class="form-control" name="nombre" placeholder="Guarda un nombre para esta dirección" required="true">
                             </div>
                         </div>
-                        <button name="btnAddDireccion" type="submit" class="btn btn-primary">Añadir</button>
+                        <input type="hidden" name="dir" value="<?php echo $_GET['dir'];?>"/>
+                        <button name="btnEditDireccion" type="submit" class="btn btn-primary">Editar</button>
                     </form>
                 </div>
                 <!-- /.col-lg-9 -->

@@ -92,7 +92,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
 
                 <div class="col" id="contenedorDirecciones">
 
-                    <h3 id="titDirecciones">Mis direcciones</h3>
+                    <h3 id="titDirecciones" class="mt-4">Mis direcciones</h3>
 
                     <?php
                     $query = "SELECT direccion_cliente FROM direcciones_clientes WHERE email_cliente='" . $_SESSION['email'] . "'";
