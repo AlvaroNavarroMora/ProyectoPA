@@ -39,6 +39,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
                     <div class="list-group">
                         <p class="list-group-item active">Opciones</p>
                         <a href="perfil.php" class="list-group-item">Ver Perfil</a>
+                        <a href="#" class="list-group-item disabled">Cambiar Imagen</a>
                         <a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a>
                         <a href="editarDireccion.php" class="list-group-item">Direcciones</a>
                         <a href="cambiarContrasenia.php" class="list-group-item">Cambiar Contraseña</a>
