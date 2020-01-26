@@ -119,15 +119,20 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                             var txtBtn2 = idPedido + ";" + idProducto + ";N";
                             //
                             var btnDarRazonCliente = document.createElement("button");
+<<<<<<< HEAD
+                            $(btnDarRazonCliente).text("ACEPTAR");
+                            $(btnDarRazonCliente).attr("class", "btn btn-sm btn-success");
+=======
                             $(btnDarRazonCliente).text("DEVOLVER");
                             $(btnDarRazonCliente).attr("class", "btn btn-success");
+>>>>>>> master
                             $(btnDarRazonCliente).attr("onclick", "administrarReclamacion('" + txtBtn1 + "');");
                             aux.append(btnDarRazonCliente);
 
 
                             var btnDarRazonVendedor = document.createElement("button");
                             $(btnDarRazonVendedor).text("RECHAZAR");
-                            $(btnDarRazonVendedor).attr("class", "btn btn-danger");
+                            $(btnDarRazonVendedor).attr("class", "btn btn-sm btn-danger");
                             $(btnDarRazonVendedor).attr("onclick", "administrarReclamacion('" + txtBtn2 + "');");
 
 
