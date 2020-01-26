@@ -61,6 +61,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                         {"data": "id_pedido"},
                         {"data": "id_producto"},
                         {"data": "nombre"},
+                        {"data": "importe"},
                         {"data": "email_vendedor"},
                         {"data": "email_cliente"},
                         {"data": "descripcion"},
@@ -77,29 +78,29 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                         $("table tr").find('th:eq(1)').css("display", "none");
 
 
-                        /*$('#reclamaciones tbody').on('click', 'tr', function () {
-                         var value = table.row(this).data().id_pedido;
-                         var input = $("<input type='text' name='idVenta'/>");
-                         $(input).val(value);
-                         $("#formReclamaciones").append(input);
-                         
-                         value = table.row(this).data().email_cliente;
-                         input = $("<input type='text' name='cliente'/>");
-                         $(input).val(value);
-                         $("#formReclamaciones").append(input);
-                         
-                         value = table.row(this).data().importe;
-                         input = $("<input type='text' name='importe'/>");
-                         $(input).val(value);
-                         $("#formReclamaciones").append(input);
-                         
-                         value = table.row(this).data().fecha;
-                         input = $("<input type='text' name='fecha'/>");
-                         $(input).val(value);
-                         $("#formReclamaciones").append(input);
-                         
-                         $("#formReclamaciones").submit();
-                         });*/
+                        $('#reclamaciones tbody').on('click', 'tr', function () {
+                            var value = table.row(this).data().id_pedido;
+                            var input = $("<input type='text' name='idVenta'/>");
+                            $(input).val(value);
+                            $("#formReclamaciones").append(input);
+
+                            value = table.row(this).data().email_cliente;
+                            input = $("<input type='text' name='cliente'/>");
+                            $(input).val(value);
+                            $("#formReclamaciones").append(input);
+
+                            value = table.row(this).data().importe;
+                            input = $("<input type='text' name='importe'/>");
+                            $(input).val(value);
+                            $("#formReclamaciones").append(input);
+
+                            value = table.row(this).data().fecha;
+                            input = $("<input type='text' name='fecha'/>");
+                            $(input).val(value);
+                            $("#formReclamaciones").append(input);
+
+                            $("#formReclamaciones").submit();
+                        });
 
 
                         var decisiones = table.column(7).data();
@@ -107,18 +108,18 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
 
                         for (var i = 0; i < decisiones.length; i++) {
 
-                            var aux = $(rows[i]).children()[8];
+                            var aux = $(rows[i]).children()[9];
                             var idPedido = $($(rows[i]).children()[0]).text();
                             var idProducto = $($(rows[i]).children()[1]).text();
-                            var idVendedor = $($(rows[i]).children()[3]).text();
-                            var idCliente = $($(rows[i]).children()[4]).text();
+                            //var idVendedor = $($(rows[i]).children()[4]).text();
+                            //var idCliente = $($(rows[i]).children()[5]).text();
                             $(aux).empty();
                             //
                             var txtBtn1 = idPedido + ";" + idProducto + ";S";
                             var txtBtn2 = idPedido + ";" + idProducto + ";N";
                             //
                             var btnDarRazonCliente = document.createElement("button");
-                            $(btnDarRazonCliente).text("ACEPTAR");
+                            $(btnDarRazonCliente).text("DEVOLVER");
                             $(btnDarRazonCliente).attr("class", "btn btn-success");
                             $(btnDarRazonCliente).attr("onclick", "administrarReclamacion('" + txtBtn1 + "');");
                             aux.append(btnDarRazonCliente);
@@ -170,6 +171,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                                 <th>Pedido</th>
                                 <th>id Producto</th>
                                 <th>Producto</th>
+                                <th>Importe</th>
                                 <th>Vendedor</th>
                                 <th>Cliente</th>
                                 <th>Descripción</th>
@@ -195,12 +197,13 @@ function obtenerMisReclamaciones($email) {
     $con = openCon();
     mysqli_set_charset($con, "utf8");
 
-    $query = "SELECT r.`id_pedido`, r.`id_producto`,p.`nombre`, p.`email_vendedor`, v.`email_cliente`, r.`descripcion`, r.`estado`, r.`fecha`
-                 FROM `reclamaciones` as r,`productos` as p, `pedidos` as v 
+    $query = "SELECT r.`id_pedido`, r.`id_producto`,sum(lp.`cantidad`*p.`precio`) as 'importe',p.`nombre`, p.`email_vendedor`, v.`email_cliente`, r.`descripcion`, r.`estado`, r.`fecha`
+                 FROM `reclamaciones` as r,`productos` as p, `pedidos` as v , `lineas_de_pedido` as lp
                  WHERE r.`id_producto`=p.`id` 
                  AND r.`id_pedido`=v.`id` 
                  AND p.`email_vendedor`='$email'
-                 and r.`estado`='Pendiente'";
+                 AND r.`estado`='Pendiente' 
+                 AND lp.`id_pedido` = v.`id` AND lp.`id_producto` = p.`id` GROUP BY lp.id_pedido";
 
     $result = mysqli_query($con, $query);
     $conflictos = Array();

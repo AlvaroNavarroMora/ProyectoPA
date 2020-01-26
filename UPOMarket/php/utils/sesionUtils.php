@@ -31,8 +31,8 @@ function comprobarUsuarioContraseña($email, $password) {
     return $salida;
 }
 
-function esAdministrador($email, $tipo) {
-    $query = "SELECT * FROM `usuarios` WHERE `email`='$email' AND `tipo`='$tipo'";
+function existeUsuario($email) {
+    $query = "SELECT * FROM `usuarios` WHERE `email`='$email'";
     $result = ejecutarConsulta($query);
     $salida = false;
 
