@@ -41,6 +41,7 @@ function mostrarPerfil($nombre, $email, $tipo, $errores = null) {
                         <a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a>
                         <a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a>
                         <a href="editarDireccion.php" class="list-group-item">Direcciones</a>
+                        <a href="#" class="list-group-item disabled">Cambiar Contraseña</a>
                         <?php if ($tipo == "cliente") {
                             ?>
                             <a href="convertirseEnVendedor.php" class="list-group-item">Convertirse en vendedor</a>
