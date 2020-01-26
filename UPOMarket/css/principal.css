@@ -1,6 +1,7 @@
 main.container {
     width: 90%;
     margin: 0 auto;
+    min-height: 50vh !important;
 }
 #logo_main {
     display: block;
@@ -24,4 +25,7 @@ main.container {
 }
 .card .card-img-top {
     max-height: 200px !important;
+}
+html {
+    background-color: #7A7D7F;
 }
