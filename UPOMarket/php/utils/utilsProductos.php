@@ -246,3 +246,10 @@ function obtenerDireccion($idDireccion) {
     }
     return $direccion;
 }
+
+function listarProductosPedido($idPedido) {
+    $query = "SELECT pr.`nombre`,pr.`id` FROM `pedidos` as p, `productos`as pr, `lineas_de_pedido` as lp WHERE p.`id`='$idPedido' AND lp.`id_pedido`=p.`id` AND lp.`id_producto`=pr.`id`";
+    $result = ejecutarConsulta($query);
+    $lista = mysqli_fetch_all($result);
+    return $lista;
+}

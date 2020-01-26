@@ -82,7 +82,6 @@ if (isset($_POST['submitReclamacion'])) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -134,7 +133,7 @@ if (isset($_POST['submitReclamacion'])) {
                     ?>  
 
                     <form enctype="multipart/form-data" action="#" method="post">
-                        <input type="pedido" class="form-control" name="pedido" required="true" value="<?php echo $idPedido ?>">
+                        <input type="hidden" class="form-control" name="pedido" required="true" value="<?php echo $idPedido ?>" >
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="email">Introduce tú Email</label>
