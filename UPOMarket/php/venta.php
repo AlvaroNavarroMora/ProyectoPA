@@ -102,7 +102,7 @@ function obtenerVenta($email, $idVenta) {
                         echo "<td class='text-center'>" . number_format($v["precio"], 2) . "</td>";
                         echo "<td class='text-center'>" . number_format($v["cantidad"] * $v["precio"], 2) . "</td>";
                         echo "<td class='text-center'>";
-                        echo "<select id='estado' class='custom-select' name='estado-".$v[id]."'>";
+                        echo "<select id='estado' class='custom-select' name='estado-".$v["id"]."'>";
                         echo "<option value='Procesado' ";
                         if ($v["estado"] == "Procesado") {
                             echo "selected";
