@@ -19,8 +19,22 @@ function existeConflicto($idPedido, $idProducto) {
     return $salida;
 }
 
-function resolverConflicto($email) {
-    $query = "UPDATE `reclamaciones` SET `estado`='$email' WHERE `id_pedido`='11' AND `id_producto`='14';";
+function resolverConflicto($id_ped, $id_prod, $email) {
+    $query = "UPDATE `reclamaciones` SET `estado`='$email' WHERE `id_pedido`='$id_ped' AND `id_producto`='$id_prod';";
     echo $query;
     $result = ejecutarConsulta($query);
+}
+
+function administrarConflicto($id_ped, $id_prod, $marca) {
+    $query = "UPDATE `reclamaciones` SET `estado`='$marca' WHERE `id_pedido`='$id_ped' AND `id_producto`='$id_prod';";
+
+    $result = ejecutarConsulta($query);
+}
+
+function crearReclamacion($id_ped, $id_prod, $descripcion) {
+    if (!existeConflicto($idPedido, $idProducto)) {
+        $query = "INSERT INTO `reclamaciones`(`id_pedido`, `id_producto`, `descripcion`, `estado`) VALUES ('$id_ped', '$id_prod', '$descripcion','Pendiente')";
+
+        $result = ejecutarConsulta($query);
+    }
 }

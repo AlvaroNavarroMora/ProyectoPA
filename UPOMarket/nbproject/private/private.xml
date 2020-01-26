@@ -3,16 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/utils/utilsProductos.php</file>
+            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/mostrarPedido.php</file>
             <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/carrito.php</file>
-            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/utils/encriptar.php</file>
+            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/utils/manejadorBD.php</file>
             <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/finalizarCompra.php</file>
+            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/login.php</file>
             <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/procesarCompra.php</file>
-            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/css/perfil.css</file>
-            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/cambiarImagenDePerfil.php</file>
-            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/header.php</file>
-            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/editarDireccion.php</file>
-            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/aniadirDireccion.php</file>
-            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/editarDireccionConcreta.php</file>
+            <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/utils/anadirEliminarCarrito.php</file>
             <file>file:/C:/xampp/htdocs/PA/ProyectoPA/UPOMarket/php/perfil.php</file>
         </group>
     </open-files>

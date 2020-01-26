@@ -121,9 +121,6 @@ if (isset($_POST['btnAddProduct'])) {
             $errores[] = "Error al guardar los datos";
         }
     }
-    if (isset($errores)) {
-        print_r($errores);
-    }
 }
 ?>
 
@@ -231,7 +228,7 @@ if (isset($_POST['btnAddProduct'])) {
                         </div>
                         <div class="form-group">
                             <label for="producto">Nombre del producto</label>
-                            <input id="producto" name="producto" class="form-control" required="true"/>
+                            <input id="producto" name="producto" class="form-control" required="true" placeholder="Nombre del producto"/>
                             <label for="descripcion">Descripción</label>
                             <textarea name="descripcion" class="form-control" placeholder="Escriba una descripción del producto" rows="5" required="true"></textarea><!--Controlar numero de palabras JS? -->
                         </div>
@@ -293,6 +290,7 @@ if (isset($_POST['btnAddProduct'])) {
                                 <button name="btnAddProduct" type="submit" class="btn btn-primary">Crear</button>
                                 <!-- /.col-lg-9 -->
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>

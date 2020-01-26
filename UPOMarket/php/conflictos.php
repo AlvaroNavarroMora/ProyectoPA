@@ -13,11 +13,11 @@ if (isset($_GET['datos'])) {
     $idUsuario = $aux[2];
 
     if (esAdministrador($_SESSION['email'], $_SESSION['tipo']) && existeConflicto($idPedido, $idProducto)) {
-        resolverConflicto($idUsuario);
+        resolverConflicto($idPedido, $idProducto, $idUsuario);
     }
     header("Location: ./conflictos.php");
 }
-if (isset($_SESSION['email'])) {
+if (isset($_SESSION['email']) && existeUsuario($_SESSION['email']) && $_SESSION['tipo'] == "admin") {
     $data = json_encode(obtenerConflictos());
 } else {
     header('Location: ./principal.php');
@@ -72,7 +72,7 @@ if (isset($_SESSION['email'])) {
 
                     var decisiones = table.column(7).data();
                     var rows = $("tbody tr");
-                    /*modif acp*/
+
                     for (var i = 0; i < decisiones.length; i++) {
 
                         var aux = $(rows[i]).children()[7];
@@ -110,8 +110,6 @@ if (isset($_SESSION['email'])) {
         }
 
         function darRazon(datosReclamacion) {
-            var aux = datosReclamacion.split(";");
-
             location.href = "./conflictos.php?datos=" + datosReclamacion;
 
         }
@@ -121,9 +119,9 @@ if (isset($_SESSION['email'])) {
 <body>
     <form id="formProducto" action="producto.php" method="get" hidden>
     </form>
-<?php
-include './header.php';
-?>
+    <?php
+    include './header.php';
+    ?>
     <!-- Page Content -->
     <main class="container">
         <div class="row">
@@ -151,36 +149,36 @@ include './header.php';
         </div>
         <!-- /.row -->
     </main>
-<?php
-include '../html/footer.html';
-?>
+    <?php
+    include '../html/footer.html';
+    ?>
 </body>
 </html>
-    <?php
+<?php
 
-    function obtenerConflictos() {
-        $con = openCon();
-        mysqli_set_charset($con, "utf8");
-        $query = "SELECT r.`id_pedido`, r.`id_producto`,p.`nombre`, p.`email_vendedor`, v.`email_cliente`, r.`descripcion`, r.`estado`, r.`fecha` "
-                . "FROM `reclamaciones` as r,`productos` as p, `pedidos` as v "
-                . "WHERE r.`id_producto`=p.`id` "
-                . "AND r.`id_pedido`=v.`id` "
-                . "and r.`estado`='No Resuelto'";
-        $result = mysqli_query($con, $query);
-        $conflictos = Array();
-        $i = 0;
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $conflictos[] = $row;
-                $conflictos[$i]['decision'] = "";
+function obtenerConflictos() {
+    $con = openCon();
+    mysqli_set_charset($con, "utf8");
+    $query = "SELECT r.`id_pedido`, r.`id_producto`,p.`nombre`, p.`email_vendedor`, v.`email_cliente`, r.`descripcion`, r.`estado`, r.`fecha` "
+            . "FROM `reclamaciones` as r,`productos` as p, `pedidos` as v "
+            . "WHERE r.`id_producto`=p.`id` "
+            . "AND r.`id_pedido`=v.`id` "
+            . "and r.`estado`='No Resuelto'";
+    $result = mysqli_query($con, $query);
+    $conflictos = Array();
+    $i = 0;
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $conflictos[] = $row;
+            $conflictos[$i]['decision'] = "";
 
-                $i++;
-            }
+            $i++;
         }
-
-        closeCon($con);
-        return $conflictos;
     }
-    ?>
+
+    closeCon($con);
+    return $conflictos;
+}
+?>
 
 
