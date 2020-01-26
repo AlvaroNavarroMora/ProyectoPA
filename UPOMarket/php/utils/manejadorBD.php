@@ -11,6 +11,7 @@ function openCon() {
     } catch (Exception $ex) {
         echo 'Excepcion: ', $ex->getMessage(), "\n";
     }
+    mysqli_set_charset($link, "utf8");
     return $link;
 }
 
