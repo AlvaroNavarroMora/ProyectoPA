@@ -170,6 +170,10 @@ class Color
      */
     static function parse($color)
     {
+        if ($color === null) {
+            return null;
+        }
+
         if (is_array($color)) {
             // Assume the array has the right format...
             // FIXME: should/could verify this.
@@ -208,7 +212,7 @@ class Color
         else if ($length == 9 && $color[0] === "#") {
             $alpha = round(hexdec(mb_substr($color, 7, 2))/255, 2);
             return $cache[$color] = self::getArray(mb_substr($color, 1, 8), $alpha);
-        } // rgb( r,g,b ) / rgbaa( r,g,b,α ) format
+        } // rgb( r,g,b ) / rgba( r,g,b,α ) format
         else if (mb_strpos($color, "rgb") !== false) {
             $i = mb_strpos($color, "(");
             $j = mb_strpos($color, ")");

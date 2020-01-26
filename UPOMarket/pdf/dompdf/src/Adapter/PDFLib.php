@@ -13,7 +13,6 @@ use Dompdf\Canvas;
 use Dompdf\Dompdf;
 use Dompdf\Helpers;
 use Dompdf\Exception;
-use Dompdf\FontMetrics;
 use Dompdf\Image\Cache;
 use Dompdf\PhpEvaluator;
 
@@ -40,7 +39,7 @@ class PDFLib implements Canvas
      *
      * @var array;
      */
-    static public $PAPER_SIZES = array(); // Set to Dompdf\Adapter\CPDF::$PAPER_SIZES below.
+    public static $PAPER_SIZES = array(); // Set to Dompdf\Adapter\CPDF::$PAPER_SIZES below.
 
     /**
      * Whether to create PDFs in memory or on disk
@@ -50,14 +49,46 @@ class PDFLib implements Canvas
     static $IN_MEMORY = true;
 
     /**
-     * @var Dompdf
+     * Saves the major version of PDFLib for compatibility requests
+     *
+     * @var null|int
+     */
+    private static $MAJOR_VERSION = null;
+
+
+    /**
+     * Transforms the list of native fonts into PDFLib compatible names (casesensitive)
+     *
+     * @var array
+     */
+    public static $nativeFontsTpPDFLib = array(
+        "courier"               => "Courier",
+        "courier-bold"          => "Courier-Bold",
+        "courier-oblique"       => "Courier-Oblique",
+        "courier-boldoblique"   => "Courier-BoldOblique",
+        "helvetica"             => "Helvetica",
+        "helvetica-bold"        => "Helvetica-Bold",
+        "helvetica-oblique"     => "Helvetica-Oblique",
+        "helvetica-boldoblique" => "Helvetica-BoldOblique",
+        "times"                 => "Times-Roman",
+        "times-roman"           => "Times-Roman",
+        "times-bold"            => "Times-Bold",
+        "times-italic"          => "Times-Italic",
+        "times-bolditalic"      => "Times-BoldItalic",
+        "symbol"                => "Symbol",
+        "zapfdinbats"           => "ZapfDingbats",
+        "zapfdingbats"          => "ZapfDingbats",
+    );
+
+    /**
+     * @var \Dompdf\Dompdf
      */
     private $_dompdf;
 
     /**
      * Instance of PDFLib class
      *
-     * @var \PDFlib
+     * @var \PDFLib
      */
     private $_pdf;
 
@@ -118,6 +149,13 @@ class PDFLib implements Canvas
     private $_fonts;
 
     /**
+     * Cache of fontFile checks
+     *
+     * @var array
+     */
+    private $_fontsFiles;
+
+    /**
      * List of objects (templates) to add to multiple pages
      *
      * @var array
@@ -162,7 +200,7 @@ class PDFLib implements Canvas
     /**
      * Class constructor
      *
-     * @param mixed $paper The size of paper to use either a string (see {@link Dompdf\Adapter\CPDF::$PAPER_SIZES}) or
+     * @param string|array $paper The size of paper to use either a string (see {@link Dompdf\Adapter\CPDF::$PAPER_SIZES}) or
      *                            an array(xmin,ymin,xmax,ymax)
      * @param string $orientation The orientation of the document (either 'landscape' or 'portrait')
      * @param Dompdf $dompdf
@@ -171,7 +209,7 @@ class PDFLib implements Canvas
     {
         if (is_array($paper)) {
             $size = $paper;
-        } else if (isset(self::$PAPER_SIZES[mb_strtolower($paper)])) {
+        } elseif (isset(self::$PAPER_SIZES[mb_strtolower($paper)])) {
             $size = self::$PAPER_SIZES[mb_strtolower($paper)];
         } else {
             $size = self::$PAPER_SIZES["letter"];
@@ -189,14 +227,26 @@ class PDFLib implements Canvas
         $this->_pdf = new \PDFLib();
 
         $license = $dompdf->getOptions()->getPdflibLicense();
-        if (strlen($license) > 0)
-            $this->_pdf->set_parameter("license", $license);
+        if (strlen($license) > 0) {
+            $this->setPDFLibParameter("license", $license);
+        }
 
-        $this->_pdf->set_parameter("textformat", "utf8");
-        $this->_pdf->set_parameter("fontwarning", "false");
+        $this->setPDFLibParameter("textformat", "utf8");
+        if ($this->getPDFLibMajorVersion() >= 7) {
+            $this->setPDFLibParameter("errorpolicy", "return");
+            //            $this->_pdf->set_option('logging={filename=' . \APP_PATH . '/logs/pdflib.log classes={api=1 warning=2}}');
+            //            $this->_pdf->set_option('errorpolicy=exception');
+        } else {
+            $this->setPDFLibParameter("fontwarning", "false");
+        }
 
-        // TODO: fetch PDFLib version information for the producer field
-        $this->_pdf->set_info("Producer Addendum", sprintf("%s + PDFLib", $dompdf->version));
+        $searchPath = $this->_dompdf->getOptions()->getFontDir();
+        if (empty($searchPath) === false) {
+            $this->_pdf->set_option('searchpath={' . $searchPath . '}');
+        }
+
+        // fetch PDFLib version information for the producer field
+        $this->_pdf->set_info("Producer Addendum", sprintf("%s + PDFLib %s", $dompdf->version, $this->getPDFLibMajorVersion()));
 
         // Silence pedantic warnings about missing TZ settings
         $tz = @date_default_timezone_get();
@@ -204,11 +254,11 @@ class PDFLib implements Canvas
         $this->_pdf->set_info("Date", date("Y-m-d"));
         date_default_timezone_set($tz);
 
-        if (self::$IN_MEMORY)
+        if (self::$IN_MEMORY) {
             $this->_pdf->begin_document("", "");
-        else {
+        } else {
             $tmp_dir = $this->_dompdf->getOptions()->getTempDir();
-            $tmp_name = tempnam($tmp_dir, "libdompdf_pdf_");
+            $tmp_name = @tempnam($tmp_dir, "libdompdf_pdf_");
             @unlink($tmp_name);
             $this->_file = "$tmp_name.pdf";
             $this->_pdf->begin_document($this->_file, "");
@@ -280,17 +330,22 @@ class PDFLib implements Canvas
      *
      * The return value is an integer ID for the new object.
      *
-     * @see PDFLib_Adapter::close_object()
-     * @see PDFLib_Adapter::add_object()
+     * @see PDFLib::close_object()
+     * @see PDFLib::add_object()
      *
      * @return int
      */
     public function open_object()
     {
         $this->_pdf->suspend_page("");
-        $ret = $this->_pdf->begin_template($this->_width, $this->_height);
+        if ($this->getPDFLibMajorVersion() >= 7) {
+            $ret = $this->_pdf->begin_template_ext($this->_width, $this->_height, null);
+        } else {
+            $ret = $this->_pdf->begin_template($this->_width, $this->_height);
+        }
         $this->_pdf->save();
         $this->_objs[$ret] = array("start_page" => $this->_page_number);
+
         return $ret;
     }
 
@@ -311,12 +366,16 @@ class PDFLib implements Canvas
     /**
      * Close the current template
      *
-     * @see PDFLib_Adapter::open_object()
+     * @see PDFLib::open_object()
      */
     public function close_object()
     {
         $this->_pdf->restore();
-        $this->_pdf->end_template();
+        if ($this->getPDFLibMajorVersion() >= 7) {
+            $this->_pdf->end_template_ext($this->_width, $this->_height);
+        } else {
+            $this->_pdf->end_template();
+        }
         $this->_pdf->resume_page("pagenumber=" . $this->_page_number);
     }
 
@@ -332,7 +391,7 @@ class PDFLib implements Canvas
      * - 'nextodd' add to all odd numbered pages from the next one
      * - 'nexteven' add to all even numbered pages from the next one
      *
-     * @param int $object the object handle returned by open_object()
+     * @param int    $object the object handle returned by open_object()
      * @param string $where
      */
     public function add_object($object, $where = 'all')
@@ -341,8 +400,9 @@ class PDFLib implements Canvas
         if (mb_strpos($where, "next") !== false) {
             $this->_objs[$object]["start_page"]++;
             $where = str_replace("next", "", $where);
-            if ($where == "")
+            if ($where == "") {
                 $where = "add";
+            }
         }
 
         $this->_objs[$object]["where"] = $where;
@@ -359,8 +419,9 @@ class PDFLib implements Canvas
     public function stop_object($object)
     {
 
-        if (!isset($this->_objs[$object]))
+        if (!isset($this->_objs[$object])) {
             return;
+        }
 
         $start = $this->_objs[$object]["start_page"];
         $where = $this->_objs[$object]["where"];
@@ -397,7 +458,6 @@ class PDFLib implements Canvas
                 $this->_pdf->fit_image($obj, 0, 0, "");
             }
         }
-
     }
 
     /**
@@ -451,34 +511,60 @@ class PDFLib implements Canvas
     /**
      * Sets the line style
      *
-     * @param float $width
+     * @param float  $width
      * @param        $cap
      * @param string $join
-     * @param array $dash
+     * @param array  $dash
      *
      * @return void
      */
     protected function _set_line_style($width, $cap, $join, $dash)
     {
-        if (count($dash) == 1)
-            $dash[] = $dash[0];
+        if (!is_array($dash)) {
+            $dash = array();
+        }
 
-        if (count($dash) > 1)
-            $this->_pdf->setdashpattern("dasharray={" . implode(" ", $dash) . "}");
-        else
-            $this->_pdf->setdash(0, 0);
+        if (count($dash) == 1) {
+            $dash[] = $dash[0];
+        }
+
+        if ($this->getPDFLibMajorVersion() >= 9) {
+            if (count($dash) > 1) {
+                $this->_pdf->set_graphics_option("dasharray={" . implode(" ", $dash) . "}");
+            } else {
+                $this->_pdf->set_graphics_option("dasharray=none");
+            }
+        } else {
+            if (count($dash) > 1) {
+                $this->_pdf->setdashpattern("dasharray={" . implode(" ", $dash) . "}");
+            } else {
+                $this->_pdf->setdash(0, 0);
+            }
+        }
 
         switch ($join) {
             case "miter":
-                $this->_pdf->setlinejoin(0);
+                if ($this->getPDFLibMajorVersion() >= 9) {
+                    $this->_pdf->set_graphics_option('linejoin=0');
+                } else {
+                    $this->_pdf->setlinejoin(0);
+                }
                 break;
 
             case "round":
-                $this->_pdf->setlinejoin(1);
+                if ($this->getPDFLibMajorVersion() >= 9) {
+                    $this->_pdf->set_graphics_option('linejoin=1');
+                } else {
+                    $this->_pdf->setlinejoin(1);
+                }
                 break;
 
             case "bevel":
-                $this->_pdf->setlinejoin(2);
+                if ($this->getPDFLibMajorVersion() >= 9) {
+                    $this->_pdf->set_graphics_option('linejoin=2');
+                } else {
+                    $this->_pdf->setlinejoin(2);
+                }
                 break;
 
             default:
@@ -487,15 +573,27 @@ class PDFLib implements Canvas
 
         switch ($cap) {
             case "butt":
-                $this->_pdf->setlinecap(0);
+                if ($this->getPDFLibMajorVersion() >= 9) {
+                    $this->_pdf->set_graphics_option('linecap=0');
+                } else {
+                    $this->_pdf->setlinecap(0);
+                }
                 break;
 
             case "round":
-                $this->_pdf->setlinecap(1);
+                if ($this->getPDFLibMajorVersion() >= 9) {
+                    $this->_pdf->set_graphics_option('linecap=1');
+                } else {
+                    $this->_pdf->setlinecap(1);
+                }
                 break;
 
             case "square":
-                $this->_pdf->setlinecap(2);
+                if ($this->getPDFLibMajorVersion() >= 9) {
+                    $this->_pdf->set_graphics_option('linecap=2');
+                } else {
+                    $this->_pdf->setlinecap(2);
+                }
                 break;
 
             default:
@@ -512,7 +610,11 @@ class PDFLib implements Canvas
      */
     protected function _set_stroke_color($color)
     {
+        // TODO: we should check the current PDF stroke color
+        // instead of the cached value
         if ($this->_last_stroke_color == $color) {
+            // FIXME: do nothing, this optimization is broken by the
+            // stroke being set as a side effect of other operations
             //return;
         }
 
@@ -534,7 +636,7 @@ class PDFLib implements Canvas
             list($c1, $c2, $c3, $c4) = array($color[0], $color[1], null, null);
         }
 
-        $this->_set_stroke_opacity($alpha);
+        $this->_set_stroke_opacity($alpha, "Normal");
         $this->_pdf->setcolor("stroke", $type, $c1, $c2, $c3, $c4);
     }
 
@@ -545,8 +647,13 @@ class PDFLib implements Canvas
      */
     protected function _set_fill_color($color)
     {
-        if ($this->_last_fill_color == $color)
-            return;
+        // TODO: we should check the current PDF fill color
+        // instead of the cached value
+        if ($this->_last_fill_color == $color) {
+            // FIXME: do nothing, this optimization is broken by the
+            // fill being set as a side effect of other operations
+            //return;
+        }
 
         $alpha = isset($color["alpha"]) ? $color["alpha"] : 1;
         if (isset($this->_current_opacity)) {
@@ -566,7 +673,7 @@ class PDFLib implements Canvas
             list($c1, $c2, $c3, $c4) = array($color[0], $color[1], null, null);
         }
 
-        $this->_set_fill_opacity($alpha);
+        $this->_set_fill_opacity($alpha, "Normal");
         $this->_pdf->setcolor("fill", $type, $c1, $c2, $c3, $c4);
     }
 
@@ -578,7 +685,7 @@ class PDFLib implements Canvas
      */
     public function _set_fill_opacity($opacity, $mode = "Normal")
     {
-        if ($mode === "Normal") {
+        if ($mode === "Normal" && is_null($opacity) === false) {
             $this->_set_gstate("opacityfill=$opacity");
         }
     }
@@ -591,7 +698,7 @@ class PDFLib implements Canvas
      */
     public function _set_stroke_opacity($opacity, $mode = "Normal")
     {
-        if ($mode === "Normal") {
+        if ($mode === "Normal" && is_null($opacity) === false) {
             $this->_set_gstate("opacitystroke=$opacity");
         }
     }
@@ -604,7 +711,7 @@ class PDFLib implements Canvas
      */
     public function set_opacity($opacity, $mode = "Normal")
     {
-        if ($mode === "Normal") {
+        if ($mode === "Normal" && is_null($opacity) === false) {
             $this->_set_gstate("opacityfill=$opacity opacitystroke=$opacity");
             $this->_current_opacity = $opacity;
         }
@@ -622,6 +729,7 @@ class PDFLib implements Canvas
             $gstate = $this->_pdf->create_gstate($gstate_options);
             $this->_gstates[$gstate] = $gstate_options;
         }
+
         return $this->_pdf->set_gstate($gstate);
     }
 
@@ -639,7 +747,7 @@ class PDFLib implements Canvas
          * fitwindow Fit the complete page to the window.
          * fixed
          */
-        //$this->_pdf->set_parameter("openaction", $view);
+        //$this->setPDFLibParameter("openaction", $view);
     }
 
     /**
@@ -653,48 +761,17 @@ class PDFLib implements Canvas
      */
     protected function _load_font($font, $encoding = null, $options = "")
     {
-        // Set up font paths
-        if ($this->_pdf->get_parameter("FontOutline", 1) === "") {
-            $families = $this->_dompdf->getFontMetrics()->getFontFamilies();
-            foreach ($families as $files) {
-                foreach ($files as $file) {
-                    $face = basename($file);
-                    $afm = null;
-
-                    // Prefer ttfs to afms
-                    if (file_exists("$file.ttf")) {
-                        $outline = "$file.ttf";
-
-                    } else if (file_exists("$file.TTF")) {
-                        $outline = "$file.TTF";
-
-                    } else if (file_exists("$file.pfb")) {
-                        $outline = "$file.pfb";
-                        if (file_exists("$file.afm")) {
-                            $afm = "$file.afm";
-                        }
-
-                    } else if (file_exists("$file.PFB")) {
-                        $outline = "$file.PFB";
-                        if (file_exists("$file.AFM")) {
-                            $afm = "$file.AFM";
-                        }
-                    } else {
-                        continue;
-                    }
-
-                    $this->_pdf->set_parameter("FontOutline", "\{$face\}=\{$outline\}");
-
-                    if (!is_null($afm)) {
-                        $this->_pdf->set_parameter("FontAFM", "\{$face\}=\{$afm\}");
-                    }
-                }
-            }
+        // Fix for PDFLibs case-sensitive font names
+        $baseFont = basename($font);
+        $isNativeFont = false;
+        if (isset(self::$nativeFontsTpPDFLib[$baseFont])) {
+            $font = self::$nativeFontsTpPDFLib[$baseFont];
+            $isNativeFont = true;
         }
 
         // Check if the font is a native PDF font
         // Embed non-native fonts
-        $test = strtolower(basename($font));
+        $test = strtolower($baseFont);
         if (in_array($test, DOMPDF::$nativeFonts)) {
             $font = basename($font);
         } else {
@@ -713,13 +790,71 @@ class PDFLib implements Canvas
         }
 
         $key = "$font:$encoding:$options";
-
         if (isset($this->_fonts[$key])) {
             return $this->_fonts[$key];
-        } else {
+        }
+
+        // Native fonts are build in, just load it
+        if ($isNativeFont) {
             $this->_fonts[$key] = $this->_pdf->load_font($font, $encoding, $options);
+
             return $this->_fonts[$key];
         }
+
+        $fontOutline = $this->getPDFLibParameter("FontOutline", 1);
+        if ($fontOutline === "" || $fontOutline <= 0) {
+            $families = $this->_dompdf->getFontMetrics()->getFontFamilies();
+            foreach ($families as $files) {
+                foreach ($files as $file) {
+                    $face = basename($file);
+                    $afm = null;
+
+                    if (isset($this->_fontsFiles[$face])) {
+                        continue;
+                    }
+
+                    // Prefer ttfs to afms
+                    if (file_exists("$file.ttf")) {
+                        $outline = "$file.ttf";
+                    } elseif (file_exists("$file.TTF")) {
+                        $outline = "$file.TTF";
+                    } elseif (file_exists("$file.pfb")) {
+                        $outline = "$file.pfb";
+                        if (file_exists("$file.afm")) {
+                            $afm = "$file.afm";
+                        }
+                    } elseif (file_exists("$file.PFB")) {
+                        $outline = "$file.PFB";
+                        if (file_exists("$file.AFM")) {
+                            $afm = "$file.AFM";
+                        }
+                    } else {
+                        continue;
+                    }
+
+                    $this->_fontsFiles[$face] = true;
+
+                    if ($this->getPDFLibMajorVersion() >= 9) {
+                        $this->setPDFLibParameter("FontOutline", '{' . "$face=$outline" . '}');
+                    } else {
+                        $this->setPDFLibParameter("FontOutline", "\{$face\}=\{$outline\}");
+                    }
+
+                    if (is_null($afm)) {
+                        continue;
+                    }
+                    if ($this->getPDFLibMajorVersion() >= 9) {
+                        $this->setPDFLibParameter("FontAFM", '{' . "$face=$afm" . '}');
+                    } else {
+                        $this->setPDFLibParameter("FontAFM", "\{$face\}=\{$afm\}");
+                    }
+                }
+            }
+        }
+
+        $this->_fonts[$key] = $this->_pdf->load_font($font, $encoding, $options);
+
+        return $this->_fonts[$key];
     }
 
     /**
@@ -753,6 +888,27 @@ class PDFLib implements Canvas
         $this->_pdf->moveto($x1, $y1);
         $this->_pdf->lineto($x2, $y2);
         $this->_pdf->stroke();
+
+        $this->_set_stroke_opacity($this->_current_opacity, "Normal");
+    }
+
+    /**
+     * Draw line at the specified coordinates on every page.
+     *
+     * See {@link Style::munge_color()} for the format of the colour array.
+     *
+     * @param float $x1
+     * @param float $y1
+     * @param float $x2
+     * @param float $y2
+     * @param array $color
+     * @param float $width
+     * @param array $style optional
+     */
+    public function page_line($x1, $y1, $x2, $y2, $color, $width, $style = array())
+    {
+        $_t = 'line';
+        $this->_page_text[] = compact('_t', 'x1', 'y1', 'x2', 'y2', 'color', 'width', 'style');
     }
 
     /**
@@ -775,6 +931,8 @@ class PDFLib implements Canvas
 
         $this->_pdf->arc($x1, $y1, $r1, $astart, $aend);
         $this->_pdf->stroke();
+
+        $this->_set_stroke_opacity($this->_current_opacity, "Normal");
     }
 
     /**
@@ -784,7 +942,7 @@ class PDFLib implements Canvas
      * @param float $h
      * @param array $color
      * @param float $width
-     * @param null $style
+     * @param null  $style
      */
     public function rectangle($x1, $y1, $w, $h, $color, $width, $style = null)
     {
@@ -795,6 +953,8 @@ class PDFLib implements Canvas
 
         $this->_pdf->rect($x1, $y1, $w, $h);
         $this->_pdf->stroke();
+
+        $this->_set_stroke_opacity($this->_current_opacity, "Normal");
     }
 
     /**
@@ -812,6 +972,8 @@ class PDFLib implements Canvas
 
         $this->_pdf->rect(floatval($x1), floatval($y1), floatval($w), floatval($h));
         $this->_pdf->fill();
+
+        $this->_set_fill_opacity($this->_current_opacity, "Normal");
     }
 
     /**
@@ -842,8 +1004,37 @@ class PDFLib implements Canvas
      */
     public function clipping_roundrectangle($x1, $y1, $w, $h, $rTL, $rTR, $rBR, $rBL)
     {
-        // @todo
-        $this->clipping_rectangle($x1, $y1, $w, $h);
+        if ($this->getPDFLibMajorVersion() < 9) {
+            //TODO: add PDFLib7 support
+            $this->clipping_rectangle($x1, $y1, $w, $h);
+            return;
+        }
+
+        $this->_pdf->save();
+
+        // we use 0,0 for the base coordinates for the path points
+        // since we're drawing the path at the $x1,$y1 coordinates
+
+        $path = 0;
+        //start: left edge, top end
+        $path = $this->_pdf->add_path_point($path, 0, 0 - $rTL + $h, "move", "");
+        // line: left edge, bottom end
+        $path = $this->_pdf->add_path_point($path, 0, 0 + $rBL, "line", "");
+        // curve: bottom-left corner
+        $path = $this->_pdf->add_path_point($path, 0 + $rBL, 0, "elliptical", "radius=$rBL clockwise=false");
+        // line: bottom edge, left end
+        $path = $this->_pdf->add_path_point($path, 0 - $rBR + $w, 0, "line", "");
+        // curve: bottom-right corner
+        $path = $this->_pdf->add_path_point($path, 0 + $w, 0 + $rBR, "elliptical", "radius=$rBR clockwise=false");
+        // line: right edge, top end
+        $path = $this->_pdf->add_path_point($path, 0 + $w, 0 - $rTR + $h, "line", "");
+        // curve: top-right corner
+        $path = $this->_pdf->add_path_point($path, 0 - $rTR + $w, 0 +$h, "elliptical", "radius=$rTR clockwise=false");
+        // line: top edge, left end
+        $path = $this->_pdf->add_path_point($path, 0 + $rTL, 0 + $h, "line", "");
+        // curve: top-left corner
+        $path = $this->_pdf->add_path_point($path, 0, 0 - $rTL + $h, "elliptical", "radius=$rTL clockwise=false");
+        $this->_pdf->draw_path($path, $x1, $this->_height-$y1-$h, "clip=true");
     }
 
     /**
@@ -933,9 +1124,9 @@ class PDFLib implements Canvas
     /**
      * @param array $points
      * @param array $color
-     * @param null $width
-     * @param null $style
-     * @param bool $fill
+     * @param null  $width
+     * @param null  $style
+     * @param bool  $fill
      */
     public function polygon($points, $color, $width = null, $style = null, $fill = false)
     {
@@ -961,6 +1152,9 @@ class PDFLib implements Canvas
         } else {
             $this->_pdf->closepath_stroke();
         }
+
+        $this->_set_fill_opacity($this->_current_opacity, "Normal");
+        $this->_set_stroke_opacity($this->_current_opacity, "Normal");
     }
 
     /**
@@ -968,17 +1162,18 @@ class PDFLib implements Canvas
      * @param float $y
      * @param float $r
      * @param array $color
-     * @param null $width
-     * @param null $style
-     * @param bool $fill
+     * @param null  $width
+     * @param null  $style
+     * @param bool  $fill
      */
     public function circle($x, $y, $r, $color, $width = null, $style = null, $fill = false)
     {
         $this->_set_fill_color($color);
         $this->_set_stroke_color($color);
 
-        if (!$fill && isset($width))
+        if (!$fill && isset($width)) {
             $this->_set_line_style($width, "round", "round", $style);
+        }
 
         $y = $this->y($y);
 
@@ -989,14 +1184,17 @@ class PDFLib implements Canvas
         } else {
             $this->_pdf->stroke();
         }
+
+        $this->_set_fill_opacity($this->_current_opacity, "Normal");
+        $this->_set_stroke_opacity($this->_current_opacity, "Normal");
     }
 
     /**
      * @param string $img_url
-     * @param float $x
-     * @param float $y
-     * @param int $w
-     * @param int $h
+     * @param float  $x
+     * @param float  $y
+     * @param int    $w
+     * @param int    $h
      * @param string $resolution
      */
     public function image($img_url, $x, $y, $w, $h, $resolution = "normal")
@@ -1007,25 +1205,40 @@ class PDFLib implements Canvas
         $img_type = Cache::detect_type($img_url, $this->get_dompdf()->getHttpContext());
 
         if (!isset($this->_imgs[$img_url])) {
-            $this->_imgs[$img_url] = $this->_pdf->load_image($img_type, $img_url, "");
+            if (strtolower($img_type) === "svg") {
+                //FIXME: PDFLib loads SVG but returns error message "Function must not be called in 'page' scope"
+                $image_load_response = $this->_pdf->load_graphics($img_type, $img_url, "");
+            } else {
+                $image_load_response = $this->_pdf->load_image($img_type, $img_url, "");
+            }
+            if ($image_load_response === 0) {
+                //TODO: should do something with the error message
+                $error = $this->_pdf->get_errmsg();
+                return;
+            }
+            $this->_imgs[$img_url] = $image_load_response;
         }
 
         $img = $this->_imgs[$img_url];
 
         $y = $this->y($y) - $h;
-        $this->_pdf->fit_image($img, $x, $y, 'boxsize={' . "$w $h" . '} fitmethod=entire');
+        if (strtolower($img_type) === "svg") {
+            $this->_pdf->fit_graphics($img, $x, $y, 'boxsize={' . "$w $h" . '} fitmethod=entire');
+        } else {
+            $this->_pdf->fit_image($img, $x, $y, 'boxsize={' . "$w $h" . '} fitmethod=entire');
+        }
     }
 
     /**
-     * @param float $x
-     * @param float $y
+     * @param float  $x
+     * @param float  $y
      * @param string $text
      * @param string $font
-     * @param float $size
-     * @param array $color
-     * @param int $word_spacing
-     * @param int $char_spacing
-     * @param int $angle
+     * @param float  $size
+     * @param array  $color
+     * @param int    $word_spacing
+     * @param int    $char_spacing
+     * @param int    $angle
      */
     public function text($x, $y, $text, $font, $size, $color = array(0, 0, 0), $word_spacing = 0, $char_spacing = 0, $angle = 0)
     {
@@ -1041,6 +1254,8 @@ class PDFLib implements Canvas
         $angle = -(float)$angle;
 
         $this->_pdf->fit_textline($text, $x, $y, "rotate=$angle wordspacing=$word_spacing charspacing=$char_spacing ");
+
+        $this->_set_fill_opacity($this->_current_opacity, "Normal");
     }
 
     /**
@@ -1066,11 +1281,11 @@ class PDFLib implements Canvas
     /**
      * Add a link to the pdf
      *
-     * @param string $url The url to link to
-     * @param float $x The x position of the link
-     * @param float $y The y position of the link
-     * @param float $width The width of the link
-     * @param float $height The height of the link
+     * @param string $url    The url to link to
+     * @param float  $x      The x position of the link
+     * @param float  $y      The y position of the link
+     * @param float  $width  The width of the link
+     * @param float  $height The height of the link
      */
     public function add_link($url, $x, $y, $width, $height)
     {
@@ -1099,9 +1314,9 @@ class PDFLib implements Canvas
     /**
      * @param string $text
      * @param string $font
-     * @param float $size
-     * @param int $word_spacing
-     * @param int $letter_spacing
+     * @param float  $size
+     * @param int    $word_spacing
+     * @param int    $letter_spacing
      * @return mixed
      */
     public function get_text_width($text, $font, $size, $word_spacing = 0, $letter_spacing = 0)
@@ -1122,7 +1337,7 @@ class PDFLib implements Canvas
 
     /**
      * @param string $font
-     * @param float $size
+     * @param float  $size
      * @return float
      */
     public function get_font_height($font, $size)
@@ -1131,22 +1346,24 @@ class PDFLib implements Canvas
 
         $this->_pdf->setfont($fh, $size);
 
-        $asc = $this->_pdf->get_value("ascender", $fh);
-        $desc = $this->_pdf->get_value("descender", $fh);
+        $asc = $this->_pdf->info_font($fh, "ascender", "fontsize=$size");
+        $desc = $this->_pdf->info_font($fh, "descender", "fontsize=$size");
 
         // $desc is usually < 0,
         $ratio = $this->_dompdf->getOptions()->getFontHeightRatio();
-        return $size * ($asc - $desc) * $ratio;
+
+        return (abs($asc) + abs($desc)) * $ratio;
     }
 
     /**
      * @param string $font
-     * @param float $size
+     * @param float  $size
      * @return float
      */
     public function get_font_baseline($font, $size)
     {
         $ratio = $this->_dompdf->getOptions()->getFontHeightRatio();
+
         return $this->get_font_height($font, $size) / $ratio * 1.1;
     }
 
@@ -1158,15 +1375,15 @@ class PDFLib implements Canvas
      *
      * See {@link Style::munge_color()} for the format of the color array.
      *
-     * @param float $x
-     * @param float $y
-     * @param string $text the text to write
-     * @param string $font the font file to use
-     * @param float $size the font size, in points
-     * @param array $color
-     * @param float $word_space word spacing adjustment
-     * @param float $char_space char spacing adjustment
-     * @param float $angle angle to write the text at, measured CW starting from the x-axis
+     * @param float  $x
+     * @param float  $y
+     * @param string $text       the text to write
+     * @param string $font       the font file to use
+     * @param float  $size       the font size, in points
+     * @param array  $color
+     * @param float  $word_space word spacing adjustment
+     * @param float  $char_space char spacing adjustment
+     * @param float  $angle      angle to write the text at, measured CW starting from the x-axis
      */
     public function page_text($x, $y, $text, $font, $size, $color = array(0, 0, 0), $word_space = 0.0, $char_space = 0.0, $angle = 0.0)
     {
@@ -1211,7 +1428,7 @@ class PDFLib implements Canvas
      */
     protected function _add_page_text()
     {
-        if (!count($this->_page_text)) {
+        if (count($this->_page_text) === 0) {
             return;
         }
 
@@ -1237,6 +1454,11 @@ class PDFLib implements Canvas
                         }
                         $eval->evaluate($code, array('PAGE_NUM' => $p, 'PAGE_COUNT' => $this->_page_count));
                         break;
+
+                    case 'line':
+                        $this->line( $x1, $y1, $x2, $y2, $color, $width, $style );
+                        break;
+
                 }
             }
 
@@ -1247,19 +1469,31 @@ class PDFLib implements Canvas
     }
 
     /**
-     * @param string $filename
-     * @param null $options
+     * Streams the PDF to the client.
+     *
+     * @param string $filename The filename to present to the client.
+     * @param array  $options  Associative array: 'compress' => 1 or 0 (default 1); 'Attachment' => 1 or 0 (default 1).
      * @throws Exception
      */
-    public function stream($filename, $options = null)
+    public function stream($filename = "document.pdf", $options = array())
     {
-        // Add page text
+        if (headers_sent()) {
+            die("Unable to stream pdf: headers already sent");
+        }
+
+        if (!isset($options["compress"])) {
+            $options["compress"] = true;
+        }
+        if (!isset($options["Attachment"])) {
+            $options["Attachment"] = true;
+        }
+
         $this->_add_page_text();
 
-        if (isset($options["compress"]) && $options["compress"] != 1) {
-            $this->_pdf->set_value("compress", 0);
+        if ($options["compress"]) {
+            $this->setPDFLibValue("compress", 6);
         } else {
-            $this->_pdf->set_value("compress", 6);
+            $this->setPDFLibValue("compress", 0);
         }
 
         $this->_close();
@@ -1268,30 +1502,18 @@ class PDFLib implements Canvas
 
         if (self::$IN_MEMORY) {
             $data = $this->_pdf->get_buffer();
-            //$size = strlen($data);
+            $size = mb_strlen($data, "8bit");
         } else {
-            //$size = filesize($this->_file);
+            $size = filesize($this->_file);
         }
 
         header("Cache-Control: private");
-        header("Content-type: application/pdf");
+        header("Content-Type: application/pdf");
+        header("Content-Length: " . $size);
 
         $filename = str_replace(array("\n", "'"), "", basename($filename, ".pdf")) . ".pdf";
-        $attach = (isset($options["Attachment"]) && $options["Attachment"]) ? "attachment" : "inline";
-
-        // detect the character encoding of the incoming file
-        $encoding = mb_detect_encoding($filename);
-        $fallbackfilename = mb_convert_encoding($filename, "ISO-8859-1", $encoding);
-        $encodedfallbackfilename = rawurlencode($fallbackfilename);
-        $encodedfilename = rawurlencode($filename);
-
-        $contentDisposition = "Content-Disposition: $attachment; filename=\"" . $encodedfallbackfilename . "\"";
-        if ($encodedfallbackfilename !== $encodedfilename) {
-            $contentDisposition .= "; filename*=UTF-8''$encodedfilename";
-        }
-        header($contentDisposition);
-
-        //header("Content-length: " . $size);
+        $attachment = $options["Attachment"] ? "attachment" : "inline";
+        header(Helpers::buildContentDispositionHeader($attachment, $filename));
 
         if (self::$IN_MEMORY) {
             echo $data;
@@ -1309,10 +1531,12 @@ class PDFLib implements Canvas
             fclose($fh);
 
             //debugpng
-            if ($this->_dompdf->getOptions()->getDebugPng()) print '[pdflib stream unlink ' . $this->_file . ']';
-            if (!$this->_dompdf->getOptions()->getDebugKeepTemp())
-
+            if ($this->_dompdf->getOptions()->getDebugPng()) {
+                print '[pdflib stream unlink ' . $this->_file . ']';
+            }
+            if (!$this->_dompdf->getOptions()->getDebugKeepTemp()) {
                 unlink($this->_file);
+            }
             $this->_file = null;
             unset($this->_file);
         }
@@ -1321,18 +1545,23 @@ class PDFLib implements Canvas
     }
 
     /**
-     * @param null $options
+     * Returns the PDF as a string.
+     *
+     * @param array $options Associative array: 'compress' => 1 or 0 (default 1).
      * @return string
      */
-    public function output($options = null)
+    public function output($options = array())
     {
-        // Add page text
+        if (!isset($options["compress"])) {
+            $options["compress"] = true;
+        }
+
         $this->_add_page_text();
 
-        if (isset($options["compress"]) && $options["compress"] != 1) {
-            $this->_pdf->set_value("compress", 0);
+        if ($options["compress"]) {
+            $this->setPDFLibValue("compress", 6);
         } else {
-            $this->_pdf->set_value("compress", 6);
+            $this->setPDFLibValue("compress", 0);
         }
 
         $this->_close();
@@ -1354,6 +1583,78 @@ class PDFLib implements Canvas
         }
 
         return $data;
+    }
+
+    /**
+     * @param string $keyword
+     * @param string $optlist
+     * @return mixed
+     */
+    protected function getPDFLibParameter($keyword, $optlist = "")
+    {
+        if ($this->getPDFLibMajorVersion() >= 9) {
+            return $this->_pdf->get_option($keyword, "");
+        }
+
+        return $this->_pdf->get_parameter($keyword, $optlist);
+    }
+
+    /**
+     * @param string $keyword
+     * @param string $value
+     * @return mixed
+     */
+    protected function setPDFLibParameter($keyword, $value)
+    {
+        if ($this->getPDFLibMajorVersion() >= 9) {
+            return $this->_pdf->set_option($keyword . "=" . $value);
+        }
+
+        return $this->_pdf->set_parameter($keyword, $value);
+    }
+
+    /**
+     * @param string $keyword
+     * @param string $optlist
+     * @return mixed
+     */
+    protected function getPDFLibValue($keyword, $optlist = "")
+    {
+        if ($this->getPDFLibMajorVersion() >= 9) {
+            return $this->getPDFLibParameter($keyword, $optlist);
+        }
+
+        return $this->_pdf->get_value($keyword);
+    }
+
+    /**
+     * @param string $keyword
+     * @param string $value
+     * @return mixed
+     */
+    protected function setPDFLibValue($keyword, $value)
+    {
+        if ($this->getPDFLibMajorVersion() >= 9) {
+            return $this->setPDFLibParameter($keyword, $value);
+        }
+
+        return $this->_pdf->set_value($keyword, $value);
+    }
+
+    /**
+     * @return int
+     */
+    private function getPDFLibMajorVersion()
+    {
+        if (is_null(self::$MAJOR_VERSION)) {
+            if (method_exists($this->_pdf, "get_option")) {
+                self::$MAJOR_VERSION = abs(intval($this->_pdf->get_option("major", "")));
+            } else {
+                self::$MAJOR_VERSION = abs(intval($this->_pdf->get_value("major", "")));
+            }
+        }
+
+        return self::$MAJOR_VERSION;
     }
 }
 
