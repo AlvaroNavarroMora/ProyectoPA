@@ -71,6 +71,19 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                             $(imagen).addClass("mostrarImagen");
                             aux.replaceChild(imagen, aux.firstChild);
                         }/*Fin modif acp*/
+                        var disponibles = table.column(6).data();
+                        for (var i = 0; i < disponibles.length; i++) {
+                            var aux = $(rows[i]).children()[6];
+                            var disponible = data[i]['disponible'];
+                            if (disponible == 1) {
+                                var text = document.createTextNode("Disponible");
+                            }
+                            else {
+                                var text = document.createTextNode("No disponible");
+                            }
+                            aux.replaceChild(text, aux.firstChild);
+                        }
+
                     }
                 });
             });
@@ -93,14 +106,15 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav class="list-group">
                         <ul class="list-unstyled">
-                            <li><a href="aniadirProducto.php" class="list-group-item">Añadir Producto</a></li>
-                            <li><a href="#" class="list-group-item">Category 2</a></li>
-                            <li><a href="#" class="list-group-item">Category 3</a></li>
+                            <li><a href="misProductos.php" class="list-group-item active">Mis Productos</a></li>
+                            <li><a href="misVentas.php" class="list-group-item">Mis Ventas</a></li>
+                            <li><a href="misReclamaciones.php" class="list-group-item">Mis Reclamaciones</a></li>
                         </ul>
                     </nav>
                 </div>
                 <!-- /.col-lg-3 -->
                 <div class="col-lg-9">
+                    <a id="btn-aniadir-producto" class="btn btn-sm btn-primary" href="./aniadirProducto.php" role="button">Añadir Producto</a>
                     <table id="productos" class="table table-striped table-bordered dataTable" style="width:100%">
                         <thead>
                             <tr>
