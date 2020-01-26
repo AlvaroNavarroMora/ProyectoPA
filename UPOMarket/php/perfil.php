@@ -9,7 +9,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Perfil</title>
+        <title>Perfil - UPOMarket</title>
         <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/shop-homepage.css" rel="stylesheet">

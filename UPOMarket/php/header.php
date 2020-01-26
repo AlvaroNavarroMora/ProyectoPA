@@ -30,10 +30,7 @@ function mostrarCliente() {
 function mostrarVendedor() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="./misProductos.php">Mis productos</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">Mis ventas</a>
+        <a class="nav-link" href="./misProductos.php">Menú Vendedor</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta <span id="num-productos"></span></a>
