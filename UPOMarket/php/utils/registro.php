@@ -1,4 +1,5 @@
 <?php
+include './sesionUtils.php';
 function registrarUsuario($nombre, $email, $password, $tipo) {
     $salida = false;
     if (!existeUsuario($email)) {
@@ -8,7 +9,7 @@ function registrarUsuario($nombre, $email, $password, $tipo) {
 }
 
 /* Si la funcion devuelve true ya hay un usuario registrado con ese mail */
-
+/*
 function existeUsuario($email) {
     $query = "SELECT * FROM `usuarios` WHERE `email`='$email'";
     $result = ejecutarConsulta($query);
@@ -20,7 +21,7 @@ function existeUsuario($email) {
     }
 
     return $salida;
-}
+}*/
 
 function insertUsuario($user, $pass, $email) {
     $link = openCon();
