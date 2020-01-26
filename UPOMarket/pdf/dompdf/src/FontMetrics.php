@@ -84,10 +84,10 @@ class FontMetrics
      * Saves the stored font family cache
      *
      * The name and location of the cache file are determined by {@link
-     * FontMetrics::CACHE_FILE}.  This file should be writable by the
+     * FontMetrics::CACHE_FILE}. This file should be writable by the
      * webserver process.
      *
-     * @see Font_Metrics::load_font_families()
+     * @see FontMetrics::loadFontFamilies()
      */
     public function saveFontFamilies()
     {
@@ -118,14 +118,14 @@ class FontMetrics
     /**
      * Loads the stored font family cache
      *
-     * @see save_font_families()
+     * @see FontMetrics::saveFontFamilies()
      */
     public function loadFontFamilies()
     {
         $fontDir = $this->getOptions()->getFontDir();
         $rootDir = $this->getOptions()->getRootDir();
 
-        // FIXME: tempoarary define constants for cache files <= v0.6.2
+        // FIXME: temporarily define constants for cache files <= v0.6.2
         if (!defined("DOMPDF_DIR")) { define("DOMPDF_DIR", $rootDir); }
         if (!defined("DOMPDF_FONT_DIR")) { define("DOMPDF_FONT_DIR", $fontDir); }
 
@@ -170,7 +170,6 @@ class FontMetrics
      */
     public function registerFont($style, $remoteFile, $context = null)
     {
-        $fontDir = $this->getOptions()->getFontDir();
         $fontname = mb_strtolower($style["family"]);
         $families = $this->getFontFamilies();
 
@@ -179,51 +178,66 @@ class FontMetrics
             $entry = $families[$fontname];
         }
 
-        $localFile = $fontDir . DIRECTORY_SEPARATOR . md5($remoteFile);
-        $localTempFile = $this->options->get('tempDir') . "/" . md5($remoteFile);
-        $cacheEntry = $localFile;
-        $localFile .= ".".strtolower(pathinfo($remoteFile,PATHINFO_EXTENSION));
-
         $styleString = $this->getType("{$style['weight']} {$style['style']}");
 
-        if ( !isset($entry[$styleString]) ) {
-            $entry[$styleString] = $cacheEntry;
+        $fontDir = $this->getOptions()->getFontDir();
+        $remoteHash = md5($remoteFile);
 
-            // Download the remote file
-            list($remoteFileContent, $http_response_header) = @Helpers::getFileContent($remoteFile, $context);
-            if (false === $remoteFileContent) {
-                return false;
-            }
-            file_put_contents($localTempFile, $remoteFileContent);
-
-            $font = Font::load($localTempFile);
-
-            if (!$font) {
-                unlink($localTempFile);
-                return false;
-            }
-
-            $font->parse();
-            $font->saveAdobeFontMetrics("$cacheEntry.ufm");
-            $font->close();
-
-            unlink($localTempFile);
-
-            if ( !file_exists("$cacheEntry.ufm") ) {
-                return false;
-            }
-
-            // Save the changes
-            file_put_contents($localFile, $remoteFileContent);
-
-            if ( !file_exists($localFile) ) {
-                unlink("$cacheEntry.ufm");
-                return false;
-            }
-
-            $this->setFontFamily($fontname, $entry);
-            $this->saveFontFamilies();
+        $prefix = $fontname . "_" . $styleString;
+        $prefix = preg_replace("/[^\\pL\d]+/u", "-", $prefix);
+        $prefix = trim($prefix, "-");
+        if (function_exists('iconv')) {
+            $prefix = iconv('utf-8', 'us-ascii//TRANSLIT', $prefix);
         }
+        $prefix = preg_replace("/[^-\w]+/", "", $prefix);
+        
+        $localFile = $fontDir . "/" . $prefix . "_" . $remoteHash;
+
+        if (isset($entry[$styleString]) && $localFile == $entry[$styleString]) {
+            return true;
+        }
+
+        $cacheEntry = $localFile;
+        $localFile .= ".".strtolower(pathinfo(parse_url($remoteFile, PHP_URL_PATH), PATHINFO_EXTENSION));
+
+        $entry[$styleString] = $cacheEntry;
+
+        // Download the remote file
+        list($remoteFileContent, $http_response_header) = @Helpers::getFileContent($remoteFile, $context);
+        if (empty($remoteFileContent)) {
+            return false;
+        }
+
+        $localTempFile = @tempnam($this->options->get("tempDir"), "dompdf-font-");
+        file_put_contents($localTempFile, $remoteFileContent);
+
+        $font = Font::load($localTempFile);
+
+        if (!$font) {
+            unlink($localTempFile);
+            return false;
+        }
+
+        $font->parse();
+        $font->saveAdobeFontMetrics("$cacheEntry.ufm");
+        $font->close();
+
+        unlink($localTempFile);
+
+        if ( !file_exists("$cacheEntry.ufm") ) {
+            return false;
+        }
+
+        // Save the changes
+        file_put_contents($localFile, $remoteFileContent);
+
+        if ( !file_exists($localFile) ) {
+            unlink("$cacheEntry.ufm");
+            return false;
+        }
+
+        $this->setFontFamily($fontname, $entry);
+        $this->saveFontFamilies();
 
         return true;
     }
@@ -433,19 +447,25 @@ class FontMetrics
      */
     public function getType($type)
     {
-        if (preg_match("/bold/i", $type)) {
-            if (preg_match("/italic|oblique/i", $type)) {
-                $type = "bold_italic";
-            } else {
-                $type = "bold";
-            }
-        } elseif (preg_match("/italic|oblique/i", $type)) {
-            $type = "italic";
+        if (preg_match('/bold/i', $type)) {
+            $weight = 700;
+        } elseif (preg_match('/([1-9]00)/', $type, $match)) {
+            $weight = (int)$match[0];
         } else {
-            $type = "normal";
+            $weight = 400;
+        }
+        $weight = $weight === 400 ? 'normal' : $weight;
+        $weight = $weight === 700 ? 'bold' : $weight;
+
+        $style = preg_match('/italic|oblique/i', $type) ? 'italic' : null;
+
+        if ($weight === 'normal' && $style !== null) {
+            return $style;
         }
 
-        return $type;
+        return $style === null
+            ? $weight
+            : $weight.'_'.$style;
     }
 
     /**
@@ -491,7 +511,7 @@ class FontMetrics
      */
     public function getCacheFile()
     {
-        return $this->getOptions()->getFontDir() . DIRECTORY_SEPARATOR . self::CACHE_FILE;
+        return $this->getOptions()->getFontDir() . '/' . self::CACHE_FILE;
     }
 
     /**
