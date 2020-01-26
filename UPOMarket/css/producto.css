@@ -25,3 +25,9 @@ div.col-lg-9{
 .unchecked{
     color: lightgray;
 }
+button.btn-valoracion {
+    margin: 5px;
+}
+form textarea {
+    margin-bottom: 10px;
+}

@@ -194,6 +194,16 @@ function valorarProducto($email, $idProducto, $puntuacion, $valoracion) {
     ejecutarConsulta($query);
 }
 
+function actualizarValoracion($email, $idProducto, $puntuacion, $valoracion) {
+    $query = "UPDATE valoraciones SET puntuacion=$puntuacion, descripcion='$valoracion' WHERE email_cliente='$email' AND id_producto=$idProducto";
+    ejecutarConsulta($query);
+}
+
+function eliminarValoracion($email, $idProducto) {
+    $query = "DELETE FROM valoraciones WHERE email_cliente='$email' AND id_producto=$idProducto";
+    ejecutarConsulta($query);
+}
+
 function obtenerPuntuacionProducto($idProducto) {
     $query = "SELECT AVG(puntuacion) FROM valoraciones WHERE id_producto=$idProducto";
     $result = ejecutarConsulta($query);
@@ -245,4 +255,11 @@ function obtenerDireccion($idDireccion) {
         $direccion = mysqli_fetch_assoc($result);
     }
     return $direccion;
+}
+
+function compradoPorMi($email, $idProducto) {
+    $query = "SELECT * FROM pedidos p, lineas_de_pedido lp WHERE p.email_cliente='$email' AND lp.id_producto=$idProducto;";
+    $result = ejecutarConsulta($query);
+    
+    return mysqli_num_rows($result) > 0;
 }
