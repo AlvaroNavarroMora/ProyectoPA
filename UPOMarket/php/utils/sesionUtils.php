@@ -17,7 +17,7 @@ function comprobarSesionActual($email) {
 function comprobarUsuarioContraseña($email, $password) {
 
     $sentencia = "SELECT email, password, nombre, tipo FROM usuarios WHERE email = '" . $email . "'";
-    
+
     $result = ejecutarConsulta($sentencia);
 
     $row = mysqli_fetch_array($result);
@@ -26,6 +26,19 @@ function comprobarUsuarioContraseña($email, $password) {
     $salida = false;
     if (password_verify($password, $psswdHash)) {
         $salida = 0;
+    }
+
+    return $salida;
+}
+
+function esAdministrador($email, $tipo) {
+    $query = "SELECT * FROM `usuarios` WHERE `email`='$email' AND `tipo`='$tipo'";
+    $result = ejecutarConsulta($query);
+    $salida = false;
+
+    $aux = mysqli_fetch_all($result);
+    if (sizeof($aux) > 0) {
+        $salida = true;
     }
 
     return $salida;
