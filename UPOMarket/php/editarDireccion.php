@@ -195,7 +195,7 @@ if (isset($_SESSION['email'])) {
         }
     }
     
-    mostrarPerfil($nombre, $email, $tipo);
+    
 } else {
     header('Location: ./principal.php');
 }
