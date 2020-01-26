@@ -23,6 +23,7 @@ if (isset($_SESSION['email'])) {
                         $estado = $row['estado'];
                         $producto2 = obtenerProducto($productoId);
                         $producto2['cantidad'] = $cantidad;
+                        $producto2['estado'] = $estado;
                         $productos[] = $producto2;
                     }
                 }else{
@@ -81,6 +82,7 @@ if (isset($errores)) {
                                     <th>Precio</th>
                                     <th>Cantidad</th>
                                     <th>Subtotal </th>
+                                    <th>Estado </th>
                                 </tr>
                             </thead>
 
@@ -97,6 +99,7 @@ if (isset($errores)) {
                                 $subtotal = $producto['precio'] * $producto['cantidad'];
                                 $total += $subtotal;
                                 echo "<td id ='subtotal" . $i . "'>$subtotal €</td>";
+                                echo "<td>" . $producto['estado'] . "</td>";
                                 echo "</tr>";
 
                                 $i++;
@@ -105,7 +108,7 @@ if (isset($errores)) {
 
                             <tr>
                                 <td colspan="3"><strong>Total:</strong></td>
-                                <td id="precioTotalCarrito" colspan="2"><?php echo number_format($total, 2); ?>€</td>
+                                <td id="precioTotalCarrito" colspan="3"><?php echo number_format($total, 2); ?>€</td>
                             </tr>
                         </table>
                         <hr />
