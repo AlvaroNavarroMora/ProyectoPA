@@ -3,7 +3,7 @@ session_start();
 
 if (isset($_GET["idProducto"])) {
     include './utils/utilsProductos.php';
-    
+
     $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $producto = obtenerProducto($idProducto);
     if ($producto) {
@@ -15,20 +15,34 @@ if (isset($_GET["idProducto"])) {
         $caracteristicas = listarCaracteristicasProducto($idProducto);
         $valoraciones = listarValoracionesProcucto($idProducto);
         $puntuacion = obtenerPuntuacionProducto($idProducto);
-        $categoriasProducto = listarCategoriasDeProducto($idProducto);
+        $categorias = listarCategorias();
     } else {
         header("location:principal.php");
     }
 } else {
     //header("location:principal.php");
 }
+
 if (isset($_GET["enviarValoracion"])) {
     $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $puntuacion_nueva = filter_var($_GET["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
     $valoracion_nueva = trim(filter_var($_GET["valoracion"], FILTER_SANITIZE_STRING));
-    header("location:producto.php?idProducto=$idProducto");
 
     valorarProducto($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
+
+    header("location:producto.php?idProducto=$idProducto");
+} else if (isset($_GET["editarValoracion"])) {
+    $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
+    $puntuacion_nueva = filter_var($_GET["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
+    $valoracion_nueva = trim(filter_var($_GET["valoracion"], FILTER_SANITIZE_STRING));
+
+    actualizarValoracion($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
+    //header("location:producto.php?idProducto=$idProducto");
+} else if (isset($_GET["eliminarValoracion"])) {
+    $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
+
+    eliminarValoracion($_SESSION["email"], $idProducto);
+    header("location:producto.php?idProducto=$idProducto");
 }
 
 function mostrarValorar() {
@@ -42,6 +56,7 @@ function mostrarValorar() {
         ?>
         <input id="puntuacion" type="number" name="puntuacion" hidden>
         <input name="idProducto" type="number" value="<?php echo $_GET["idProducto"] ?>" hidden>
+        <br>
         <input id="btn-coment" type="submit" name="enviarValoracion" value="Valora el producto!" class="btn btn-success">
     </form>
     <?php
@@ -66,22 +81,30 @@ function mostrarValorar() {
     <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
     <script>
         $(document).ready(function () {
-            $(".fa-star").click(function () {
-                var id = $(this).attr('id');
-                var puntuacion = parseInt(id.substring(id.length - 1, id.length));
-                var estrellas = $(".review");
-                for (var i = 0; i < estrellas.length; i++) {
-                    if (i < puntuacion) {
-                        $(estrellas[i]).addClass("checked");
-                        $(estrellas[i]).removeClass("unchecked");
-                    } else {
-                        $(estrellas[i]).removeClass("checked");
-                        $(estrellas[i]).addClass("unchecked");
-                    }
-                }
+            animaEstrellas();
+            obtenerValoracion();
+            var puntuacion = parseFloat(<?php echo number_format($puntuacion, 2) ?>);
+            var k = 0;
+            for (k = 0; k < puntuacion; k++) {
+                var text = $("#productRating").text();
+                if (k < puntuacion && k + 1 > puntuacion)
+                    $("#productRating").append($("<i class='fas fa-star-half-alt'></i>"));
+                else
+                    $("#productRating").append($("<i class='fas fa-star'></i>"));
+            }
+            for (var j = k; j < 5; j++) {
+                $("#productRating").append($("<i class='far fa-star'></i>"));
+            }
+            $("#btnEliminar").click(function () {
+                var idProducto = $("<input name='idProducto' type='number' hidden>");
+                $(idProducto).val(<?php echo $_GET["idProducto"] ?>);
+                $("#formEliminarValoracion").append(idProducto);
+                $("#eliminarSubmit").click();
             });
+        });
+        function obtenerValoracion() {
             $("#formValoracionProducto").submit(function () {
-                var estrellas = $(".fa-star");
+                var estrellas = $("#formValoracionProducto .fa-star");
                 var cont = 0;
                 for (var i = 0; i < estrellas.length; i++) {
                     if ($(estrellas[i]).hasClass("checked")) {
@@ -97,19 +120,56 @@ function mostrarValorar() {
                 }
 
             });
-            var puntuacion = parseFloat(<?php echo number_format($puntuacion, 2) ?>);
-            var k = 0;
-            for (k = 0; k < puntuacion; k++) {
-                var text = $("#productRating").text();
-                if (k < puntuacion && k + 1 > puntuacion)
-                    $("#productRating").append($("<i class='fas fa-star-half-alt'></i>"));
-                else
-                    $("#productRating").append($("<i class='fas fa-star'></i>"));
+        }
+        function animaEstrellas() {
+            $(".fa-star").click(function () {
+                var id = $(this).attr('id');
+                var puntuacion = parseInt(id.substring(id.length - 1, id.length));
+                var estrellas = $(".review");
+                for (var i = 0; i < estrellas.length; i++) {
+                    if (i < puntuacion) {
+                        $(estrellas[i]).addClass("checked");
+                        $(estrellas[i]).removeClass("unchecked");
+                    } else {
+                        $(estrellas[i]).removeClass("checked");
+                        $(estrellas[i]).addClass("unchecked");
+                    }
+                }
+            });
+        }
+        function mostrarEditable() {
+            $("#miValoracion").hide();
+            var descripcion = $("#miValoracion p").text();
+            var puntuacion = $("#miValoracion span").text().length;
+            var form = $("<form id='formValoracionProducto' method='get'></form>");
+            var text = $("<textarea name='valoracion'></textarea>");
+            $(text).css("width", "100%");
+            $(text).val(descripcion);
+            $(form).append(text);
+            for (var i = 1; i <= 5; i++) {
+                var valora = $("<span class='review fa fa-star unchecked'></span>");
+                $(valora).attr("id", "puntuacion-" + i);
+                $(form).append(valora);
             }
-            for (var j = k; j < 5; j++) {
-                $("#productRating").append($("<i class='far fa-star'></i>"));
-            }
-        });
+            var btn = $("<input type='submit' class='btn btn-sm btn-success' value='Guardar' name='editarValoracion'>");
+            $(btn).css("margin", "10px 10px 10px 0");
+            $(form).append($("<br>"));
+            $(form).append(btn);
+            btn = $("<button type='button' class='btn btn-sm btn-warning'>Cancelar</button>");
+            $(form).append(btn);
+            $(form).append($("<input id='puntuacion' type='number' name='puntuacion' hidden>"));
+            var idProducto = $("<input name='idProducto' type='number' hidden>");
+            $(idProducto).val(<?php echo $_GET["idProducto"] ?>);
+            $(form).append(idProducto);
+            $("#miValoracion").after(form);
+            animaEstrellas();
+            obtenerValoracion();
+            $(btn).click(function () {
+                $("#formValoracionProducto").remove();
+                $("#miValoracion").show();
+
+            });
+        }
     </script>
 
 </head>
@@ -131,7 +191,7 @@ function mostrarValorar() {
                     <ul class="list-unstyled">
                         <h4 class="text-center">Categorías</h4>
                         <?php
-                        foreach ($categoriasProducto as $c) {
+                        foreach ($categorias as $c) {
                             echo '<li><a href="./categoria.php?categoria=' . $c[0] . '" class="list-group-item">' . $c[0] . '</a></li>';
                         }
                         ?>
@@ -177,7 +237,7 @@ function mostrarValorar() {
                                 </form>
                                 <?php
                             }
-                        } else if(isset($_SESSION["email"])) {
+                        } else if (isset($_SESSION["email"])) {
                             ?>
                             <form action="./utils/anadirEliminarCarrito.php" method="post">
                                 <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
@@ -212,21 +272,33 @@ function mostrarValorar() {
                     </div>
                     <div class="card-body">
                         <?php
+                        $valorable = true;
                         foreach ($valoraciones as $v) {
+                            echo "<div";
+                            if ($v["email_cliente"] == $_SESSION["email"]) {
+                                echo " id='miValoracion'";
+                                $valorable = false;
+                            }
+                            echo ">";
                             echo "<span class='text-warning'>";
                             $nota = $v["puntuacion"];
                             for ($i = 0; $i < $nota; $i++) {
                                 echo "&#9733;";
                             }
                             echo "</span>";
+                            if ($v["email_cliente"] == $_SESSION["email"]) {
+                                echo "<button id='btnEliminar' class='btn btn-sm btn-danger pull-right btn-valoracion'>Eliminar</button>";
+                                echo "<button class='btn btn-sm btn-warning pull-right btn-valoracion' onclick='mostrarEditable()'>Editar</button>";
+                            }
                             echo "<br>";
                             echo '<p>' . $v['descripcion'] . '</p>';
                             echo '<small>Por: ' . $v['email_cliente'] . '</small>';
                             echo "<br>";
                             echo '<small>Fecha: ' . $v['fecha'] . '</small>';
+                            echo "</div>";
                             echo "<hr>";
                         }
-                        if (isset($_SESSION["email"])) {
+                        if (isset($_SESSION["email"]) && $valorable && compradoPorMi($_SESSION["email"], $idProducto)) {
                             mostrarValorar();
                         }
                         ?>
@@ -241,5 +313,8 @@ function mostrarValorar() {
     <?php
     include '../html/footer.html';
     ?>
+    <form id='formEliminarValoracion' method='GET'>
+        <button id="eliminarSubmit" type="submit" name="eliminarValoracion" hidden></button>
+    </form>
 </body>
 </html>

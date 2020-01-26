@@ -194,6 +194,16 @@ function valorarProducto($email, $idProducto, $puntuacion, $valoracion) {
     ejecutarConsulta($query);
 }
 
+function actualizarValoracion($email, $idProducto, $puntuacion, $valoracion) {
+    $query = "UPDATE valoraciones SET puntuacion=$puntuacion, descripcion='$valoracion' WHERE email_cliente='$email' AND id_producto=$idProducto";
+    ejecutarConsulta($query);
+}
+
+function eliminarValoracion($email, $idProducto) {
+    $query = "DELETE FROM valoraciones WHERE email_cliente='$email' AND id_producto=$idProducto";
+    ejecutarConsulta($query);
+}
+
 function obtenerPuntuacionProducto($idProducto) {
     $query = "SELECT AVG(puntuacion) FROM valoraciones WHERE id_producto=$idProducto";
     $result = ejecutarConsulta($query);
@@ -247,6 +257,12 @@ function obtenerDireccion($idDireccion) {
     return $direccion;
 }
 
+function compradoPorMi($email, $idProducto) {
+    $query = "SELECT * FROM pedidos p, lineas_de_pedido lp WHERE p.email_cliente='$email' AND lp.id_producto=$idProducto;";
+    $result = ejecutarConsulta($query);
+    
+    return mysqli_num_rows($result) > 0;
+}
 function listarProductosPedido($idPedido) {
     $query = "SELECT pr.`nombre`,pr.`id` FROM `pedidos` as p, `productos`as pr, `lineas_de_pedido` as lp WHERE p.`id`='$idPedido' AND lp.`id_pedido`=p.`id` AND lp.`id_producto`=pr.`id`";
     $result = ejecutarConsulta($query);
