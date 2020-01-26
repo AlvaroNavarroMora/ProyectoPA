@@ -1,0 +1,10 @@
+.row {
+    margin-bottom: 20px !important;
+    width: 100% !important;
+}
+#estadoPedido {
+    margin-left: 20px;
+}
+#btnActualizarPedido {
+    width: auto;
+}

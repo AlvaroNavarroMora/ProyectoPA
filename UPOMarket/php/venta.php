@@ -8,12 +8,43 @@ if (isset($_POST["idVenta"]) && isset($_POST["cliente"]) && isset($_POST["import
     include './utils/manejadorBD.php';
 
     $idVenta = filter_var($_POST["idVenta"], FILTER_SANITIZE_NUMBER_INT);
+    $cliente = trim(filter_var($_POST["cliente"], FILTER_SANITIZE_EMAIL));
+    $importe = filter_var($_POST["importe"], FILTER_SANITIZE_NUMBER_FLOAT);
+    $fecha = trim(filter_var($_POST["fecha"], FILTER_SANITIZE_STRING));
+
     $venta = obtenerVenta($_SESSION["email"], $idVenta);
     if (empty($venta)) {
-        header("location:principal.php");
+        header("location:misProductos.php");
+    }
+    $modificado = false;
+    foreach ($venta as $v) {
+        if (isset($_POST["estado-" . $v["id"]])) {
+            $estado = trim(filter_var($_POST["estado-" . $v["id"]], FILTER_SANITIZE_STRING));
+            if (!actualizarEstadoLinea($idVenta, $v["id"], $estado)) {
+                $error = "No se pudo actualizar el estado del pedido";
+            } else {
+                $error = "";
+                $modificado = true;
+            }
+        }
+    }
+    if ($modificado) {
+        $venta = obtenerVenta($_SESSION["email"], $idVenta);
     }
 } else {
     header("location:principal.php");
+}
+
+function actualizarEstadoLinea($idVenta, $idProducto, $estado) {
+    $con = openCon();
+    mysqli_set_charset($con, "utf8");
+    $query = "UPDATE lineas_de_pedido SET estado='$estado' WHERE id_pedido=$idVenta and id_producto=$idProducto";
+    mysqli_query($con, $query);
+    $correcto = mysqli_affected_rows($con) > 0;
+
+    closeCon($con);
+
+    return $correcto;
 }
 
 function obtenerVenta($email, $idVenta) {
@@ -46,9 +77,25 @@ function obtenerVenta($email, $idVenta) {
     <link href="../css/header.css" rel="stylesheet">
     <link href="../css/footer.css" rel="stylesheet">
     <link href="../css/principal.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/venta.css" rel="stylesheet" type="text/css"/>
     <script src="../frameworks/jquery/jquery.min.js"></script>
     <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
+    <script>
+        $(document).ready(function () {
+            $("#estadoPedido").change(function () {
+                var valor = $(this).val();
+                var lineas = $("select.estado-linea");
+                for (var i = 0; i < lineas.length; i++) {
+                    $(lineas[i]).val(valor);
+                }
+            });
+            $("#btnActualizarPedido").click(function () {
+                $("#actualizarLineasPedido").submit();
+            });
+
+        });
+    </script>
 
 </head>
 
@@ -60,24 +107,40 @@ function obtenerVenta($email, $idVenta) {
 
     <!-- Page Content -->
     <main class="container">
+        <?php
+        if ($modificado) {
+            echo "<br>";
+            echo "<div class='alert alert-success'>El pedido se ha actualizado con éxito</div>";
+        }
+        else if (!empty($error)) {
+            echo "<br>";
+            echo '<div class="alert alert-warning">' . $error . "</div>";
+        }
+        ?>
         <h3>Datos del pedido</h3>
         <hr>
-        <div class="row">
+        <div class="row container">
             <?php
-            echo "<div class='col'><p><strong>ID Venta:</strong> " . $_POST["idVenta"] . "</p>";
-            echo "<p><strong>Email del cliente:</strong> " . $_POST["cliente"] . "</p></div>";
-            echo "<div class='col'><p><strong>Fecha:</strong> " . $_POST["fecha"] . "</p>";
-            echo "<p><strong>Importe:</strong> " . number_format($_POST["importe"], 2) . "&euro;</p></div>";
+            echo "<div class='col'><div class='row'><strong>ID Venta:</strong> " . $idVenta . "</div>";
+            echo "<div class='row'><strong>Email del cliente:</strong> " . $cliente . "</div></div>";
+            echo "<div class='col'><div class='row'><strong>Fecha:</strong> " . $fecha . "</div>";
+            echo "<div class='row'><strong>Importe:</strong> " . number_format($importe, 2) . "&euro;</div></div>";
             ?>
             <div class="col">
-                <form>
-                    <select id="actualizarPedido" class="custom-select" name="estado-venta">
+                <div class="form-group form-inline row">
+                    <label for='estadoPedido'><strong>Estado del pedido:</strong></label>
+                    <select id="estadoPedido" class="custom-select form-control" name="estado-venta">
                         <option value="" disabled selected>--Seleccionar--</option>
                         <option value="Procesado">Procesado</option>
                         <option value="Enviado">Enviado</option>
                         <option value="Entregado">Entregado</option>
                     </select>
-                </form>
+                </div>
+                <div class="row">
+                    <button id="btnActualizarPedido" class="btn btn-md btn-primary btn-block form-control" type="button" value="Actualizar Pedido" name="actualizarPedido">
+                        Actualizar Pedido
+                    </button>
+                </div>
             </div>
         </div>
         <hr>
@@ -102,7 +165,7 @@ function obtenerVenta($email, $idVenta) {
                         echo "<td class='text-center'>" . number_format($v["precio"], 2) . "</td>";
                         echo "<td class='text-center'>" . number_format($v["cantidad"] * $v["precio"], 2) . "</td>";
                         echo "<td class='text-center'>";
-                        echo "<select id='estado' class='custom-select' name='estado-".$v["id"]."'>";
+                        echo "<select id='estado' class='custom-select estado-linea' name='estado-" . $v["id"] . "'>";
                         echo "<option value='Procesado' ";
                         if ($v["estado"] == "Procesado") {
                             echo "selected";
@@ -127,6 +190,10 @@ function obtenerVenta($email, $idVenta) {
                     ?>
                 </tbody>
             </table>
+            <input type="text" value="<?php echo $idVenta ?>" name="idVenta" hidden>
+            <input type="text" value="<?php echo $cliente ?>" name="cliente" hidden>
+            <input type="text" value="<?php echo $importe ?>" name="importe" hidden>
+            <input type="text" value="<?php echo $fecha ?>" name="fecha" hidden>
         </form>
     </main>
     <!-- /.container -->
