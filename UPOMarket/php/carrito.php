@@ -4,6 +4,13 @@ include "./utils/utilsProductos.php";
 include './utils/encriptar.php';
 session_start();
 if (isset($_SESSION['email'])) {
+    if (isset($_GET["error"])) {
+        if ($_GET["error"] == "stock_no_disponible") {
+            $error = "Uno más productos de su cesta no tienen stock disponible para la cantidad deseada.";
+        } else {
+            $error = "Algo ha ido mal, revise su carrito.";
+        }
+    }
     if (isset($_SESSION["carrito"])) {
         $ids = Array();
         foreach ($_SESSION["carrito"] as $p) {
@@ -62,6 +69,10 @@ if (isset($_SESSION['email'])) {
                     });
                     $("input.cantidad").change(function () {
                         var cantidad = parseInt($(this).val());
+                        if(isNaN(cantidad) || cantidad <= 0) {
+                            cantidad = 1;
+                            $(this).val(cantidad);
+                        }
                         var id = $(this).attr("id");
                         var index = parseInt(id.split("-")[1]);
                         var rows = $("tr.producto");
@@ -104,6 +115,11 @@ if (isset($_SESSION['email'])) {
             <main class="container">
                 <form id="formCarrito" method="post" action="./utils/anadirEliminarCarrito.php">
                     <div class="divCarrito">
+                        <?php
+                        if (!empty($error)) {
+                            echo '<div class="alert alert-warning">' . $error . "</div>";
+                        }
+                        ?>
                         <h3>Mi carrito</h3>
                         <hr>
                         <?php
@@ -130,7 +146,7 @@ if (isset($_SESSION['email'])) {
                                         echo "<td>" . $producto['nombre'] . "</td>";
                                         echo "<td>" . $producto['descripcion'] . "</td>";
                                         echo "<td class='text-center'>" . $producto['precio'] . "</td>";
-                                        echo "<td class='text-center'><input name='cantidad" . $index . "' type='number' id='cantidad-" . $index . "' value='" . $producto['cantidad'] . "' class='form-control cantidad' min='1' max='" . $producto["stock"] . "'/></td>";
+                                        echo "<td class='text-center'><input name='cantidad" . $index . "' type='number' id='cantidad-" . $index . "' value='" . $producto['cantidad'] . "' class='form-control cantidad' min='1'/></td>";
                                         $subtotal = $producto['precio'] * $producto['cantidad'];
                                         echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
                                         echo '<input type="hidden" name="idProducto' . $index . '" value="' . encriptar($producto['id']) . '">';

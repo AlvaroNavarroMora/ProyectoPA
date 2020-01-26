@@ -40,6 +40,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
                         <a href="perfil.php" class="list-group-item">Ver Perfil</a>
                         <a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a>
                         <a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a>
+                        <a href="#" class="list-group-item disabled">Direcciones</a>
                         <a href="cambiarContrasenia.php" class="list-group-item">Cambiar Contraseña</a>
                         <?php if ($tipo == "cliente") {
                             ?>
