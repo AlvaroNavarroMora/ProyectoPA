@@ -37,6 +37,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <div class="list-group">
                         <p class="list-group-item active">Opciones</p>
+                        <a href="#" class="list-group-item disabled">Ver Perfil</a>
                         <a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a>
                         <a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a>
                         <a href="editarDireccion.php" class="list-group-item">Direcciones</a>
@@ -92,7 +93,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
 
                 <div class="col" id="contenedorDirecciones">
 
-                    <h3 id="titDirecciones">Mis direcciones</h3>
+                    <h3 id="titDirecciones" class="mt-4">Mis direcciones</h3>
 
                     <?php
                     $query = "SELECT direccion_cliente FROM direcciones_clientes WHERE email_cliente='" . $_SESSION['email'] . "'";
