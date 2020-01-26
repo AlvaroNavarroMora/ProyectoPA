@@ -77,34 +77,45 @@ if (isset($_SESSION['email'])) {
                     } else {
                         ?>
                         <table id="tableProductos" class="table table-light">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Descripción</th>
-                                    <th class='text-center'>Precio(&euro;)</th>
-                                    <th class='text-center'>Cantidad</th>
-                                    <th class='text-center'>Subtotal(&euro;)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $subtotal = 0;
-                                foreach ($productos as $index => $producto) {
-                                    echo "<tr>";
-                                    echo "<td>" . $producto['nombre'] . "</td>";
-                                    echo "<td>" . $producto['descripcion'] . "</td>";
-                                    echo "<td class='text-center'>" . $producto['precio'] . "</td>";
-                                    echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
-                                    $subtotal = $producto['precio'] * $producto['cantidad'];
-                                    echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
-                                    echo "</tr>";
+                            <form method="post" action="finalizarCompra.php" id="finalizarCompra">
+                                <input type="hidden" name="email" value="<?php echo base64_encode(encriptar($_SESSION['email'])); ?>"/>
+                                <input type="hidden" name="direccion" value="<?php echo base64_encode(encriptar($_SESSION['direccion'])); ?>"/>
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                        <th class='text-center'>Precio(&euro;)</th>
+                                        <th class='text-center'>Cantidad</th>
+                                        <th class='text-center'>Subtotal(&euro;)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $subtotal = 0;
+                                    $i = 0;
+                                    foreach ($productos as $index => $producto) {
+                                        echo "<tr>";
+                                        echo "<td>" . $producto['nombre'] . "</td>";
+                                        echo "<td>" . $producto['descripcion'] . "</td>";
+                                        echo "<td class='text-center'>" . $producto['precio'] . "</td>";
+                                        echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
+                                        $subtotal = $producto['precio'] * $producto['cantidad'];
+                                        echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
+                                        echo "</tr>";
+                                        ?>
+                                    <input type="hidden" name="producto<?php echo $i;?>" value="<?php echo base64_encode(encriptar($producto['id'])); ?>"/>
+                                    <input type="hidden" name="cantidad<?php echo $i;?>" value="<?php echo base64_encode(encriptar($producto['cantidad'])); ?>"/>
+                                    <?php
+                                    $i++;
                                 }
                                 ?>
                                 <tr>
                                     <td colspan="4"><strong>Total:</strong></td>
                                     <td id="precioTotalCarrito" class='text-center'><?php echo number_format($total, 2); ?>&euro;</td>
                                 </tr>
-                            </tbody>
+                                </tbody>
+                                <button type="submit" name="submitButton" value="finalizarCompra" id="botonFinalizar" hidden></button>
+                            </form>
                         </table>
                     </div>
                     <hr>
@@ -150,18 +161,9 @@ if (isset($_SESSION['email'])) {
                                 // This function captures the funds from the transaction.
                                 return actions.order.capture().then(function (details) {
                                     alert('Transaction completed by ' + details.payer.name.given_name);
-        <?php
-        $parametros = base64_encode(encriptar("clave")) . "=" . base64_encode(encriptar("ProgramacionAvanzada")) . "&" . base64_encode(encriptar("email")) . "=" .
-                base64_encode(encriptar($_SESSION['email']) . "&" . base64_encode(encriptar("direccion")) . "=" . base64_encode(encriptar($_SESSION['direccion'])));
-        $i = 0;
-        foreach ($productos as $producto) {
-            $parametros .= "&" . base64_encode(encriptar("producto" . $i)) . "=" . base64_encode(encriptar($producto['id'])) . "&" . base64_encode(encriptar("cantidad" . $i)) . "=" . base64_encode(encriptar($producto['cantidad']));
-            $i++;
-        }
-        ?>
                                     // Call your server to save the transaction
-                                    var url = "<?php echo $parametros; ?>";
-                                    window.location = "finalizarCompra.php?" + url;
+                                    var formCompra = document.getElementById("finalizarCompra");
+                                    formCompra.submit();
                                 });
                             }
                         }).render('#paypal-button-container');

@@ -1,0 +1,21 @@
+#reclamaciones_wrapper {
+    margin: 3% !important;
+}
+#reclamaciones th,td {
+    text-align: center;
+}
+tbody tr:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+span.highlight {
+    display: inline;
+    background-color: yellow;
+}
+img.mostrarImagen {
+    display:inline-table;
+    max-width: 50px;
+}
+#btn-aniadir-producto {
+    margin: 3% 0 1% 0;
+}
