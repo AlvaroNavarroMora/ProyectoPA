@@ -5,29 +5,33 @@ include './utils/utilsProductos.php';
 session_start();
 
 if (isset($_SESSION['email'])) {
-    if (isset($_SESSION['direccion'])) {
+    if (isset($_SESSION["carrito"]) && isset($_SESSION['direccion'])) {
         $direccion = obtenerDireccion(filter_var($_SESSION['direccion'], FILTER_SANITIZE_NUMBER_INT));
         $ids = Array();
         foreach ($_SESSION["carrito"] as $p) {
             $ids[] = $p["id"];
         }
         $productos = obtenerProductosCarrito($ids);
-        $array_productos = Array();
-        $total = 0;
-        foreach ($productos as $key => $p) {
-            $id = $p["id"];
-            $neededObject = array_filter(
-                    $_SESSION["carrito"], function ($e) use ($id) {
-                return $e["id"] === $id;
+        if (validaStock($productos)) {
+            $array_productos = Array();
+            $total = 0;
+            foreach ($productos as $key => $p) {
+                $id = $p["id"];
+                $neededObject = array_filter(
+                        $_SESSION["carrito"], function ($e) use ($id) {
+                    return $e["id"] === $id;
+                }
+                );
+                $encontrado = array_values($neededObject);
+                $cantidad = $encontrado[0]["cantidad"];
+                $array_productos[] = Array("name" => $p["nombre"], "description" => $p["descripcion"],
+                    "sku" => "sku" . $p["id"], 'unit_amount' => Array("currency_code" => "EUR", "value" => round($p["precio"], 2)),
+                    "quantity" => $cantidad);
+                $total += round($p["precio"], 2) * $cantidad;
+                $productos[$key]["cantidad"] = $cantidad;
             }
-            );
-            $encontrado = array_values($neededObject);
-            $cantidad = $encontrado[0]["cantidad"];
-            $array_productos[] = Array("name" => $p["nombre"], "description" => $p["descripcion"],
-                "sku" => "sku" . $p["id"], 'unit_amount' => Array("currency_code" => "EUR", "value" => round($p["precio"], 2)),
-                "quantity" => $cantidad);
-            $total += round($p["precio"], 2) * $cantidad;
-            $productos[$key]["cantidad"] = $cantidad;
+        } else {
+            header('Location: ./carrito.php?error=stock_no_disponible');
         }
     } else {
         header('Location: ./carrito.php');
@@ -184,6 +188,24 @@ if (isset($_SESSION['email'])) {
     <?php
 } else {
     header('Location: ./principal.php');
+}
+
+function validaStock($productos) {
+    $correcto = true;
+    foreach ($productos as $p) {
+        $id = $p["id"];
+        $neededObject = array_filter(
+                $_SESSION["carrito"], function ($e) use ($id) {
+            return $e["id"] === $id;
+        }
+        );
+        $encontrado = array_values($neededObject);
+        $cantidad = $encontrado[0]["cantidad"];
+        if($cantidad > $p["stock"] || $cantidad < 1) {
+            $correcto = false;
+        }
+    }
+    return $correcto;
 }
 
 function buildRequestBody($total, $items, $direccion) {
