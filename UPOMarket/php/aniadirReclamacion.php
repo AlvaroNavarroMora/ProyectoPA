@@ -6,10 +6,11 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
 
 include './utils/utilsProductos.php';
 include './utils/sesionUtils.php';
+include './utils/utilsConflicto.php';
 
 /* Añadir nombre del formulario registro */
 if (isset($_POST['btnAddReclamacion'])) {
-    print_r($_POST);
+    //print_r($_POST);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
     $producto = filter_var($_POST['producto'], FILTER_SANITIZE_MAGIC_QUOTES);
@@ -17,8 +18,9 @@ if (isset($_POST['btnAddReclamacion'])) {
     $descripcion = filter_var($_POST['descripcion'], FILTER_SANITIZE_MAGIC_QUOTES);
 
 
-
-    if ($importe === false || $password === false || $email === false || $descripcion === false || $producto === false || $pedido === false) {
+    //He quitado: $importe === false ||
+    //Del if de abajo, da error y no entiendo para qué es (Álvaro)
+    if ($password === false || $email === false || $descripcion === false || $producto === false || $pedido === false) {
         $errores[] = "Error con los datos del formulario";
     }
 
@@ -52,20 +54,27 @@ if (isset($_POST['btnAddReclamacion'])) {
             $errores[] = "Ya tiene un producto con ese nombre";
         }
     }
-
-    foreach ($_FILES['files']['error'] as $k => $v) {
-        if ($v != 0) {
-            $errores[] = "Error en la imagen " . $_FILES['name'][$k];
-        }
-    }
+    /*
+      foreach ($_FILES['files']['error'] as $k => $v) {
+      if ($v != 0) {
+      $errores[] = "Error en la imagen " . $_FILES['name'][$k];
+      }
+      }
+     * ---------------------------- Da error y no entiendo para qué es (Álvaro)
+     */
     if (empty($errores)) {
 
-        if (false) {
-            crearReclamacion($pedido, $producto, $descripcion);
-            header('Location: ./perfil.php');
-        } else {
-            $errores[] = "Error al guardar los datos";
-        }
+        /*
+          if (false) {
+          crearReclamacion($pedido, $producto, $descripcion);
+          header('Location: ./perfil.php');
+          } else {
+          $errores[] = "Error al guardar los datos";
+          }
+         * He comentado esto, if(false)? Voy a poner lo mismo en la línea de abajo pero sin el if (Álvaro)
+         */
+        crearReclamacion($pedido, $producto, $descripcion);
+        header('Location: ./perfil.php');
     }
 }
 
