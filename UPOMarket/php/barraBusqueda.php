@@ -30,7 +30,7 @@
             </form>
         </div>
         <div class="col-xl-3 my-auto mx-auto">
-            <form id="ordenarResultados" class="form-inline mr-auto" method="GET">
+            <form id="ordenarResultados" class="form-inline mr-auto mb-1" method="GET">
                 <?php
                 if (isset($_GET["categoria"])) {
                     echo "<input type='text' value='" . $_GET["categoria"] . "' name='categoria' hidden>";

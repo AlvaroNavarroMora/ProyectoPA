@@ -38,7 +38,7 @@ if (isset($_GET["ordenar"])) {
 } else {
     $productos = listarProductos();
 }
-$productosCarrusel = listarTopVentas(3);
+$productosCarrusel = listarTopVentas(5);
 
 function mostrarProducto($producto) {
     $puntuacion = obtenerPuntuacionProducto($producto["id"]);
