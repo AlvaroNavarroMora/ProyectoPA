@@ -176,7 +176,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                                 <th>Pedido</th>
                                 <th>id Producto</th>
                                 <th>Producto</th>
-                                <th>Importe</th>
+                                <th>Importe(&eur;)</th>
                                 <th>Vendedor</th>
                                 <th>Cliente</th>
                                 <th>Descripción</th>

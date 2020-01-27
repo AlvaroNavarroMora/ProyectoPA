@@ -8,10 +8,9 @@ if (!isset($_GET["busqueda"])) {
 }
 $busca = trim(filter_var($_GET["busqueda"], FILTER_SANITIZE_STRING));
 $categoria = trim(filter_var($_GET["categoria"], FILTER_SANITIZE_STRING));
-if(empty($categoria)) {
+if (empty($categoria)) {
     $productos = buscarProductos($busca);
-}
-else {
+} else {
     $productos = buscarProductosCategoria($busca, $categoria);
 }
 if (empty($productos)) {
@@ -67,6 +66,7 @@ else
                         {"data": "id"},
                         {"data": "nombre"},
                         {"data": "descripcion"},
+                        {"data": "imagen"},
                         {"data": "precio"}
                     ],
                     "drawCallback": function () {
@@ -79,7 +79,30 @@ else
                             $("#formProducto").append(input);
                             $("#formProducto").submit();
                         });
-                        var cells = $("tbody td");
+                        var imgs = table.column(3).data();
+                        var rows = $("tbody tr");
+                        /*modif acp*/
+                        for (var i = 0; i < imgs.length; i++) {
+                            var aux = $(rows[i]).children()[3];
+
+                            path = data[i]['imagen'];
+                            var imagen = document.createElement("img");
+                            $(imagen).attr("src", path);
+                            $(imagen).attr("alt", "No disponible");
+                            $(imagen).attr("onerror", "reemplazarImg(this)");
+                            $(imagen).addClass("mostrarImagen");
+                            aux.replaceChild(imagen, aux.firstChild);
+                        }/*Fin modif acp*/
+
+                        var cells = $("tbody tr :nth-child(2)");
+                        for (var i = 0; i < cells.length; i++) {
+                            var text = $(cells[i]).text();
+                            var busca = "<?php echo $busca ?>";
+                            var re = new RegExp(busca, 'gi');
+                            cells[i].innerHTML = cells[i].innerHTML.replace(re, "<span class='highlight'>" + busca + "</span>");
+
+                        }
+                        cells = $("tbody tr :nth-child(3)");
                         for (var i = 0; i < cells.length; i++) {
                             var text = $(cells[i]).text();
                             var busca = "<?php echo $busca ?>";
@@ -90,6 +113,9 @@ else
                     }
                 });
             });
+            function reemplazarImg(img) {
+                $(img).attr("src", "../img/productDefaultImage.jpg");
+            }
         </script>
 
     </head>
@@ -137,6 +163,7 @@ else
                                     <th>ID</th>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
+                                    <th>Imagen</th>
                                     <th>Precio(&euro;)</th>
                                 </tr>
                             </thead>
