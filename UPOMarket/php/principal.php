@@ -3,19 +3,18 @@ session_start();
 include './utils/utilsProductos.php';
 $categorias = listarCategorias();
 
-if(isset($_SESSION['email']) && isset($_SESSION['tipo']) && $_SESSION['tipo'] == 'admin'){
+if (isset($_SESSION['email']) && isset($_SESSION['tipo']) && $_SESSION['tipo'] == 'admin') {
     header("location: ./vistaAdministrador.php");
 }
 
 if (isset($_GET["ordenar"])) {
     $opcion = filter_var($_GET["ordenar"], FILTER_SANITIZE_NUMBER_INT);
-    echo $opcion;
     switch ($opcion) {
         case 0: $productos = listarProductosPorValoracion();
             break;
         case 1: $productos = listarProductosMasVendidos();
             break;
-        case 2: $productos = listarProductosMasRecientes();echo "aAA";
+        case 2: $productos = listarProductosMasRecientes();
             break;
         case 3: $productos = listarProductosPorPrecio("ASC");
             break;
@@ -31,8 +30,7 @@ if (isset($_GET["ordenar"])) {
     if (!empty($productos)) {
         $restoProductos = listarRestoProductos(implode(", ", $ids));
         $productos = array_merge($productos, $restoProductos);
-    }
-    else {
+    } else {
         $productos = listarProductos();
     }
 } else {
@@ -57,7 +55,16 @@ function mostrarProducto($producto) {
                     <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><?php echo $producto["nombre"] ?></a>
                 </h4>
                 <h5><?php echo $producto["precio"] ?>&euro;</h5>
-                <p class = "card-text"><?php echo $producto["descripcion"] ?></p>
+                <p class = "card-text">
+                    <?php
+                    $descripcion = $producto["descripcion"];
+                    if (strlen($descripcion) > 50) {
+                        $descripcion = substr($descripcion, 0, 50);
+                        $descripcion .= "...";
+                    }
+                    echo $descripcion;
+                    ?>
+                </p>
             </div>
             <div class = "card-footer">
                 <small class = "text-muted stars"><span hidden><?php echo $puntuacion ?></span></small>
@@ -105,6 +112,9 @@ function mostrarProducto($producto) {
                         $(estrellas[i]).append($("<i class='far fa-star'></i>"));
                     }
                 }
+                $("img").error(function () {
+                    $(this).attr("src", "../img/productDefaultImage.jpg");
+                });
             });
         </script>
 
@@ -157,7 +167,7 @@ function mostrarProducto($producto) {
                                 echo 'active';
                             }
                             echo '"><a href="./producto.php?idProducto=' . $value["id"] . '">
-                                        <img width="1000" class="d-block img-fluid" src="../img/productDefaultImage.jpg" alt="Imagen carrusel ' . $key . '">
+                                        <img width="1000" class="d-block img-fluid" src="' . $value["imagen"] . '" alt="Imagen carrusel ' . $key . '">
                                     </a>
                                     </div>';
                         }

@@ -39,6 +39,7 @@ $data = json_encode(obtenerMisPedidos($_SESSION["email"]));
                     },
                     "data": data,
                     "paging": true,
+                    "order": [[ 1, "desc" ]],
                     "ordering": true,
                     "columns": [
                         {"data": "idPedido"},
@@ -90,7 +91,7 @@ $data = json_encode(obtenerMisPedidos($_SESSION["email"]));
                             <tr>
                                 <th>ID</th>
                                 <th>Fecha</th>
-                                <th>Precio(&euro;)</th>
+                                <th>Importe(&euro;)</th>
                                 <th>Estado</th>
                             </tr>
                         </thead>
