@@ -123,12 +123,12 @@ if (isset($_SESSION['email']) && existeUsuario($_SESSION['email']) && $_SESSION[
     include './header.php';
     ?>
     <!-- Page Content -->
-    <main class="container">
+    <main class="container-fluid">
         <div class="row">
 
             <!-- /.col-lg-3 -->
             <!--  <form id="conflictForm" action="#" method="POST">-->
-            <div class="col-lg-9">
+            <div class="col">
                 <table id="conflictos" class="table table-striped table-bordered dataTable" style="width:100%">
                     <thead>
                         <tr>

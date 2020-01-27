@@ -93,7 +93,7 @@ function comprobarUsuarioProducto($email, $producto) {
     return $salida;
 }
 
-function comprobarUsuarioidProducto($email, $id) {
+function comprobarUsuarioIdProducto($email, $id) {
     $query = "SELECT * FROM `productos` WHERE `email_vendedor`='$email' and `id`='$id'";
     $result = ejecutarConsulta($query);
     $salida = false;
@@ -108,7 +108,7 @@ function comprobarUsuarioidProducto($email, $id) {
 /* Si quiere cambiar el nombre a un producto A pero ese nombre lo tiene un producto B devolverá una fila indicando que ya existe un producto con ese nombre para el usuario */
 
 function comprobarSiPuedeModificarProducto($email, $id, $nombre) {
-    $query = "SELECT * FROM `productos` WHERE `email_vendedor`='$email' and `id`!='$id' and `nombre`='$producto'";
+    $query = "SELECT * FROM `productos` WHERE `email_vendedor`='$email' and `id`!='$id' and `nombre`='$nombre'";
     $result = ejecutarConsulta($query);
     $salida = false;
 
@@ -178,6 +178,33 @@ function obtenerProducto($idProducto) {
         $producto = mysqli_fetch_assoc($result);
     }
     return $producto;
+}
+
+function obtenerProductoTotales($idProducto) {
+    $query = "SELECT * FROM productos WHERE id=$idProducto";
+    $result = ejecutarConsulta($query);
+    $producto = null;
+    if (mysqli_num_rows($result) > 0) {
+        $producto = mysqli_fetch_assoc($result);
+    }
+    return $producto;
+}
+
+function obtenerMisProductos($email) {
+    $con = openCon();
+    mysqli_set_charset($con, "utf8");
+    $query = "SELECT * from productos where email_vendedor='$email'";
+    $result = mysqli_query($con, $query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+
+    closeCon($con);
+
+    return $productos;
 }
 
 function listarValoracionesProcucto($idProducto) {
@@ -397,15 +424,14 @@ function listarRestoProductosCategoria($idProductos, $categoria) {
     return $productos;
 }
 
-function modificarProducto($id, $email, $nombre, $descripcion, $precio, $stoc, $imagen, $categorias, $caracteristicaName, $caracteristicaDesc) {
-    $queryProducto = "UPDATE `productos` SET `nombre`=$nombre,`descripcion`=$descripcion,`precio`=$precio,`stock`=$stoc,`imagen`=$imagen WHERE `id`='$id'";
+function modificarProducto($id, $email, $nombre, $descripcion, $precio, $stoc, $imagen, $categorias, $caracteristicaName, $caracteristicaDesc, $disponibilidad) {
+    $queryProducto = "UPDATE `productos` SET `nombre`='$nombre',`descripcion`='$descripcion',`precio`='$precio',`stock`='$stoc',`imagen`='$imagen', `disponible`='$disponibilidad' WHERE `id`='$id'";
     $modificacion = ejecutarConsulta($queryProducto);
     $salida = true;
     if ($modificacion) {
         $borrarCategorias = "DELETE FROM `categorias_productos` WHERE `id_producto`='$id'";
         $result = ejecutarConsulta($borrarCategorias);
 
-        $row = mysqli_fetch_row($result);
         foreach ($categorias as $v) {
             $queryProductoCategorias = "INSERT INTO `categorias_productos`(`nombre_categoria`, `id_producto`) VALUES ('$v','$id')";
             $r = ejecutarConsulta($queryProductoCategorias);

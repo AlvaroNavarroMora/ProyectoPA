@@ -4,7 +4,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
     header("location: ./principal.php");
 }
 
-include "./utils/manejadorBD.php";
+include "./utils/utilsProductos.php";
 $data = json_encode(obtenerMisProductos($_SESSION["email"]));
 ?>
 <!DOCTYPE html>
@@ -94,13 +94,13 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
     </head>
 
     <body>
-        <form id="formProducto" action="producto.php" method="get" hidden>
+        <form id="formProducto" action="editarProducto.php" method="POST" hidden>
         </form>
         <?php
         include './header.php';
         ?>
         <!-- Page Content -->
-        <main class="container">
+        <main class="container-fluid">
             <div class="row">
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
@@ -138,22 +138,3 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
         ?>
     </body>
 </html>
-<?php
-
-function obtenerMisProductos($email) {
-    $con = openCon();
-    mysqli_set_charset($con, "utf8");
-    $query = "SELECT * from productos where email_vendedor='$email'";
-    $result = mysqli_query($con, $query);
-    $productos = Array();
-    if (mysqli_num_rows($result) > 0) {
-        while ($row = mysqli_fetch_assoc($result)) {
-            $productos[] = $row;
-        }
-    }
-
-    closeCon($con);
-
-    return $productos;
-}
-?>
