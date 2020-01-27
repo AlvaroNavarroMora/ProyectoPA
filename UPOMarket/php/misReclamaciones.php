@@ -106,8 +106,8 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                         var rows = $("tbody tr");
 
                         for (var i = 0; i < decisiones.length; i++) {
-
-                            var aux = $(rows[i]).children()[9];
+                            console.table(rows);
+                            var aux = $(rows[i]).children()[8];
                             var idPedido = $($(rows[i]).children()[0]).text();
                             var idProducto = $($(rows[i]).children()[1]).text();
                             //var idCliente = $($(rows[i]).children()[5]).text();
