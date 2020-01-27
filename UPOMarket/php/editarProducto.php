@@ -12,10 +12,10 @@ include './utils/sesionUtils.php';
 
 /* Añadir nombre del formulario registro */
 if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad'])) {
-    if(isset($_POST['btnUpdateDisponibilidad'])){
-        $disponibilidad=0;
-    }else{
-        $disponibilidad=1;
+    if (isset($_POST['btnUpdateDisponibilidad'])) {
+        $disponibilidad = 0;
+    } else {
+        $disponibilidad = 1;
     }
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $id = filter_var($_POST['idProducto'], FILTER_SANITIZE_MAGIC_QUOTES);
@@ -128,7 +128,7 @@ if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad']
             move_uploaded_file($tmp_name, $newPath);
         }
         $haModificado = false;
-        modificarProducto($id, $email, $nombreProducto, $descripcion, $precio, $stock, $newPath, $categorias, $caracteristicaName, $caracteristicaDesc,$disponibilidad);
+        modificarProducto($id, $email, $nombreProducto, $descripcion, $precio, $stock, $newPath, $categorias, $caracteristicaName, $caracteristicaDesc, $disponibilidad);
         if ($haModificado) {
             header("Location: ./producto.php?idProducto=$id");
         } else {
@@ -315,8 +315,8 @@ if (isset($_POST['idProducto'])) {
                             <div>
                                 <label>Añade una imagen</label>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="file" name="files[]"  required="true">
-                                    <label  id="imgLab" class="custom-file-label" for="customFile" value=" <?php echo $producto['imagen']; ?>">Selecciona una imagen</label>
+                                    <input type="file" class="custom-file-input" id="file" name="files[]" value="<?php echo $producto['imagen']; ?>" required="true">
+                                    <label  id="imgLab" class="custom-file-label" for="customFile">Selecciona una imagen</label>
                                     <div id="filesName" >
                                     </div>
                                 </div>
@@ -344,13 +344,14 @@ if (isset($_POST['idProducto'])) {
                                         </label>
                                     </div>
                                 </div>
-                                <button name="btnUpdateProduct" type="submit" class="btn btn-success" title="Al actualizar tu producto lo pondrás a la venta y cualquier usuario podrá verlo">Modificar</button>
-                                <button name="btnUpdateDisponibilidad" type="submit" class="btn btn-primary" title="Al actualizar tu producto no estará a la venta">Modificar y ocultar</button>
+                                <button name="btnUpdateProduct" type="submit" class="btn btn-success" title="Al actualizar tu producto lo pondrás a la venta y cualquier usuario podrá verlo">Publicar</button>
+                                <button name="btnUpdateDisponibilidad" type="submit" class="btn btn-warning" title="Al actualizar tu producto no estará a la venta">Modificar y ocultar</button>
+
                                 <!-- /.col-lg-9 -->
                             </div>
                         </div>
                     </form>
-
+                    <a class="btn btn-primary" href="<?php echo "./producto.php?idProducto=$id"; ?>" role="button">Ver producto</a>
                 </div>
             </div>
         </main>
