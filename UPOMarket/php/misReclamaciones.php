@@ -62,7 +62,6 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                         {"data": "id_producto"},
                         {"data": "nombre"},
                         {"data": "importe"},
-                        {"data": "email_vendedor"},
                         {"data": "email_cliente"},
                         {"data": "descripcion"},
                         {"data": "estado"},
@@ -177,7 +176,6 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                                 <th>id Producto</th>
                                 <th>Producto</th>
                                 <th>Importe</th>
-                                <th>Vendedor</th>
                                 <th>Cliente</th>
                                 <th>Descripción</th>
                                 <th>Estado</th>

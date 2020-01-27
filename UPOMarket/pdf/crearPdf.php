@@ -17,7 +17,7 @@ if (isset($_GET['idPedido'])) {
 // Instanciamos un objeto de la clase DOMPDF.
     $pdf = new DOMPDF();
 
-// Definimos el tamaño y orientación del papel que queremos.
+// Definimos el tamaño y orientaci&oacute;n del papel que queremos.
     $pdf->set_paper("letter", "portrait");
 //$pdf->set_paper(array(0,0,104,250));
 // Cargamos el contenido HTML.
@@ -119,7 +119,7 @@ if (isset($_GET['idPedido'])) {
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>
-                                        <th>Descripción</th>
+                                        <th>Descripci&oacute;n</th>
                                         <th>Precio</th>
                                         <th>Cantidad</th>
                                         <th>Subtotal </th>
@@ -139,7 +139,7 @@ if (isset($_GET['idPedido'])) {
             echo "<td>" . $producto['cantidad'] . "</td>";
             $subtotal = $producto['precio'] * $producto['cantidad'];
             $total += $subtotal;
-            echo "<td id ='subtotal" . $i . "'>$subtotal €</td>";
+            echo "<td id ='subtotal" . $i . "'>$subtotal &euro;</td>";
             echo "<td>" . $producto['estado'] . "</td>";
             echo "</tr>";
 
@@ -149,7 +149,7 @@ if (isset($_GET['idPedido'])) {
 
                                 <tr>
                                     <td colspan="3"><strong>Total:</strong></td>
-                                    <td id="precioTotalCarrito" colspan="3"><?php echo number_format($total, 2); ?>€</td>
+                                    <td id="precioTotalCarrito" colspan="3"><?php echo number_format($total, 2); ?>&euro;</td>
                                 </tr>
                             </table>
                             <hr />
@@ -164,10 +164,10 @@ if (isset($_GET['idPedido'])) {
                             <hr />
                             <div class="row">
                                 <div class="divCarrito">
-                                    <h5 class="und">Dirección de envio</h5>
+                                    <h5 class="und">Direcci&oacute;n de envio</h5>
                                     <br />
         <?php
-        echo "<strong>Dirección:</strong> " . $direccion["linea_1"];
+        echo "<strong>Direcci&oacute;n:</strong> " . $direccion["linea_1"];
         if (!empty($direccion["linea_2"])) {
             echo " - " . $direccion["linea_2"];
         } else {
@@ -176,7 +176,7 @@ if (isset($_GET['idPedido'])) {
         echo "<br>";
         echo "<strong>Provincia:</strong> " . $direccion["provincia"] . "<br>";
         echo "<strong>Ciudad:</strong> " . $direccion["ciudad"] . "<br>";
-        echo "<strong>Código Postal:</strong> " . $direccion["cp"];
+        echo "<strong>C&oacute;digo Postal:</strong> " . $direccion["cp"];
         ?>
                                 </div>
                             </div>
