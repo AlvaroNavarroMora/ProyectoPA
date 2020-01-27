@@ -17,9 +17,6 @@ if (isset($_POST['btnAddReclamacion'])) {
     $pedido = filter_var($_POST['pedido'], FILTER_SANITIZE_MAGIC_QUOTES);
     $descripcion = filter_var($_POST['descripcion'], FILTER_SANITIZE_MAGIC_QUOTES);
 
-
-    //He quitado: $importe === false ||
-    //Del if de abajo, da error y no entiendo para qué es (Álvaro)
     if ($password === false || $email === false || $descripcion === false || $producto === false || $pedido === false) {
         $errores[] = "Error con los datos del formulario";
     }
@@ -54,25 +51,9 @@ if (isset($_POST['btnAddReclamacion'])) {
             $errores[] = "Ya tiene un producto con ese nombre";
         }
     }
-    /*
-      foreach ($_FILES['files']['error'] as $k => $v) {
-      if ($v != 0) {
-      $errores[] = "Error en la imagen " . $_FILES['name'][$k];
-      }
-      }
-     * ---------------------------- Da error y no entiendo para qué es (Álvaro)
-     */
+    
     if (empty($errores)) {
 
-        /*
-          if (false) {
-          crearReclamacion($pedido, $producto, $descripcion);
-          header('Location: ./perfil.php');
-          } else {
-          $errores[] = "Error al guardar los datos";
-          }
-         * He comentado esto, if(false)? Voy a poner lo mismo en la línea de abajo pero sin el if (Álvaro)
-         */
         crearReclamacion($pedido, $producto, $descripcion);
         header('Location: ./perfil.php');
     }
@@ -84,7 +65,6 @@ if (isset($_POST['submitReclamacion'])) {
     if ($idPedido === false) {
         $errores[] = "Error con los datos del formulario";
     }
-
 
     if (strlen(trim($idPedido)) < 1) {
         $errores[] = "Error con los datos del formulario";
@@ -155,10 +135,6 @@ if (isset($_POST['submitReclamacion'])) {
                         </div>
                         <div class="form-row">
 
-                            <!--<div class="form-group col-md-6">
-                                 <label for="producto">Nombre del producto</label>
-                                 <input id="producto" name="producto" class="form-control" required="true"/>
-                             </div>-->
                             <div id="miSelect" class=" form-group col-md-12 ">
                                 <label>Seleccione un producto</label>
                                 <select name="producto" data-placeholder="Seleccione el producto" class="form-control chosen-select" tabindex="-1" >
@@ -171,10 +147,6 @@ if (isset($_POST['submitReclamacion'])) {
                                     ?>
                                 </select>
                             </div>
-                            <!--<div class="form-group col-md-6">
-                                <label for="importe">Importe</label>
-                                <input type="number" class="form-control" name="importe" required="true">
-                            </div>-->
                         </div>
 
                         <div class="form-row">

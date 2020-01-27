@@ -19,3 +19,8 @@ and open the template in the editor.
     text-align: center !important;
     width: auto;
 }
+button{
+    width: 100px !important;
+    height: 40px !important;
+    margin: 3px;
+}
