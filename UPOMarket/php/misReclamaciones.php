@@ -143,7 +143,6 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
             });
             function administrarReclamacion(datosReclamacion) {
                 location.href = "./misReclamaciones.php?datos=" + datosReclamacion;
-
             }
         </script>
     </head>

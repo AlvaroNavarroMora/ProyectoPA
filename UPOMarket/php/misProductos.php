@@ -4,7 +4,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
     header("location: ./principal.php");
 }
 
-include "./utils/manejadorBD.php";
+include "./utils/utilsProductos.php";
 $data = json_encode(obtenerMisProductos($_SESSION["email"]));
 ?>
 <!DOCTYPE html>
@@ -138,22 +138,3 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
         ?>
     </body>
 </html>
-<?php
-
-function obtenerMisProductos($email) {
-    $con = openCon();
-    mysqli_set_charset($con, "utf8");
-    $query = "SELECT * from productos where email_vendedor='$email'";
-    $result = mysqli_query($con, $query);
-    $productos = Array();
-    if (mysqli_num_rows($result) > 0) {
-        while ($row = mysqli_fetch_assoc($result)) {
-            $productos[] = $row;
-        }
-    }
-
-    closeCon($con);
-
-    return $productos;
-}
-?>
