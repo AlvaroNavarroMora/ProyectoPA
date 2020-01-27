@@ -20,7 +20,7 @@ if (isset($_GET["idProducto"])) {
         header("location:principal.php");
     }
 } else {
-    //header("location:principal.php");
+    header("location:principal.php");
 }
 
 if (isset($_GET["enviarValoracion"])) {

@@ -1,11 +1,6 @@
 <?php
 
 include 'manejadorBD.php';
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 function listarCategorias() {
     $query = "SELECT nombre FROM categorias";
@@ -38,7 +33,7 @@ function listarProductosDeCategoria($categoria) {
 /* Lista todos los productos disponibles */
 
 function listarProductos() {
-    $query = "SELECT * FROM productos WHERE disponible=1";
+    $query = "SELECT p.id, p.nombre, p.descripcion, p.imagen, p.precio FROM productos p WHERE disponible=1";
     $result = ejecutarConsulta($query);
     $lista = Array();
     while ($row = mysqli_fetch_assoc($result)) {
@@ -49,20 +44,30 @@ function listarProductos() {
 
 /* order Type debe ser ASC (ascendente) o DESC (Descendente) */
 
-function listarProductosPorPrecio($orderType = "ASC") {
-    $query = "SELECT * FROM `productos` ORDER by `precio` $orderType";
+function listarProductosPorPrecio($orderType) {
+    $query = "SELECT * FROM `productos` WHERE disponible=1 ORDER BY `precio` $orderType";
     $result = ejecutarConsulta($query);
-    $lista = mysqli_fetch_all($result);
-    return $lista;
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
 }
 
 /* order Type debe ser ASC (ascendente) o DESC (Descendente) */
 
-function listarProductosPorPrecioCategoria($orderType = "ASC") {
+function listarProductosPorPrecioCategoria($orderType, $categoria) {
     $query = "SELECT * FROM `productos` as p, `categorias_productos` as ca WHERE p.id=ca.id_producto AND ca.nombre_categoria='$categoria' ORDER by `precio` $orderType";
     $result = ejecutarConsulta($query);
-    $lista = mysqli_fetch_all($result);
-    return $lista;
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
 }
 
 /* Email de usuario que queremos buscar */
@@ -260,12 +265,103 @@ function obtenerDireccion($idDireccion) {
 function compradoPorMi($email, $idProducto) {
     $query = "SELECT * FROM pedidos p, lineas_de_pedido lp WHERE p.email_cliente='$email' AND lp.id_producto=$idProducto;";
     $result = ejecutarConsulta($query);
-    
+
     return mysqli_num_rows($result) > 0;
 }
+
 function listarProductosPedido($idPedido) {
     $query = "SELECT pr.`nombre`,pr.`id` FROM `pedidos` as p, `productos`as pr, `lineas_de_pedido` as lp WHERE p.`id`='$idPedido' AND lp.`id_pedido`=p.`id` AND lp.`id_producto`=pr.`id`";
     $result = ejecutarConsulta($query);
     $lista = mysqli_fetch_all($result);
     return $lista;
+}
+
+function listarProductosPorValoracion() {
+    $query = "SELECT p.id, p.nombre, p.descripcion, p.imagen, p.precio FROM productos p, valoraciones v WHERE p.id=v.id_producto AND p.disponible=1 GROUP BY p.id ORDER BY AVG(v.puntuacion) DESC";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
+}
+function listarProductosCategoriaPorValoracion($categoria) {
+    $query = "SELECT p.id, p.nombre, p.descripcion, p.imagen, p.precio FROM productos p, valoraciones v, categorias_productos cp WHERE cp.nombre_categoria='$categoria' AND cp.id_producto=p.id AND p.id=v.id_producto AND p.disponible=1 GROUP BY p.id ORDER BY AVG(v.puntuacion) DESC";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
+}
+
+function listarProductosMasRecientes() {
+    $query = "SELECT id, nombre, descripcion, imagen, precio FROM productos p WHERE disponible=1 ORDER BY id DESC";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
+}
+function listarProductosCategoriaMasRecientes($categoria) {
+    $query = "SELECT p.id, p.nombre, p.descripcion, p.imagen, p.precio FROM productos p, categorias_productos cp WHERE p.id=cp.id_producto AND cp.nombre_categoria='$categoria' AND disponible=1 ORDER BY id DESC";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
+}
+function listarProductosMasVendidos() {
+    $query = "SELECT p.id, p.nombre, p.descripcion, p.precio, p.imagen FROM lineas_de_pedido lp,productos p WHERE lp.id_producto=p.id AND p.disponible=1 GROUP BY id_producto ORDER BY count(*) DESC";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
+}
+function listarProductosCategoriaMasVendidos($categoria) {
+    $query = "SELECT p.id, p.nombre, p.descripcion, p.precio, p.imagen FROM lineas_de_pedido lp,productos p, categorias_productos cp WHERE cp.nombre_categoria='$categoria' AND cp.id_producto=p.id AND lp.id_producto=p.id AND p.disponible=1 GROUP BY lp.id_producto ORDER BY count(*) DESC";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
+}
+function listarRestoProductos($idProductos) {
+    $query = "SELECT p.id, p.nombre, p.descripcion, p.precio, p.imagen FROM productos p WHERE p.id NOT IN ($idProductos)";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
+}
+function listarRestoProductosCategoria($idProductos, $categoria) {
+    $query = "SELECT p.id, p.nombre, p.descripcion, p.precio, p.imagen FROM productos p, categorias_productos cp WHERE cp.id_producto=p.id AND cp.nombre_categoria='$categoria' AND p.id NOT IN ($idProductos)";
+    $result = ejecutarConsulta($query);
+    $productos = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $productos[] = $row;
+        }
+    }
+    return $productos;
 }
