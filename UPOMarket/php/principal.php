@@ -192,32 +192,6 @@ function mostrarProducto($producto) {
                         if (!empty($productos)) {
                             foreach ($productos as $producto) {
                                 mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
-                                mostrarProducto($producto);
                             }
                         } else {
                             echo "No hay productos para mostrar.";
