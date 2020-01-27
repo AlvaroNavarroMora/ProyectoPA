@@ -46,12 +46,11 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                         {"data": "id_pedido"},
                         {"data": "id_producto"},
                         {"data": "nombre"},
-                        {"data": "importe"},
                         {"data": "email_vendedor"},
                         {"data": "email_cliente"},
                         {"data": "descripcion"},
                         {"data": "estado"},
-                        {"data": "fecha"},
+                        {"data": "fecha"}
                     ],
                     "drawCallback": function () {
                         var table = $('#reclamaciones').DataTable();
@@ -105,7 +104,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
         include './header.php';
         ?>
         <!-- Page Content -->
-        <main class="container">
+        <main class="container-fluid">
             <div class="row">
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
@@ -124,7 +123,6 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                                 <th>Pedido</th>
                                 <th>id Producto</th>
                                 <th>Producto</th>
-                                <th>Importe</th>
                                 <th>Vendedor</th>
                                 <th>Cliente</th>
                                 <th>Descripción</th>

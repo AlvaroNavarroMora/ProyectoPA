@@ -1,8 +1,6 @@
 <?php
 session_start();
 
-
-
 if (isset($_GET["idProducto"])) {
     include './utils/utilsProductos.php';
 
@@ -29,8 +27,12 @@ if (isset($_GET["enviarValoracion"])) {
     $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $puntuacion_nueva = filter_var($_GET["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
     $valoracion_nueva = trim(filter_var($_GET["valoracion"], FILTER_SANITIZE_STRING));
-
-    valorarProducto($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
+    if (filter_var($valoracion, FILTER_VALIDATE_INT, array("options" =>
+                array("min_range" => 1, "max_range" => 5))) === false) {
+        $error = "La valoración introducida no es válida";
+    } else {
+        valorarProducto($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
+    }
 
     header("location:producto.php?idProducto=$idProducto");
 } else if (isset($_GET["editarValoracion"])) {
@@ -39,17 +41,12 @@ if (isset($_GET["enviarValoracion"])) {
     $valoracion_nueva = trim(filter_var($_GET["valoracion"], FILTER_SANITIZE_STRING));
 
     actualizarValoracion($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
-    //header("location:producto.php?idProducto=$idProducto");
+    header("location:producto.php?idProducto=$idProducto");
 } else if (isset($_GET["eliminarValoracion"])) {
     $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
 
     eliminarValoracion($_SESSION["email"], $idProducto);
     header("location:producto.php?idProducto=$idProducto");
-}
-
-if (isset($_SESSION['tipo']) && $_SESSION['tipo'] == "vendedor" && $producto['email_vendedor'] == $_SESSION['email']) {
-    $id = $producto['id'];
-    header("location:editarProducto.php?id=$id");
 }
 
 function mostrarValorar() {
@@ -210,6 +207,9 @@ function mostrarValorar() {
             <div class="col-lg-9">
                 <?php
                 include './barraBusqueda.php';
+                if (!empty($error)) {
+                    echo '<div class="alert alert-warning">' . $error . "</div>";
+                }
                 ?>
                 <div class="card mt-4">
                     <img id='imgProducto' class="card-img-top img-fluid" src='<?php echo $img ?>' alt="">

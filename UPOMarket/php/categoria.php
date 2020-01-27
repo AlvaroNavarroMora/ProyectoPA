@@ -4,7 +4,7 @@ include './utils/utilsProductos.php';
 $categorias = listarCategorias();
 
 if (!isset($_GET["categoria"])) {
-    //header("location:principal.php");
+    header("location:principal.php");
 }
 $categoria = trim(filter_var($_GET["categoria"], FILTER_SANITIZE_STRING));
 if (isset($_GET["ordenar"])) {
@@ -53,7 +53,16 @@ function mostrarProducto($producto) {
                     <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><?php echo $producto["nombre"] ?></a>
                 </h4>
                 <h5><?php echo $producto["precio"] ?>&euro;</h5>
-                <p class = "card-text"><?php echo $producto["descripcion"] ?></p>
+                <p class = "card-text">
+                    <?php
+                    $descripcion = $producto["descripcion"];
+                    if (strlen($descripcion) > 50) {
+                        $descripcion = substr($descripcion, 0, 50);
+                        $descripcion .= "...";
+                    }
+                    echo $descripcion;
+                    ?>
+                </p>
             </div>
             <div class = "card-footer">
                 <small class = "text-muted stars"><span hidden><?php echo $puntuacion ?></span></small>

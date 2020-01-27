@@ -131,8 +131,8 @@ if (isset($_POST['btnUpdateProduct'])) {
     }
 }
 
-if (isset($_GET['id'])) {
-    $id = filter_var($_GET['id'], FILTER_SANITIZE_MAGIC_QUOTES);
+if (isset($_POST['idProducto'])) {
+    $id = filter_var($_POST['idProducto'], FILTER_SANITIZE_MAGIC_QUOTES);
     if ($id === false || strlen(trim($id)) < 1) {
         $errores[] = "Error en los datos";
     }
