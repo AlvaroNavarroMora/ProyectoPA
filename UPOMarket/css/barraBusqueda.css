@@ -1,11 +1,11 @@
-#searchForm {
+#searchForm,#ordenar {
     margin-top: 3% !important;
-}
-#searchForm{
-    width: 100%;
 }
 .input-group {
     width: 60% !important;
+}
+.col-3 {
+    width: 30% !important;
 }
 select {
     margin-right: 10px;
