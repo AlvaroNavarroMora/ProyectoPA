@@ -14,6 +14,9 @@ function mostrarSinSesion() {
 function mostrarCliente() {
     ?>
     <li class="nav-item">
+        <a class="nav-link" href="./misPedidos.php">Menú Cliente</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta <span id="num-productos"></span></a>
     </li>
     <li id="profile" class="nav-item">
@@ -29,6 +32,9 @@ function mostrarCliente() {
 
 function mostrarVendedor() {
     ?>
+    <li class="nav-item">
+        <a class="nav-link" href="./misPedidos.php">Menú Cliente</a>
+    </li>
     <li class="nav-item">
         <a class="nav-link" href="./misProductos.php">Menú Vendedor</a>
     </li>
