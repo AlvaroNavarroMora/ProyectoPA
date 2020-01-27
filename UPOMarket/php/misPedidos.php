@@ -73,7 +73,7 @@ $data = json_encode(obtenerMisPedidos($_SESSION["email"]));
         include './header.php';
         ?>
         <!-- Page Content -->
-        <main class="container">
+        <main class="container-fluid">
             <div class="row">
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">

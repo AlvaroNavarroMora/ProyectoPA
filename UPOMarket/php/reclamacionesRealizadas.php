@@ -57,6 +57,14 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                     "data": data,
                     "paging": true,
                     "ordering": true,
+                    columnDefs: [{
+                            targets: [2,6],
+                            render: function (data, type, row) {
+                                return data.length > 20 ?
+                                        data.substr(0, 20) + '…' :
+                                        data;
+                            }
+                        }],
                     "columns": [
                         {"data": "id_pedido"},
                         {"data": "id_producto"},
@@ -66,7 +74,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                         {"data": "email_cliente"},
                         {"data": "descripcion"},
                         {"data": "estado"},
-                        {"data": "fecha"},
+                        {"data": "fecha"}
                     ],
                     "drawCallback": function () {
                         var table = $('#reclamaciones').DataTable();
