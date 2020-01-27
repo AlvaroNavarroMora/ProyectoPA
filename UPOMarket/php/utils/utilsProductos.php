@@ -208,7 +208,7 @@ function obtenerMisProductos($email) {
 }
 
 function listarValoracionesProcucto($idProducto) {
-    $query = "SELECT * FROM valoraciones WHERE id_producto=$idProducto";
+    $query = "SELECT * FROM valoraciones WHERE id_producto=$idProducto ORDER BY fecha DESC";
     $result = ejecutarConsulta($query);
     $valoraciones = Array();
     if (mysqli_num_rows($result) > 0) {

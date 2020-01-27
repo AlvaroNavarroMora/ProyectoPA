@@ -62,6 +62,14 @@ else
                     "ordering": true,
                     "searching": false,
                     "order": [[1, "asc"]],
+                    columnDefs: [{
+                            targets: 2,
+                            render: function (data, type, row) {
+                                return data.length > 50 ?
+                                        data.substr(0, 50) + '…' :
+                                        data;
+                            }
+                        }],
                     "columns": [
                         {"data": "id"},
                         {"data": "nombre"},
@@ -71,7 +79,6 @@ else
                     ],
                     "drawCallback": function () {
                         var table = $('#productos').DataTable();
-
                         $('#productos tbody').on('click', 'tr', function () {
                             var id = table.row(this).data().id;
                             var input = $("<input type='text' name='idProducto'/>");
@@ -84,7 +91,6 @@ else
                         /*modif acp*/
                         for (var i = 0; i < imgs.length; i++) {
                             var aux = $(rows[i]).children()[3];
-
                             path = data[i]['imagen'];
                             var imagen = document.createElement("img");
                             $(imagen).attr("src", path);
@@ -100,7 +106,6 @@ else
                             var busca = "<?php echo $busca ?>";
                             var re = new RegExp(busca, 'gi');
                             cells[i].innerHTML = cells[i].innerHTML.replace(re, "<span class='highlight'>" + busca + "</span>");
-
                         }
                         cells = $("tbody tr :nth-child(3)");
                         for (var i = 0; i < cells.length; i++) {
@@ -108,11 +113,11 @@ else
                             var busca = "<?php echo $busca ?>";
                             var re = new RegExp(busca, 'gi');
                             cells[i].innerHTML = cells[i].innerHTML.replace(re, "<span class='highlight'>" + busca + "</span>");
-
                         }
                     }
                 });
-            });
+            }
+            );
             function reemplazarImg(img) {
                 $(img).attr("src", "../img/productDefaultImage.jpg");
             }
