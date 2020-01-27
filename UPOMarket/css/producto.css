@@ -31,3 +31,6 @@ button.btn-valoracion {
 form textarea {
     margin-bottom: 10px;
 }
+div.col-xl-3 {
+    display: none;
+}

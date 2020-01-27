@@ -2,7 +2,38 @@
 session_start();
 include './utils/utilsProductos.php';
 $categorias = listarCategorias();
-$productos = listarProductos();
+
+if (isset($_GET["ordenar"])) {
+    $opcion = filter_var($_GET["ordenar"], FILTER_SANITIZE_NUMBER_INT);
+    echo $opcion;
+    switch ($opcion) {
+        case 0: $productos = listarProductosPorValoracion();
+            break;
+        case 1: $productos = listarProductosMasVendidos();
+            break;
+        case 2: $productos = listarProductosMasRecientes();echo "aAA";
+            break;
+        case 3: $productos = listarProductosPorPrecio("ASC");
+            break;
+        case 4: $productos = listarProductosPorPrecio("DESC");
+            break;
+        default: $productos = listarProductos();
+            break;
+    }
+    $ids = Array();
+    foreach ($productos as $p) {
+        $ids[] = $p["id"];
+    }
+    if (!empty($productos)) {
+        $restoProductos = listarRestoProductos(implode(", ", $ids));
+        $productos = array_merge($productos, $restoProductos);
+    }
+    else {
+        $productos = listarProductos();
+    }
+} else {
+    $productos = listarProductos();
+}
 $productosCarrusel = listarTopVentas(3);
 
 function mostrarProducto($producto) {
@@ -101,7 +132,7 @@ function mostrarProducto($producto) {
                 <div class="col-lg-9">
                     <?php
                     include './barraBusqueda.php';
-                    
+
                     if (!empty($productosCarrusel)) {
                         echo '<div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">';
                         echo '<ol class="carousel-indicators">';
