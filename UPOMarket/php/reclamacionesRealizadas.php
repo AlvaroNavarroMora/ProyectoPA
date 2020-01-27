@@ -79,22 +79,12 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
 
                         $('#reclamaciones tbody').on('click', 'tr', function () {
                             var value = table.row(this).data().id_pedido;
-                            var input = $("<input type='text' name='idVenta'/>");
+                            var input = $("<input type='text' name='idReclamacion'/>");
                             $(input).val(value);
                             $("#formReclamaciones").append(input);
 
-                            value = table.row(this).data().email_vendedor;
-                            input = $("<input type='text' name='vendedor'/>");
-                            $(input).val(value);
-                            $("#formReclamaciones").append(input);
-
-                            value = table.row(this).data().importe;
-                            input = $("<input type='text' name='importe'/>");
-                            $(input).val(value);
-                            $("#formReclamaciones").append(input);
-
-                            value = table.row(this).data().fecha;
-                            input = $("<input type='text' name='fecha'/>");
+                            value = table.row(this).data().id_producto;
+                            input = $("<input type='text' name='idProducto'/>");
                             $(input).val(value);
                             $("#formReclamaciones").append(input);
 
