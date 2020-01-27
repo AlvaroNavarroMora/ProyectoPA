@@ -17,7 +17,7 @@ if (isset($_GET["idProducto"])) {
         $puntuacion = obtenerPuntuacionProducto($idProducto);
         $categorias = listarCategorias();
     } else {
-        header("location:principal.php");
+        $error = "Este producto no está disponible temporalmente";
     }
 } else {
     header("location:principal.php");
@@ -183,53 +183,70 @@ function mostrarValorar() {
     <?php
     $categorias = listarCategorias();
     include './header.php';
-    include './utils/encriptar.php';
     ?>
-
     <!-- Page Content -->
     <main class="container">
         <div class="row">
-            <!-- LISTA DE CATEGORÍAS -->
-            <div class="col-lg-3">
-                <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
-                <nav id='categorias' class="list-group">
-                    <ul class="list-unstyled">
-                        <h4 class="text-center">Categorías</h4>
-                        <?php
-                        foreach ($categorias as $c) {
-                            echo '<li><a href="./categoria.php?categoria=' . $c[0] . '" class="list-group-item">' . $c[0] . '</a></li>';
-                        }
-                        ?>
-                    </ul>
-                </nav>
-            </div>
-            <!-- /.col-lg-3 -->
-            <div class="col-lg-9">
-                <?php
-                include './barraBusqueda.php';
-                if (!empty($error)) {
-                    echo '<div class="alert alert-warning">' . $error . "</div>";
-                }
+            <?php
+            if (!empty($error)) {
+                echo '<div class="alert alert-warning">' . $error . "</div>";
+            } else {
+                include './utils/encriptar.php';
                 ?>
-                <div class="card mt-4">
-                    <img id='imgProducto' class="card-img-top img-fluid" src='<?php echo $img ?>' alt="">
-                    <div class="card-body">
-                        <h3 class="card-title"><?php echo $producto['nombre'] ?></h3>
-                        <h4><?php echo $producto['precio'] ?>€</h4>
-                        <p class="card-text"><?php echo $producto['descripcion'] ?></p>
-                        <div id="productRating" class="text-warning"></div>
-                        <?php echo number_format($puntuacion, 1) ?> estrellas
-                        <br />
-                        <br />
-                        <?php
-                        if (isset($_SESSION['carrito']) && !empty($_SESSION['carrito'])) {
-                            $index = -1;
-                            foreach ($_SESSION['carrito'] as $indice => $productoSes) {
-                                if ($productoSes['id'] == $producto['id']) {
-                                    $index = $indice;
-                                }
+                <!-- LISTA DE CATEGORÍAS -->
+                <div class="col-lg-3">
+                    <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
+                    <nav id='categorias' class="list-group">
+                        <ul class="list-unstyled">
+                            <h4 class="text-center">Categorías</h4>
+                            <?php
+                            foreach ($categorias as $c) {
+                                echo '<li><a href="./categoria.php?categoria=' . $c[0] . '" class="list-group-item">' . $c[0] . '</a></li>';
                             }
-                            if ($index == -1) {
+                            ?>
+                        </ul>
+                    </nav>
+                </div>
+                <!-- /.col-lg-3 -->
+                <div class="col-lg-9">
+                    <?php
+                    include './barraBusqueda.php';
+                    ?>
+                    <div class="card mt-4">
+                        <img id='imgProducto' class="card-img-top img-fluid" src='<?php echo $img ?>' alt="">
+                        <div class="card-body">
+                            <h3 class="card-title"><?php echo $producto['nombre'] ?></h3>
+                            <h4><?php echo $producto['precio'] ?>€</h4>
+                            <p class="card-text"><?php echo $producto['descripcion'] ?></p>
+                            <div id="productRating" class="text-warning"></div>
+                            <?php echo number_format($puntuacion, 1) ?> estrellas
+                            <br />
+                            <br />
+                            <?php
+                            if (isset($_SESSION['carrito']) && !empty($_SESSION['carrito'])) {
+                                $index = -1;
+                                foreach ($_SESSION['carrito'] as $indice => $productoSes) {
+                                    if ($productoSes['id'] == $producto['id']) {
+                                        $index = $indice;
+                                    }
+                                }
+                                if ($index == -1) {
+                                    ?>
+                                    <form action="./utils/anadirEliminarCarrito.php" method="post">
+                                        <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
+                                        <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']); ?>">
+                                        <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
+                                    </form>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <form action="./utils/anadirEliminarCarrito.php" method="post">
+                                        <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
+                                        <button class="btn btn-primary" name="btnEliminarCarritoProducto" value="Eliminar del carrito" type="submit">Eliminar del carrito</button>
+                                    </form>
+                                    <?php
+                                }
+                            } else if (isset($_SESSION["email"])) {
                                 ?>
                                 <form action="./utils/anadirEliminarCarrito.php" method="post">
                                     <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
@@ -237,84 +254,70 @@ function mostrarValorar() {
                                     <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
                                 </form>
                                 <?php
-                            } else {
-                                ?>
-                                <form action="./utils/anadirEliminarCarrito.php" method="post">
-                                    <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
-                                    <button class="btn btn-primary" name="btnEliminarCarritoProducto" value="Eliminar del carrito" type="submit">Eliminar del carrito</button>
-                                </form>
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <!-- /.card caracteristicas -->
+                    <div class="card card-outline-secondary my-4">
+                        <div class="card-header">
+                            Características
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
                                 <?php
-                            }
-                        } else if (isset($_SESSION["email"])) {
-                            ?>
-                            <form action="./utils/anadirEliminarCarrito.php" method="post">
-                                <input type="hidden" name="id" value="<?php echo encriptar($producto['id']); ?>">
-                                <input type="hidden" name="nombre" value="<?php echo encriptar($producto['nombre']); ?>">
-                                <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
-                            </form>
+                                foreach ($caracteristicas as $c) {
+                                    echo '<li class="list-group-item"><strong>' . $c["nombre_caracteristica"] . ":</strong> " . $c["valor"] . '</li>';
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- fin /.card caracteristicas-->
+                    <!-- /.card Opiniones-->
+                    <div class="card card-outline-secondary my-4">
+                        <div class="card-header">
+                            Opiniones del producto
+                        </div>
+                        <div class="card-body">
                             <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-                <!-- /.card caracteristicas -->
-                <div class="card card-outline-secondary my-4">
-                    <div class="card-header">
-                        Características
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <?php
-                            foreach ($caracteristicas as $c) {
-                                echo '<li class="list-group-item"><strong>' . $c["nombre_caracteristica"] . ":</strong> " . $c["valor"] . '</li>';
+                            $valorable = true;
+                            foreach ($valoraciones as $v) {
+                                echo "<div";
+                                if ($v["email_cliente"] == $_SESSION["email"]) {
+                                    echo " id='miValoracion'";
+                                    $valorable = false;
+                                }
+                                echo ">";
+                                echo "<span class='text-warning'>";
+                                $nota = $v["puntuacion"];
+                                for ($i = 0; $i < $nota; $i++) {
+                                    echo "&#9733;";
+                                }
+                                echo "</span>";
+                                if ($v["email_cliente"] == $_SESSION["email"]) {
+                                    echo "<button id='btnEliminar' class='btn btn-sm btn-danger pull-right btn-valoracion'>Eliminar</button>";
+                                    echo "<button class='btn btn-sm btn-warning pull-right btn-valoracion' onclick='mostrarEditable()'>Editar</button>";
+                                }
+                                echo "<br>";
+                                echo '<p>' . $v['descripcion'] . '</p>';
+                                echo '<small>Por: ' . $v['email_cliente'] . '</small>';
+                                echo "<br>";
+                                echo '<small>Fecha: ' . $v['fecha'] . '</small>';
+                                echo "</div>";
+                                echo "<hr>";
+                            }
+                            if (isset($_SESSION["email"]) && $valorable && compradoPorMi($_SESSION["email"], $idProducto)) {
+                                mostrarValorar();
                             }
                             ?>
-                        </ul>
+                        </div>
                     </div>
+                    <!-- fin /.card Opiniones-->
                 </div>
-                <!-- fin /.card caracteristicas-->
-                <!-- /.card Opiniones-->
-                <div class="card card-outline-secondary my-4">
-                    <div class="card-header">
-                        Opiniones del producto
-                    </div>
-                    <div class="card-body">
-                        <?php
-                        $valorable = true;
-                        foreach ($valoraciones as $v) {
-                            echo "<div";
-                            if ($v["email_cliente"] == $_SESSION["email"]) {
-                                echo " id='miValoracion'";
-                                $valorable = false;
-                            }
-                            echo ">";
-                            echo "<span class='text-warning'>";
-                            $nota = $v["puntuacion"];
-                            for ($i = 0; $i < $nota; $i++) {
-                                echo "&#9733;";
-                            }
-                            echo "</span>";
-                            if ($v["email_cliente"] == $_SESSION["email"]) {
-                                echo "<button id='btnEliminar' class='btn btn-sm btn-danger pull-right btn-valoracion'>Eliminar</button>";
-                                echo "<button class='btn btn-sm btn-warning pull-right btn-valoracion' onclick='mostrarEditable()'>Editar</button>";
-                            }
-                            echo "<br>";
-                            echo '<p>' . $v['descripcion'] . '</p>';
-                            echo '<small>Por: ' . $v['email_cliente'] . '</small>';
-                            echo "<br>";
-                            echo '<small>Fecha: ' . $v['fecha'] . '</small>';
-                            echo "</div>";
-                            echo "<hr>";
-                        }
-                        if (isset($_SESSION["email"]) && $valorable && compradoPorMi($_SESSION["email"], $idProducto)) {
-                            mostrarValorar();
-                        }
-                        ?>
-                    </div>
-                </div>
-                <!-- fin /.card Opiniones-->
-            </div>
-            <!-- /.col-lg-9 -->
+                <!-- /.col-lg-9 -->
+            <?php }
+            ?>
         </div>
     </main>
     <!-- /.container -->
