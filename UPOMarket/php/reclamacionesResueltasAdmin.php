@@ -66,6 +66,10 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                             var input = $("<input type='text' name='idReclamacion'/>");
                             $(input).val(value);
                             $("#formReclamaciones").append(input);
+                            var value = table.row(this).data().id_producto;
+                            var input = $("<input type='text' name='idProducto'/>");
+                            $(input).val(value);
+                            $("#formReclamaciones").append(input);
                             $("#formReclamaciones").submit();
                         });
 
