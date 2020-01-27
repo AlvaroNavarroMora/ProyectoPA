@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+
+
 if (isset($_GET["idProducto"])) {
     include './utils/utilsProductos.php';
 
@@ -45,17 +47,23 @@ if (isset($_GET["enviarValoracion"])) {
     header("location:producto.php?idProducto=$idProducto");
 }
 
+if ($_SESSION['tipo'] == "vendedor" && $producto['email_vendedor'] == $_SESSION['email']) {
+    $id = $producto['id'];
+    header("location:editarProducto.php?id=$id");
+}
+
 function mostrarValorar() {
     ?>
     <form id='formValoracionProducto' class="md-form mr-auto mb-4" method="GET">
         <textarea class="form-control" name="valoracion" placeholder="Valora el producto" required></textarea>
         <?php
         for ($index = 1; $index <= 5; $index++) {
-            echo "<span id='puntuacion-$index' class='review fa fa-star unchecked'></span>";
+            echo "<span id = 'puntuacion-$index' class = 'review fa fa-star unchecked'></span>";
         }
         ?>
         <input id="puntuacion" type="number" name="puntuacion" hidden>
-        <input name="idProducto" type="number" value="<?php echo $_GET["idProducto"] ?>" hidden>
+        <input name="idProducto" type="number" value="<?php echo $_GET["idProducto"]
+        ?>" hidden>
         <br>
         <input id="btn-coment" type="submit" name="enviarValoracion" value="Valora el producto!" class="btn btn-success">
     </form>
