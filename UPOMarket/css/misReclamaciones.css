@@ -12,10 +12,8 @@ span.highlight {
     display: inline;
     background-color: yellow;
 }
-img.mostrarImagen {
-    display:inline-table;
-    max-width: 50px;
-}
-#btn-aniadir-producto {
-    margin: 3% 0 1% 0;
+button{
+    width: 100px !important;
+    height: 40px !important;
+    margin: 3px;
 }

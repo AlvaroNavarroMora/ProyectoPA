@@ -12,7 +12,7 @@ if (isset($_GET['datos'])) {
     $idProducto = $aux[1];
     $idUsuario = $aux[2];
 
-    if (esAdministrador($_SESSION['email'], $_SESSION['tipo']) && existeConflicto($idPedido, $idProducto)) {
+    if (existeUsuario($_SESSION['email']) && $_SESSION['tipo'] == "admin" && existeConflicto($idPedido, $idProducto)) {
         resolverConflicto($idPedido, $idProducto, $idUsuario);
     }
     header("Location: ./conflictos.php");

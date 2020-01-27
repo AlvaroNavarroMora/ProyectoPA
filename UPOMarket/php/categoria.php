@@ -3,8 +3,37 @@ session_start();
 include './utils/utilsProductos.php';
 $categorias = listarCategorias();
 
-if (isset($_GET["categoria"])) {
-    $categoria = trim(filter_var($_GET["categoria"], FILTER_SANITIZE_STRING));
+if (!isset($_GET["categoria"])) {
+    //header("location:principal.php");
+}
+$categoria = trim(filter_var($_GET["categoria"], FILTER_SANITIZE_STRING));
+if (isset($_GET["ordenar"])) {
+    $opcion = filter_var($_GET["ordenar"], FILTER_SANITIZE_NUMBER_INT);
+    switch ($opcion) {
+        case 0: $productosCategoria = listarProductosCategoriaPorValoracion($categoria);
+            break;
+        case 1: $productosCategoria = listarProductosCategoriaMasVendidos($categoria);
+            break;
+        case 2: $productosCategoria = listarProductosCategoriaMasRecientes($categoria);
+            break;
+        case 3: $productosCategoria = listarProductosPorPrecioCategoria("ASC", $categoria);
+            break;
+        case 4: $productosCategoria = listarProductosPorPrecioCategoria("DESC", $categoria);
+            break;
+        default: $productosCategoria = listarProductosDeCategoria($categoria);
+            break;
+    }
+    $ids = Array();
+    foreach ($productosCategoria as $p) {
+        $ids[] = $p["id"];
+    }
+    if (!empty($productosCategoria)) {
+        $restoProductos = listarRestoProductosCategoria(implode(", ", $ids), $categoria);
+        $productosCategoria = array_merge($productosCategoria, $restoProductos);
+    } else {
+        $productosCategoria = listarProductosDeCategoria($categoria);
+    }
+} else {
     $productosCategoria = listarProductosDeCategoria($categoria);
 }
 
@@ -107,7 +136,7 @@ function mostrarProducto($producto) {
                 <div class="col-lg-9">
                     <?php
                     include './barraBusqueda.php';
-                    
+
                     if (!empty($productosCategoria)) {
                         echo '<div class="row">';
                         foreach ($productosCategoria as $producto) {
