@@ -94,13 +94,13 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
     </head>
 
     <body>
-        <form id="formProducto" action="producto.php" method="get" hidden>
+        <form id="formProducto" action="editarProducto.php" method="POST" hidden>
         </form>
         <?php
         include './header.php';
         ?>
         <!-- Page Content -->
-        <main class="container">
+        <main class="container-fluid">
             <div class="row">
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">

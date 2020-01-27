@@ -29,7 +29,7 @@
                 </div>
             </form>
         </div>
-        <div class="col-xl-3 my-auto mx-auto">
+        <div class="col-xl-3 my-auto mx-auto ordenacion">
             <form id="ordenarResultados" class="form-inline mr-auto mb-1" method="GET">
                 <?php
                 if (isset($_GET["categoria"])) {
@@ -42,7 +42,7 @@
                     if (!isset($_GET["ordenar"]) || $_GET["ordenar"] == -1) {
                         echo "selected";
                     }
-                    echo '>Ordenar</option>
+                    echo '>Ordenar (por defecto)</option>
                     <option value="0" ';
                     if(isset($_GET["ordenar"]) && $_GET["ordenar"] == 0) {
                         echo "selected";

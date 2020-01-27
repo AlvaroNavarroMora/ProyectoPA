@@ -155,7 +155,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
         include './header.php';
         ?>
         <!-- Page Content -->
-        <main class="container">
+        <main class="container-fluid">
             <div class="row">
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
@@ -175,7 +175,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                                 <th>Pedido</th>
                                 <th>id Producto</th>
                                 <th>Producto</th>
-                                <th>Importe</th>
+                                <th>Importe(&euro;)</th>
                                 <th>Cliente</th>
                                 <th>Descripción</th>
                                 <th>Estado</th>
