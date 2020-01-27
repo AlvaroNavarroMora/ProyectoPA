@@ -38,6 +38,14 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                     "data": data,
                     "paging": true,
                     "ordering": true,
+                    columnDefs: [{
+                            targets: [2],
+                            render: function (data, type, row) {
+                                return data.length > 20 ?
+                                        data.substr(0, 20) + '…' :
+                                        data;
+                            }
+                        }],
                     "columns": [
                         {"data": "id"},
                         {"data": "nombre"},
@@ -77,8 +85,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                             var disponible = data[i]['disponible'];
                             if (disponible == 1) {
                                 var text = document.createTextNode("Disponible");
-                            }
-                            else {
+                            } else {
                                 var text = document.createTextNode("No disponible");
                             }
                             aux.replaceChild(text, aux.firstChild);

@@ -38,6 +38,7 @@ $data = json_encode(obtenerMisVentas($_SESSION["email"]));
                     "data": data,
                     "paging": true,
                     "ordering": true,
+                    "order": [[ 4, "desc" ]],
                     "columns": [
                         {"data": "id"},
                         {"data": "email_cliente"},
