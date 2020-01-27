@@ -4,7 +4,8 @@ require_once 'dompdf/autoload.inc.php';
 
 use Dompdf\Dompdf;
 
-$html = "<h1>Log&iacute;stica en UPOMarket</h1><p>El almacenamiento y env&iacute;o de los productos es responsabilidad &uacute;nica y completa del vendedor.</p><img src='../img/upomarket_nav.png' alt='Logo de UPOMarket'/>";
+$html = "<h1>T&eacute;rminos y Condiciones</h1><p><strong>UPOMarket</strong> se lava las manos. Todo es responsabilidad del usuario, no deber&iacute;a haber confiado en nosotros.</p><img src='../img/upomarket_nav.png' alt='Logo de UPOMarket'/>";
+
 $pdf = new DOMPDF();
 
 // Definimos el tamaño y orientaci&oacute;n del papel que queremos.
