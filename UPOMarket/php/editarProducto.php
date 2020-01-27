@@ -9,12 +9,18 @@ include './utils/sesionUtils.php';
 
 
 
+
 /* Añadir nombre del formulario registro */
-if (isset($_POST['btnUpdateProduct'])) {
+if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad'])) {
+    if(isset($_POST['btnUpdateDisponibilidad'])){
+        $disponibilidad=0;
+    }else{
+        $disponibilidad=1;
+    }
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $id = filter_var($_POST['id'], FILTER_SANITIZE_MAGIC_QUOTES);
+    $id = filter_var($_POST['idProducto'], FILTER_SANITIZE_MAGIC_QUOTES);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $producto = filter_var($_POST['producto'], FILTER_SANITIZE_MAGIC_QUOTES);
+    $nombreProducto = filter_var($_POST['producto'], FILTER_SANITIZE_MAGIC_QUOTES);
     $descripcion = filter_var($_POST['descripcion'], FILTER_SANITIZE_MAGIC_QUOTES);
     $categorias = filter_var_array($_POST['cats'], FILTER_SANITIZE_MAGIC_QUOTES);
     $caracteristicaName = filter_var_array($_POST['caracteristicaName'], FILTER_SANITIZE_MAGIC_QUOTES);
@@ -23,11 +29,11 @@ if (isset($_POST['btnUpdateProduct'])) {
     $stock = filter_var($_POST['stock'], FILTER_SANITIZE_MAGIC_QUOTES);
 
 
-    if ($id === false || $stock === false || $password === false || $precio === false || $email === false || $descripcion === false || $producto === false || $caracteristicaName === false || $caracteristicaDesc == false) {
+    if ($id === false || $stock === false || $password === false || $precio === false || $email === false || $descripcion === false || $nombreProducto === false || $caracteristicaName === false || $caracteristicaDesc == false) {
         $errores[] = "Error con los datos del formulario";
     }
     if (strlen(trim($id)) < 1) {
-        $errores[] = "Error en lso datos del formulario";
+        $errores[] = "Error en los datos del formulario";
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errores[] = "El campo email esta mal rellenado.";
@@ -42,7 +48,7 @@ if (isset($_POST['btnUpdateProduct'])) {
         $errores[] = "El campo contrasenia es obligatorio.";
     }//Falta comprobar que usuario y contraseña son válidos
 
-    if (strlen(trim($producto)) < 1) {
+    if (strlen(trim($nombreProducto)) < 1) {
         $errores[] = "El campo producto es obligatorio.";
     }
 
@@ -88,10 +94,10 @@ if (isset($_POST['btnUpdateProduct'])) {
     if (!comprobarSesionActual($email) || comprobarUsuarioContraseña($email, $password)) {
         $errores[] = "Credenciales incorrectas";
     } else {
-        if (!comprobarUsuarioProducto($email, $id)) {
+        if (!comprobarUsuarioIdProducto($email, $id)) {
             $errores[] = "Error en los datos";
         }
-        if (comprobarSiPuedeModificarProducto($email, $id, $nombre)) {
+        if (comprobarSiPuedeModificarProducto($email, $id, $nombreProducto)) {
             $errores[] = "Ya tiene otro producto con ese nombre";
         }
     }
@@ -104,7 +110,7 @@ if (isset($_POST['btnUpdateProduct'])) {
     if (empty($errores)) {
         //Si la insercion falla $credenciales=false, sino $credenciales tendrá el nombre de usuario y su id para guardar la sesion
         $pathProductos = "../img/usrFotos/$email/products"; /* Carpeta para almacenar fotos de los productos del usuario */
-        $pathThisProducto = "../img/usrFotos/$email/products/$producto"; /* Carpeta para almacenar fotos de los productos del usuario */
+        $pathThisProducto = "../img/usrFotos/$email/products/$nombreProducto"; /* Carpeta para almacenar fotos de los productos del usuario */
         if (!is_dir($pathProductos)) {
             mkdir($pathProductos);
         }
@@ -121,10 +127,10 @@ if (isset($_POST['btnUpdateProduct'])) {
             //Mover la imagen al destino
             move_uploaded_file($tmp_name, $newPath);
         }
-        echo "$email, $producto, $descripcion, $precio, $stock, $newPath, $categorias, $caracteristicaName, $caracteristicaDesc";
-        $haModificado = false; //modificarProducto($email, $producto, $descripcion, $precio, $stock, $newPath, $categorias, $caracteristicaName, $caracteristicaDesc);
+        $haModificado = false;
+        modificarProducto($id, $email, $nombreProducto, $descripcion, $precio, $stock, $newPath, $categorias, $caracteristicaName, $caracteristicaDesc,$disponibilidad);
         if ($haModificado) {
-            header('Location: ./perfil.php');
+            header("Location: ./producto.php?idProducto=$id");
         } else {
             $errores[] = "Error al guardar los datos";
         }
@@ -134,17 +140,17 @@ if (isset($_POST['btnUpdateProduct'])) {
 if (isset($_POST['idProducto'])) {
     $id = filter_var($_POST['idProducto'], FILTER_SANITIZE_MAGIC_QUOTES);
     if ($id === false || strlen(trim($id)) < 1) {
-        $errores[] = "Error en los datos";
+        $errores[] = "Errores en los datos";
     }
-    $producto = obtenerProducto($id);
+    $producto = obtenerProductoTotales($id);
     if ($_SESSION['email'] !== $producto['email_vendedor']) {
-        $errores[] = "Error en los datos";
+        $errores[] = "Errores en los datos";
     }
 
     if (isset($errores)) {
         header('Location: ./principal.php');
     }
-} elseif (!isset($_POST['btnUpdateProduct'])) {
+} elseif (!isset($_POST['btnUpdateProduct']) || !isset($_POST['btnUpdateDisponibilidad'])) {
     header('Location: ./principal.php');
 }
 ?>
@@ -220,30 +226,31 @@ if (isset($_POST['idProducto'])) {
     </head>
 
     <body>
-<?php
-include './header.php';
-?>  
+        <?php
+        include './header.php';
+        ?>  
 
         <!-- Page Content -->
         <main class="container">
             <div class="row">
 
                 <div class="col-lg-9">
-<?php
-if (isset($errores)) {
-    echo "<div class = 'alert alert-danger'><ul>";
-    echo "<h6>Upss, parece que algo ha salido mal.</h6>";
-    foreach ($errores as $e)
-        echo "<li>$e</li>";
-    echo '</ul>';
-    echo "</div>";
-}
-?>  
                     <?php
-                    $id = $producto['id'];
-                    echo "<input type='hidden' class='form-control' name='id' required='true' value='$id'>";
-                    ?>
+                    if (isset($errores)) {
+                        echo "<div class = 'alert alert-danger'><ul>";
+                        echo "<h6>Upss, parece que algo ha salido mal.</h6>";
+                        foreach ($errores as $e)
+                            echo "<li>$e</li>";
+                        echo '</ul>';
+                        echo "</div>";
+                    }
+                    ?>  
+
                     <form enctype="multipart/form-data" action="#" method="post">
+                        <?php
+                        $id = $_POST['idProducto'];
+                        echo "<input type='hidden' class='form-control' name='idProducto' required='true' value='$id'>";
+                        ?>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="email">Email</label>
@@ -309,14 +316,14 @@ if (isset($errores)) {
                                 <label>Añade una imagen</label>
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="file" name="files[]"  required="true">
-                                    <label  id="imgLab" class="custom-file-label" for="customFile">Selecciona una imagen</label>
+                                    <label  id="imgLab" class="custom-file-label" for="customFile" value=" <?php echo $producto['imagen']; ?>">Selecciona una imagen</label>
                                     <div id="filesName" >
                                     </div>
                                 </div>
                                 <div id="preview">
                                     <?php
                                     $img = $producto['imagen'];
-                                    echo "<img src=$img alt='your image' class='img-thumbnail' />";
+                                    echo "<img src='$img' alt='your image' class='img-thumbnail' />";
                                     ?>
                                 </div>
                                 <div class="form-row">
@@ -337,11 +344,13 @@ if (isset($errores)) {
                                         </label>
                                     </div>
                                 </div>
-                                <button name="btnUpdateProduct" type="submit" class="btn btn-primary">Crear</button>
+                                <button name="btnUpdateProduct" type="submit" class="btn btn-success" title="Al actualizar tu producto lo pondrás a la venta y cualquier usuario podrá verlo">Modificar</button>
+                                <button name="btnUpdateDisponibilidad" type="submit" class="btn btn-primary" title="Al actualizar tu producto no estará a la venta">Modificar y ocultar</button>
                                 <!-- /.col-lg-9 -->
                             </div>
                         </div>
                     </form>
+
                 </div>
             </div>
         </main>
