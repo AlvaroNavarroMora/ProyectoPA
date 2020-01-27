@@ -19,8 +19,8 @@ function existeConflicto($idPedido, $idProducto) {
     return $salida;
 }
 
-function resolverConflicto($id_ped, $id_prod, $email) {
-    $query = "UPDATE `reclamaciones` SET `estado`='$email' WHERE `id_pedido`='$id_ped' AND `id_producto`='$id_prod';";
+function resolverConflicto($id_ped, $id_prod, $estado) {
+    $query = "UPDATE `reclamaciones` SET `estado`='$estado' WHERE `id_pedido`='$id_ped' AND `id_producto`='$id_prod';";
     echo $query;
     $result = ejecutarConsulta($query);
 }

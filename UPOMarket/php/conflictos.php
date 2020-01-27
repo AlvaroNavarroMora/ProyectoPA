@@ -10,10 +10,10 @@ if (isset($_GET['datos'])) {
     $aux = explode(";", $_GET['datos']);
     $idPedido = $aux[0];
     $idProducto = $aux[1];
-    $idUsuario = $aux[2];
+    $estado = $aux[2];
 
-    if (existeUsuario($_SESSION['email']) && $_SESSION['tipo'] == "admin" && existeConflicto($idPedido, $idProducto)) {
-        resolverConflicto($idPedido, $idProducto, $idUsuario);
+    if (existeUsuario($_SESSION['email']) && $_SESSION['tipo'] == "admin" && existeConflicto($idPedido, $idProducto) && ($estado == "Declinada" || $estado == "Devolucion")) {
+        resolverConflicto($idPedido, $idProducto, $estado);
     }
     header("Location: ./conflictos.php");
 }
@@ -83,8 +83,8 @@ if (isset($_SESSION['email']) && existeUsuario($_SESSION['email']) && $_SESSION[
                         console.log("pedido:", idPedido, "producto:", idProducto, "vendido por:", idVendedor, "coprado por:", idCliente);
                         $(aux).empty();
                         //
-                        var txtBtn1 = idPedido + ";" + idProducto + ";" + idCliente;
-                        var txtBtn2 = idPedido + ";" + idProducto + ";" + idVendedor;
+                        var txtBtn1 = idPedido + ";" + idProducto + ";Devolucion";
+                        var txtBtn2 = idPedido + ";" + idProducto + ";Declinada";
                         //
                         var btnDarRazonCliente = document.createElement("button");
                         $(btnDarRazonCliente).text("CLIENTE");
