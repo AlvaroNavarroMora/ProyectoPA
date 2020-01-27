@@ -3,6 +3,10 @@ session_start();
 include './utils/utilsProductos.php';
 $categorias = listarCategorias();
 
+if(isset($_SESSION['email']) && isset($_SESSION['tipo']) && $_SESSION['tipo'] == 'admin'){
+    header("location: ./vistaAdministrador.php");
+}
+
 if (isset($_GET["ordenar"])) {
     $opcion = filter_var($_GET["ordenar"], FILTER_SANITIZE_NUMBER_INT);
     echo $opcion;
