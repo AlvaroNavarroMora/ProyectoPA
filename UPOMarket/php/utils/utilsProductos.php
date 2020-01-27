@@ -93,6 +93,32 @@ function comprobarUsuarioProducto($email, $producto) {
     return $salida;
 }
 
+function comprobarUsuarioidProducto($email, $id) {
+    $query = "SELECT * FROM `productos` WHERE `email_vendedor`='$email' and `id`='$id'";
+    $result = ejecutarConsulta($query);
+    $salida = false;
+
+    $aux = mysqli_fetch_all($result);
+    if (sizeof($aux) > 0) {
+        $salida = true;
+    }
+    return $salida;
+}
+
+/* Si quiere cambiar el nombre a un producto A pero ese nombre lo tiene un producto B devolverá una fila indicando que ya existe un producto con ese nombre para el usuario */
+
+function comprobarSiPuedeModificarProducto($email, $id, $nombre) {
+    $query = "SELECT * FROM `productos` WHERE `email_vendedor`='$email' and `id`!='$id' and `nombre`='$producto'";
+    $result = ejecutarConsulta($query);
+    $salida = false;
+
+    $aux = mysqli_fetch_all($result);
+    if (sizeof($aux) > 0) {
+        $salida = true;
+    }
+    return $salida;
+}
+
 function insertarProducto($email, $nombre, $descripcion, $precio, $stoc, $imagen, $categorias, $caracteristicaName, $caracteristicaDesc) {
     $queryProducto = "INSERT INTO `productos`(`email_vendedor`, `nombre`, `descripcion`, `precio`, `stock`, `imagen`) VALUES ('$email','$nombre','$descripcion','$precio','$stoc','$imagen')";
     $insercion = ejecutarConsulta($queryProducto);
@@ -121,7 +147,6 @@ function insertarProducto($email, $nombre, $descripcion, $precio, $stoc, $imagen
                 $r = ejecutarConsulta($queryProductoCaracteristicas);
                 if (!$r) {
                     $salida = false;
-                    echo "herehere";
                 }
             }
         } else {
@@ -287,6 +312,7 @@ function listarProductosPorValoracion() {
     }
     return $productos;
 }
+
 function listarProductosCategoriaPorValoracion($categoria) {
     $query = "SELECT p.id, p.nombre, p.descripcion, p.imagen, p.precio FROM productos p, valoraciones v, categorias_productos cp WHERE cp.nombre_categoria='$categoria' AND cp.id_producto=p.id AND p.id=v.id_producto AND p.disponible=1 GROUP BY p.id ORDER BY AVG(v.puntuacion) DESC";
     $result = ejecutarConsulta($query);
@@ -310,6 +336,7 @@ function listarProductosMasRecientes() {
     }
     return $productos;
 }
+
 function listarProductosCategoriaMasRecientes($categoria) {
     $query = "SELECT p.id, p.nombre, p.descripcion, p.imagen, p.precio FROM productos p, categorias_productos cp WHERE p.id=cp.id_producto AND cp.nombre_categoria='$categoria' AND disponible=1 ORDER BY id DESC";
     $result = ejecutarConsulta($query);
@@ -321,6 +348,7 @@ function listarProductosCategoriaMasRecientes($categoria) {
     }
     return $productos;
 }
+
 function listarProductosMasVendidos() {
     $query = "SELECT p.id, p.nombre, p.descripcion, p.precio, p.imagen FROM lineas_de_pedido lp,productos p WHERE lp.id_producto=p.id AND p.disponible=1 GROUP BY id_producto ORDER BY count(*) DESC";
     $result = ejecutarConsulta($query);
@@ -332,6 +360,7 @@ function listarProductosMasVendidos() {
     }
     return $productos;
 }
+
 function listarProductosCategoriaMasVendidos($categoria) {
     $query = "SELECT p.id, p.nombre, p.descripcion, p.precio, p.imagen FROM lineas_de_pedido lp,productos p, categorias_productos cp WHERE cp.nombre_categoria='$categoria' AND cp.id_producto=p.id AND lp.id_producto=p.id AND p.disponible=1 GROUP BY lp.id_producto ORDER BY count(*) DESC";
     $result = ejecutarConsulta($query);
@@ -343,6 +372,7 @@ function listarProductosCategoriaMasVendidos($categoria) {
     }
     return $productos;
 }
+
 function listarRestoProductos($idProductos) {
     $query = "SELECT p.id, p.nombre, p.descripcion, p.precio, p.imagen FROM productos p WHERE p.id NOT IN ($idProductos)";
     $result = ejecutarConsulta($query);
@@ -354,6 +384,7 @@ function listarRestoProductos($idProductos) {
     }
     return $productos;
 }
+
 function listarRestoProductosCategoria($idProductos, $categoria) {
     $query = "SELECT p.id, p.nombre, p.descripcion, p.precio, p.imagen FROM productos p, categorias_productos cp WHERE cp.id_producto=p.id AND cp.nombre_categoria='$categoria' AND p.id NOT IN ($idProductos)";
     $result = ejecutarConsulta($query);
@@ -364,4 +395,35 @@ function listarRestoProductosCategoria($idProductos, $categoria) {
         }
     }
     return $productos;
+}
+
+function modificarProducto($id, $email, $nombre, $descripcion, $precio, $stoc, $imagen, $categorias, $caracteristicaName, $caracteristicaDesc) {
+    $queryProducto = "UPDATE `productos` SET `nombre`=$nombre,`descripcion`=$descripcion,`precio`=$precio,`stock`=$stoc,`imagen`=$imagen WHERE `id`='$id'";
+    $modificacion = ejecutarConsulta($queryProducto);
+    $salida = true;
+    if ($modificacion) {
+        $borrarCategorias = "DELETE FROM `categorias_productos` WHERE `id_producto`='$id'";
+        $result = ejecutarConsulta($borrarCategorias);
+
+        $row = mysqli_fetch_row($result);
+        foreach ($categorias as $v) {
+            $queryProductoCategorias = "INSERT INTO `categorias_productos`(`nombre_categoria`, `id_producto`) VALUES ('$v','$id')";
+            $r = ejecutarConsulta($queryProductoCategorias);
+            if (!$r) {
+                $salida = false;
+                echo "here";
+            }
+        }
+        $borrarCaracteristicas = "DELETE FROM `caracteristicas_productos` WHERE `id_producto`='$id'";
+        $result = ejecutarConsulta($borrarCaracteristicas);
+        for ($i = 0; $i < count($caracteristicaName); $i++) {
+            $cn = $caracteristicaName[$i];
+            $cd = $caracteristicaDesc[$i];
+            $queryProductoCaracteristicas = "INSERT INTO `caracteristicas_productos`(`id_producto`, `nombre_caracteristica`, `valor`) VALUES ('$id','$cn','$cd')";
+            $r = ejecutarConsulta($queryProductoCaracteristicas);
+        }
+    } else {
+        $salida = false;
+    }
+    return $salida;
 }
