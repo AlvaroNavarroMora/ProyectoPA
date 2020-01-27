@@ -47,7 +47,7 @@ if (isset($_GET["enviarValoracion"])) {
     header("location:producto.php?idProducto=$idProducto");
 }
 
-if ($_SESSION['tipo'] == "vendedor" && $producto['email_vendedor'] == $_SESSION['email']) {
+if (isset($_SESSION['tipo']) && $_SESSION['tipo'] == "vendedor" && $producto['email_vendedor'] == $_SESSION['email']) {
     $id = $producto['id'];
     header("location:editarProducto.php?id=$id");
 }
