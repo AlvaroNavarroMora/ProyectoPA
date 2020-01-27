@@ -6,6 +6,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
 
 include "./utils/manejadorBD.php";
 $data = json_encode(obtenerMisVentas($_SESSION["email"]));
+print_r($data);
 ?>
 <!DOCTYPE html>
 <html>
