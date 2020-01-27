@@ -160,7 +160,6 @@ if (isset($_SESSION['email'])) {
                             onApprove: function (data, actions) {
                                 // This function captures the funds from the transaction.
                                 return actions.order.capture().then(function (details) {
-                                    alert('Transaction completed by ' + details.payer.name.given_name);
                                     // Call your server to save the transaction
                                     var formCompra = document.getElementById("finalizarCompra");
                                     formCompra.submit();
