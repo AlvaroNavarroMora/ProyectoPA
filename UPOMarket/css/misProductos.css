@@ -4,6 +4,9 @@ tr :first-child {
 #ventas_wrapper {
     margin: 3% !important;
 }
+#pedidos_wrapper{
+    margin: 3% !important;
+}
 #ventas th,td {
     text-align: center;
 }

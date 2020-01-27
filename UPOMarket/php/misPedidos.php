@@ -23,6 +23,7 @@ $data = json_encode(obtenerMisPedidos($_SESSION["email"]));
         <link href="../css/header.css" rel="stylesheet">
         <link href="../css/footer.css" rel="stylesheet">
         <link href="../css/misProductos.css" rel="stylesheet">
+        <link href="../css/misReclamaciones.css" rel="stylesheet">
 
         <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
@@ -77,8 +78,8 @@ $data = json_encode(obtenerMisPedidos($_SESSION["email"]));
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav class="list-group">
                         <ul class="list-unstyled">
-                            <li><a href="misPedidos.php" class="list-group-item">Mis Pedidos</a></li>
-                            <li><a href="misReclamaciones.php" class="list-group-item">Mis Reclamaciones</a></li>
+                            <li><a href="misPedidos.php" class="list-group-item active">Mis Pedidos</a></li>
+                            <li><a href="reclamacionesRealizadas.php" class="list-group-item">Mis Reclamaciones</a></li>
                         </ul>
                     </nav>
                 </div>
