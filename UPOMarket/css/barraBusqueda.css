@@ -4,8 +4,8 @@
 .input-group {
     width: 60% !important;
 }
-.col-3 {
-    width: 30% !important;
+.ordenacion {
+    padding: 0 !important;
 }
 .col-xl-9 {
     padding: 0 !important;
@@ -19,6 +19,9 @@ select {
 @media only screen and (max-width: 600px) {
     .input-group, select {
         width: 100% !important;
-        margin-bottom: 10px;
+        margin: 5px 0;
+    }
+    .mb-4 {
+        margin-bottom: 0 !important;
     }
 }

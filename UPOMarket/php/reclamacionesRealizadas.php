@@ -143,7 +143,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                     </nav>
                 </div>
                 <!-- /.col-lg-3 -->
-                <div class="col-lg-9">
+                <div class="col-lg-9 table-responsive-sm">
                     <table id="reclamaciones" class="table table-striped table-bordered dataTable" style="width:100%">
                         <thead>
                             <tr>

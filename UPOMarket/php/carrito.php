@@ -6,7 +6,7 @@ session_start();
 if (isset($_SESSION['email'])) {
     if (isset($_GET["error"])) {
         if ($_GET["error"] == "stock_no_disponible") {
-            $error = "Uno más productos de su cesta no tienen stock disponible para la cantidad deseada.";
+            $error = "Uno o más productos de su cesta no tienen stock disponible para la cantidad deseada.";
         } else {
             $error = "Algo ha ido mal, revise su carrito.";
         }

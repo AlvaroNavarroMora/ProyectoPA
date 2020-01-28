@@ -99,7 +99,7 @@ $data = json_encode(obtenerMisVentas($_SESSION["email"]));
                     </nav>
                 </div>
                 <!-- /.col-lg-3 -->
-                <div class="col-lg-9">
+                <div class="col-lg-9 table-responsive-sm">
                     <table id="ventas" class="table table-striped table-bordered dataTable" style="width:100%">
                         <thead>
                             <tr>

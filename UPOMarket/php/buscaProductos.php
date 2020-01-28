@@ -161,7 +161,7 @@ else
                         }
                     }
                     ?>
-                    <div id='contenedorTablaProductos' class='container'>
+                    <div id='contenedorTablaProductos' class='table-responsive-sm'>
                         <table id="productos" class="table table-striped table-bordered15 dataTable" style="width:100%">
                             <thead>
                                 <tr>

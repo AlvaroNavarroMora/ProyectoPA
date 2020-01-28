@@ -52,9 +52,9 @@ function cargarLogin($errores = null) {
                                         <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
                                     </div>
                                     <br />
-                                    <input class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" value="Iniciar Sesión" name="iniciarSesion"></input>
+                                    <input class="btn btn-md btn-primary btn-block text-uppercase" type="submit" value="Iniciar Sesión" name="iniciarSesion"></input>
                                     <br />
-                                    <p>¿Aún no tienes una cuenta? <a href="signUp.php">¡Regístrate!</a></p>
+                                    <p class="text-center">¿Aún no tienes una cuenta? <a href="signUp.php">¡Regístrate!</a></p>
                                 </form>
                             </div>
                         </div>
