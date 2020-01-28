@@ -7,8 +7,18 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
 include './utils/utilsProductos.php';
 include './utils/sesionUtils.php';
 
+function soloImagenes($fichero) {
+    $tiposAceptados = Array('image/gif', 'image/jpeg', 'image/pjpeg', 'image/png');
+    if (array_search($fichero, $tiposAceptados) === false) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
-
+function limiteTamanyo($fichero, $limite = (200 * 1024)) {
+    return $fichero <= $limite;
+}
 
 /* Añadir nombre del formulario registro */
 if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad'])) {
@@ -124,12 +134,20 @@ if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad']
             $newName = str_replace(".", time() . ".", $_FILES['files']['name'][$k]);
             //Ruta destino + nuevo nombre
             $newPath = $pathThisProducto . '/' . $newName;
-            //Mover la imagen al destino
-            move_uploaded_file($tmp_name, $newPath);
+            if (!limiteTamanyo($_FILES['files']['size'][$k])) {
+                $errores[] = "Imágen Demasiado grande";
+            }
+            if (!soloImagenes($_FILES['files']['type'][$k])) {
+                $errores[] = "Formato de imagen erroneo";
+            }
+
+            if (!isset($errores)) {
+                //Mover la imagen al destino
+                move_uploaded_file($tmp_name, $newPath);
+            }
         }
-        $haModificado = false;
-        modificarProducto($id, $email, $nombreProducto, $descripcion, $precio, $stock, $newPath, $categorias, $caracteristicaName, $caracteristicaDesc, $disponibilidad);
-        if ($haModificado) {
+        if (!isset($errores)) {
+            modificarProducto($id, $email, $nombreProducto, $descripcion, $precio, $stock, $newPath, $categorias, $caracteristicaName, $caracteristicaDesc, $disponibilidad);
             header("Location: ./producto.php?idProducto=$id");
         } else {
             $errores[] = "Error al guardar los datos";
@@ -140,17 +158,13 @@ if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad']
 if (isset($_POST['idProducto'])) {
     $id = filter_var($_POST['idProducto'], FILTER_SANITIZE_MAGIC_QUOTES);
     if ($id === false || strlen(trim($id)) < 1) {
-        $errores[] = "Errores en los datos";
+        header('Location: ./principal.php');
     }
     $producto = obtenerProductoTotales($id);
     if ($_SESSION['email'] !== $producto['email_vendedor']) {
-        $errores[] = "Errores en los datos";
-    }
-
-    if (isset($errores)) {
         header('Location: ./principal.php');
     }
-} elseif (!isset($_POST['btnUpdateProduct']) || !isset($_POST['btnUpdateDisponibilidad'])) {
+} elseif (!isset($_POST['btnUpdateProduct']) || !isset($_POST['btnUpdateDisponibilidad']) || !isset($errores)) {
     header('Location: ./principal.php');
 }
 ?>

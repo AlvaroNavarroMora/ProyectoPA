@@ -7,6 +7,19 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
 include './utils/utilsProductos.php';
 include './utils/sesionUtils.php';
 
+function soloImagenes($fichero) {
+    $tiposAceptados = Array('image/gif', 'image/jpeg', 'image/pjpeg', 'image/png');
+    if (array_search($fichero, $tiposAceptados) === false) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function limiteTamanyo($fichero, $limite = (200 * 1024)) {
+    return $fichero <= $limite;
+}
+
 /* Añadir nombre del formulario registro */
 if (isset($_POST['btnAddProduct'])) {
     print_r($_POST);
@@ -111,8 +124,17 @@ if (isset($_POST['btnAddProduct'])) {
             $newName = str_replace(".", time() . ".", $_FILES['files']['name'][$k]);
             //Ruta destino + nuevo nombre
             $newPath = $pathThisProducto . '/' . $newName;
-            //Mover la imagen al destino
-            move_uploaded_file($tmp_name, $newPath);
+            if (!limiteTamanyo($_FILES['files']['size'][$k])) {
+                $errores[] = "Imágen Demasiado grande";
+            }
+            if (!soloImagenes($_FILES['files']['type'][$k])) {
+                $errores[] = "Formato de imagen erroneo";
+            }
+
+            if (!isset($errores)) {
+                //Mover la imagen al destino
+                move_uploaded_file($tmp_name, $newPath);
+            }
         }
         $haInsertado = insertarProducto($email, $producto, $descripcion, $precio, $stock, $newPath, $categorias, $caracteristicaName, $caracteristicaDesc);
         if ($haInsertado) {
