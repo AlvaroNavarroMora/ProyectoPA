@@ -1,5 +1,5 @@
 <?php
-
+/*Desde este fichero controlamos las principales funciones de la base de datos.*/
 function openCon() {
 //credenciales para la BD de Marcos
     $host = "localhost";//localhost //85.137.192.11:3308

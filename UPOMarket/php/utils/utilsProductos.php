@@ -1,7 +1,10 @@
 <?php
 
 include 'manejadorBD.php';
-
+/*
+Desde este fichero contamos con distintas funciones para realizar las operaciones CRUD de los productos.
+ * También tenemos fnciones que nos ayudan a realizar otro tipo de consultas sobre los mismos, como consultas por categoría, comprobar si existe el producto, etc...
+ *  */
 function listarCategorias() {
     $query = "SELECT nombre FROM categorias";
     $result = ejecutarConsulta($query);
