@@ -32,8 +32,8 @@ if (isset($_GET['idPedido'])) {
     include '../php/utils/utilsProductos.php';
     session_start();
     if (isset($_SESSION['email'])) {
-        if (isset($_GET['idPedido'])) {
-            $idPedido = filter_var($_GET['idPedido'], FILTER_SANITIZE_NUMBER_INT);
+        
+            
             $query = "SELECT * FROM pedidos WHERE id='$idPedido'";
             $link = openCon();
             $result = mysqli_query($link, $query);
@@ -64,13 +64,11 @@ if (isset($_GET['idPedido'])) {
                 $errores[] = "Pedido no existente";
             }
             closeCon($link);
-        } else {
-            $errores[] = "Pedido no existente";
-        }
+        
     }
 
     if (isset($errores)) {
-        
+        echo "<html><body><h1>Error</h1></body></html>";
     } else {
         ?>
 
@@ -105,9 +103,9 @@ if (isset($_GET['idPedido'])) {
                         <div class="divCarrito">
                             <h5 class="und">Comprador</h5>
                             <br />
-        <?php echo $_SESSION['nombre']; ?>
+                            <?php echo $_SESSION['nombre']; ?>
                             <br />
-        <?php echo $_SESSION['email']; ?>
+                            <?php echo $_SESSION['email']; ?>
                         </div>
                     </div>
 
@@ -127,37 +125,43 @@ if (isset($_GET['idPedido'])) {
                                     </tr>
                                 </thead>
 
-        <?php
-        $i = 0;
-        $subtotal = 0;
-        $total = 0;
-        foreach ($productos as $producto) {
-            echo "<tr>";
-            echo "<td>" . $producto['nombre'] . "</td>";
-            echo "<td>" . $producto['descripcion'] . "</td>";
-            echo "<td>" . $producto['precio'] . "</td>";
-            echo "<td>" . $producto['cantidad'] . "</td>";
-            $subtotal = $producto['precio'] * $producto['cantidad'];
-            $total += $subtotal;
-            echo "<td id ='subtotal" . $i . "'>$subtotal &euro;</td>";
-            echo "<td>" . $producto['estado'] . "</td>";
-            echo "</tr>";
+                                <?php
+                                $i = 0;
+                                $subtotal = 0;
+                                $total = 0;
+                                foreach ($productos as $producto) {
+                                    echo "<tr>";
+                                    echo "<td>" . $producto['nombre'] . "</td>";
+                                    echo "<td>" . $producto['descripcion'] . "</td>";
+                                    echo "<td>" . $producto['precio'] . "</td>";
+                                    echo "<td>" . $producto['cantidad'] . "</td>";
+                                    $subtotal = $producto['precio'] * $producto['cantidad'];
+                                    $total += $subtotal;
+                                    echo "<td id ='subtotal" . $i . "'>$subtotal &euro;</td>";
+                                    echo "<td>" . $producto['estado'] . "</td>";
+                                    echo "</tr>";
 
-            $i++;
-        }
-        ?>
-
-                                <tr>
-                                    <td colspan="3"><strong>Total:</strong></td>
-                                    <td id="precioTotalCarrito" colspan="3"><?php echo number_format($total, 2); ?>&euro;</td>
-                                </tr>
-                            </table>
+                                    $i++;
+                                }
+                                if ($i == 1) {
+                                    echo "</table>";
+                                    echo "Total: $total";
+                                } else {
+                                    ?>
+                                    <tr>
+                                        <td colspan="3"><strong>Total:</strong></td>
+                                        <td id="precioTotalCarrito" colspan="3"><?php echo number_format($total, 2); ?>&euro;</td>
+                                    </tr>
+                                </table>
+                                <?php
+                            }
+                            ?>
                             <hr />
                             <div class="row">
                                 <div class="divCarrito">
                                     <h5 class="und">Fecha del pedido</h5>
                                     <br />
-        <?php echo $fecha; ?>
+                                    <?php echo $fecha; ?>
                                 </div>
                             </div>
 
@@ -166,18 +170,18 @@ if (isset($_GET['idPedido'])) {
                                 <div class="divCarrito">
                                     <h5 class="und">Direcci&oacute;n de envio</h5>
                                     <br />
-        <?php
-        echo "<strong>Direcci&oacute;n:</strong> " . $direccion["linea_1"];
-        if (!empty($direccion["linea_2"])) {
-            echo " - " . $direccion["linea_2"];
-        } else {
-            $direccion["linea_2"] = "";
-        }
-        echo "<br>";
-        echo "<strong>Provincia:</strong> " . $direccion["provincia"] . "<br>";
-        echo "<strong>Ciudad:</strong> " . $direccion["ciudad"] . "<br>";
-        echo "<strong>C&oacute;digo Postal:</strong> " . $direccion["cp"];
-        ?>
+                                    <?php
+                                    echo "<strong>Direcci&oacute;n:</strong> " . $direccion["linea_1"];
+                                    if (!empty($direccion["linea_2"])) {
+                                        echo " - " . $direccion["linea_2"];
+                                    } else {
+                                        $direccion["linea_2"] = "";
+                                    }
+                                    echo "<br>";
+                                    echo "<strong>Provincia:</strong> " . $direccion["provincia"] . "<br>";
+                                    echo "<strong>Ciudad:</strong> " . $direccion["ciudad"] . "<br>";
+                                    echo "<strong>C&oacute;digo Postal:</strong> " . $direccion["cp"];
+                                    ?>
                                 </div>
                             </div>
 
@@ -197,7 +201,7 @@ if (isset($_GET['idPedido'])) {
 
 
     <?php
-    $pdf->load_html(utf8_decode(ob_get_clean()));
+    $pdf->load_html(ob_get_clean());
 
 // Renderizamos el documento PDF.
     $pdf->render();
