@@ -77,8 +77,8 @@ if (isset($errores)) {
                         <table id="tableProductos" class="table table-light">
                             <thead>
                                 <tr>
-                                    <th class="text-center">Nombre</th>
-                                    <th class="text-center">Descripción</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
                                     <th class="text-center">Precio</th>
                                     <th class="text-center">Cantidad</th>
                                     <th class="text-center">Subtotal </th>
@@ -99,15 +99,14 @@ if (isset($errores)) {
         $total += $subtotal;
         echo "<td id ='subtotal" . $i . "' class='text-center'>$subtotal €</td>";
         echo "<td class='text-center'>" . $producto['estado'] . "</td>";
+        echo "<td class='text-center'><a href='producto.php?idProducto=".$producto["id"]."'>Valora este producto</a></td>";
         echo "</tr>";
-
-        $i++;
     }
     ?>
 
                             <tr>
-                                <td colspan="3"><strong>Total:</strong></td>
-                                <td id="precioTotalCarrito" colspan="3"><?php echo number_format($total, 2); ?>€</td>
+                                <td colspan="4"><strong>Total:</strong></td>
+                                <td class='text-center' id="precioTotalCarrito"><?php echo number_format($total, 2); ?>€</td>
                             </tr>
                         </table>
                         <hr />

@@ -48,7 +48,7 @@ if (isset($_SESSION['email'])) {
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-            <title>UPOMarket-Procesar Compra</title>
+            <title>UPOMarket - Procesar Compra</title>
             <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
             <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
             <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -76,51 +76,56 @@ if (isset($_SESSION['email'])) {
                         echo "<div class='alert alert-success'>El carrito está vacío.</div>";
                     } else {
                         ?>
-                        <table id="tableProductos" class="table table-light">
-                            <form method="post" action="finalizarCompra.php" id="finalizarCompra">
-                                <input type="hidden" name="email" value="<?php echo base64_encode(encriptar($_SESSION['email'])); ?>"/>
-                                <input type="hidden" name="direccion" value="<?php echo base64_encode(encriptar($_SESSION['direccion'])); ?>"/>
-                                <thead>
+                        <div class="table-responsive-sm">
+                            <table id="tableProductos" class="table table-light">
+                                <form method="post" action="finalizarCompra.php" id="finalizarCompra">
+                                    <input type="hidden" name="email" value="<?php echo base64_encode(encriptar($_SESSION['email'])); ?>"/>
+                                    <input type="hidden" name="direccion" value="<?php echo base64_encode(encriptar($_SESSION['direccion'])); ?>"/>
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Descripción</th>
+                                            <th class='text-center'>Precio(&euro;)</th>
+                                            <th class='text-center'>Cantidad</th>
+                                            <th class='text-center'>Subtotal(&euro;)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $subtotal = 0;
+                                        foreach ($productos as $i => $producto) {
+                                            $descripcion = $producto["descripcion"];
+                                            if (strlen($descripcion) > 50) {
+                                                $descripcion = substr($descripcion, 0, 50);
+                                                $descripcion .= "...";
+                                            }
+                                            echo "<tr>";
+                                            echo "<td>" . $producto['nombre'] . "</td>";
+                                            echo "<td>" . $descripcion . "</td>";
+                                            echo "<td class='text-center'>" . number_format($producto['precio'], 2) . "</td>";
+                                            echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
+                                            $subtotal = number_format($producto['precio'] * $producto['cantidad'], 2);
+                                            echo "<td id ='subtotal" . $i . "' class='text-center'>$subtotal</td>";
+                                            echo "</tr>";
+                                            ?>
+                                        <input type="hidden" name="producto<?php echo $i; ?>" value="<?php echo base64_encode(encriptar($producto['id'])); ?>"/>
+                                        <input type="hidden" name="cantidad<?php echo $i; ?>" value="<?php echo base64_encode(encriptar($producto['cantidad'])); ?>"/>
+                                        <?php
+                                    }
+                                    ?>
                                     <tr>
-                                        <th>Nombre</th>
-                                        <th>Descripción</th>
-                                        <th class='text-center'>Precio(&euro;)</th>
-                                        <th class='text-center'>Cantidad</th>
-                                        <th class='text-center'>Subtotal(&euro;)</th>
+                                        <td colspan="4"><strong>Total:</strong></td>
+                                        <td id="precioTotalCarrito" class='text-center'><?php echo number_format($total, 2); ?>&euro;</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $subtotal = 0;
-                                    $i = 0;
-                                    foreach ($productos as $index => $producto) {
-                                        echo "<tr>";
-                                        echo "<td>" . $producto['nombre'] . "</td>";
-                                        echo "<td>" . $producto['descripcion'] . "</td>";
-                                        echo "<td class='text-center'>" . $producto['precio'] . "</td>";
-                                        echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
-                                        $subtotal = $producto['precio'] * $producto['cantidad'];
-                                        echo "<td id ='subtotal" . $index . "' class='text-center'>$subtotal</td>";
-                                        echo "</tr>";
-                                        ?>
-                                    <input type="hidden" name="producto<?php echo $i;?>" value="<?php echo base64_encode(encriptar($producto['id'])); ?>"/>
-                                    <input type="hidden" name="cantidad<?php echo $i;?>" value="<?php echo base64_encode(encriptar($producto['cantidad'])); ?>"/>
-                                    <?php
-                                    $i++;
-                                }
-                                ?>
-                                <tr>
-                                    <td colspan="4"><strong>Total:</strong></td>
-                                    <td id="precioTotalCarrito" class='text-center'><?php echo number_format($total, 2); ?>&euro;</td>
-                                </tr>
-                                </tbody>
-                                <button type="submit" name="submitButton" value="finalizarCompra" id="botonFinalizar" hidden></button>
-                            </form>
-                        </table>
+                                    </tbody>
+                                    <button type="submit" name="submitButton" value="finalizarCompra" id="botonFinalizar" hidden></button>
+                                </form>
+                            </table>
+                        </div>
                     </div>
                     <hr>
                     <div class="divCarrito">
-                        <h5 class="und">Dirección de envio</h5>
+                        <h5 class="und">Dirección de envío</h5>
                         <br />
                         <?php
                         echo "<strong>Dirección:</strong> " . $direccion["linea_1"];
@@ -202,7 +207,7 @@ function validaStock($productos) {
         );
         $encontrado = array_values($neededObject);
         $cantidad = $encontrado[0]["cantidad"];
-        if($cantidad > $p["stock"] || $cantidad < 1) {
+        if ($cantidad > $p["stock"] || $cantidad < 1) {
             $correcto = false;
         }
     }

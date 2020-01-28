@@ -9,7 +9,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Perfil</title>
+        <title>Perfil - UPOMarket</title>
         <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -56,8 +56,6 @@ function mostrarPerfil($nombre, $email, $tipo) {
 
                     <div class="card mt-4">
                         <div class="card-body">
-                            <h3 class="card-title">Editar Direccones</h3>
-
                             <strong>Editar dirección:</strong>
                             <form method="post" action="#">
                                 <select name="direccionEditar" id="inputDireccion" class="custom-select" required>
@@ -106,8 +104,6 @@ function mostrarPerfil($nombre, $email, $tipo) {
                 <!-- /.col-lg-9 -->
 
                 <div class="col" id="contenedorDirecciones">
-
-                    <h3 id="titDirecciones" class="mt-4">Mis direcciones</h3>
 
                     <?php
                     $query = "SELECT direccion_cliente FROM direcciones_clientes WHERE email_cliente='" . $_SESSION['email'] . "'";
