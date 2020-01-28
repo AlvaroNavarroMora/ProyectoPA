@@ -57,6 +57,14 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                     "data": data,
                     "paging": true,
                     "ordering": true,
+                    columnDefs: [{
+                            targets: [2,5],
+                            render: function (data, type, row) {
+                                return data.length > 20 ?
+                                        data.substr(0, 20) + '…' :
+                                        data;
+                            }
+                        }],
                     "columns": [
                         {"data": "id_pedido"},
                         {"data": "id_producto"},
@@ -159,6 +167,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav class="list-group">
+                        <h4 class="text-center">Gestión de Ventas</h4>
                         <ul class="list-unstyled">
                             <li><a href="misProductos.php" class="list-group-item">Mis Productos</a></li>
                             <li><a href="misVentas.php" class="list-group-item">Mis Ventas</a></li>

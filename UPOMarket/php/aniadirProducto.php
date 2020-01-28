@@ -156,7 +156,7 @@ if (isset($_POST['btnAddProduct'])) {
                     if (input.files && input.files[i]) {
                         readers[i].onload = function (e) {
                             $('#preview').append("<img src=" + e.target.result + " alt='your image' class='img-thumbnail' />");
-                        }
+                        };
                         if (input.files.length == 1) {
                             $('#imgLab').empty();
                             $('#imgLab').append(input.files[i].name);
@@ -208,8 +208,9 @@ if (isset($_POST['btnAddProduct'])) {
                     if (isset($errores)) {
                         echo "<div class = 'alert alert-danger'><ul>";
                         echo "<h6>Upss, parece que algo ha salido mal.</h6>";
-                        foreach ($errores as $e)
+                        foreach ($errores as $e) {
                             echo "<li>$e</li>";
+                        }
                         echo '</ul>';
                         echo "</div>";
                     }
@@ -232,8 +233,8 @@ if (isset($_POST['btnAddProduct'])) {
                             <label for="descripcion">Descripción</label>
                             <textarea name="descripcion" class="form-control" placeholder="Escriba una descripción del producto" rows="5" required="true"></textarea><!--Controlar numero de palabras JS? -->
                         </div>
-                        <button type="button" id="add_field" class="btn btn-primary">Agregar</button>
                         <div id="caracteristicas">
+                            <button type="button" id="add_field" class="btn btn-sm btn-outline-primary">Agregar</button>
                             <div class="form-row">
                                 <!-- <div class="form-group col-md-6">-->
                                 <div class="col-md-4 mb-3">

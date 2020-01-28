@@ -17,7 +17,6 @@
     max-width: 90%;
 }
 
-
 .labelPerfil{
     margin-top: 15px;
     font-weight: bold;
@@ -31,4 +30,7 @@
 }
 #titDirecciones{
     text-align: center;
+}
+a.list-group-item{
+    text-decoration: none;
 }
