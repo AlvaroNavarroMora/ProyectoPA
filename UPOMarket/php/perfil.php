@@ -57,7 +57,6 @@ function mostrarPerfil($nombre, $email, $tipo) {
 
                     <div class="card mt-4">
                         <div class="card-body">
-                            <h3 class="card-title">Perfil</h3>
                             <?php
                             $query = "SELECT foto FROM usuarios WHERE email='" . $_SESSION['email'] . "' AND (foto is not null)";
                             $result = ejecutarConsulta($query);

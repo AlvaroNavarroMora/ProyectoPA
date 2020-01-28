@@ -67,7 +67,7 @@ function mostrarValorar() {
         <input name="idProducto" type="number" value="<?php echo $_GET["idProducto"]
     ?>" hidden>
         <br>
-        <input id="btn-coment" type="submit" name="enviarValoracion" value="Valora el producto!" class="btn btn-success">
+        <input id="btn-coment" type="submit" name="enviarValoracion" value="Enviar" class="btn btn-success">
     </form>
     <?php
 }
@@ -259,6 +259,8 @@ function mostrarValorar() {
                                     <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
                                 </form>
                                 <?php
+                            }else {
+                                echo '<div class="alert alert-info">Inicia Sesión para comprar este producto</div>';
                             }
                             ?>
                         </div>
