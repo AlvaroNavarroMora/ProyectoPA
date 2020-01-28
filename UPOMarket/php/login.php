@@ -2,7 +2,10 @@
 include "./utils/sesionUtils.php";
 include "./utils/manejadorBD.php";
 
-//Funciones
+/*
+En esta pantalla recogemos los datos del formulario de Inicio de Sesión,
+ * Luego filtramos y saneamos esos datos para comprobar despúes si usuario y contraseña coinciden
+ *  */
 function cargarLogin($errores = null) {
     ?>
     <!DOCTYPE html>

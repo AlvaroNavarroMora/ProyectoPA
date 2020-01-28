@@ -4,6 +4,10 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
     header("location: ./principal.php");
 }
 
+/*
+ * Esta vista muestra la información de una reclamación especifica a un administrador.
+ */
+
 if (isset($_POST["idReclamacion"]) && isset($_POST["idProducto"])) {
     include './utils/manejadorBD.php';
 
@@ -16,7 +20,7 @@ if (isset($_POST["idReclamacion"]) && isset($_POST["idProducto"])) {
 } else {
     header("location:principal.php");
 }
-
+/*Obtenemos los datos de una reclamación específica*/
 function obtenerDatosReclamacion($idReclamacion, $idProducto) {
     $con = openCon();
     $query = "SELECT r.fecha as 'fecha_reclamacion', r.descripcion as 'descripcion',

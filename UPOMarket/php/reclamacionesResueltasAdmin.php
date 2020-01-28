@@ -8,7 +8,7 @@ include "./utils/utilsConflicto.php";
 if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] != "admin")) {
     header("location: ./principal.php");
 }
-
+//Parseamos los datos a JSON para que los entienda el dataTable
 $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
 ?>
 <!DOCTYPE html>
@@ -151,7 +151,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
     </body>
 </html>
 <?php
-
+//Recogemos los datos que se visualizarán en el dataTable
 function obtenerMisReclamaciones() {
     $con = openCon();
     

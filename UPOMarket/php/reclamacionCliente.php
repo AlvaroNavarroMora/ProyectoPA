@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['email']) || !isset($_SESSION['tipo'])) {
     header("location: ./principal.php");
 }
-
+/* Esta vista muestra a un cliente información sobre una reclamación específica que él ha realizado */
 if (isset($_POST["idReclamacion"]) && isset($_POST["idProducto"])) {
     include './utils/manejadorBD.php';
 
@@ -16,7 +16,7 @@ if (isset($_POST["idReclamacion"]) && isset($_POST["idProducto"])) {
 } else {
     header("location:principal.php");
 }
-
+/* Consultamos los datos de la reclamación que queremos visualizar */
 function obtenerDatosReclamacion($idReclamacion, $idProducto) {
     $con = openCon();
     $query = "SELECT r.fecha as 'fecha_reclamacion', r.descripcion as 'descripcion',
@@ -31,19 +31,19 @@ function obtenerDatosReclamacion($idReclamacion, $idProducto) {
 
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_array($result);
-            $reclamacion['idLineaDePedido'] = $idReclamacion;
-            $reclamacion['idProducto'] = $idProducto;
-            $reclamacion['nombreProducto'] = $row['nombre'];
-            $reclamacion['cantidad'] = $row['cantidad'];
-            $reclamacion['precio'] = $row['precio'];
-            $reclamacion['importe'] = $row['precio'] * $row['cantidad'];
-            $reclamacion['estadoPedido'] = $row['estado_pedido'];
-            $reclamacion['estadoReclamacion'] = $row['estado_reclamacion'];
-            $reclamacion['cliente'] = $row['cliente'];
-            $reclamacion['vendedor'] = $row['vendedor'];
-            $reclamacion['fechaPedido'] = $row['fecha_pedido'];
-            $reclamacion['fechaReclamacion'] = $row['fecha_reclamacion'];
-            $reclamacion['descripcion'] = $row['descripcion'];
+        $reclamacion['idLineaDePedido'] = $idReclamacion;
+        $reclamacion['idProducto'] = $idProducto;
+        $reclamacion['nombreProducto'] = $row['nombre'];
+        $reclamacion['cantidad'] = $row['cantidad'];
+        $reclamacion['precio'] = $row['precio'];
+        $reclamacion['importe'] = $row['precio'] * $row['cantidad'];
+        $reclamacion['estadoPedido'] = $row['estado_pedido'];
+        $reclamacion['estadoReclamacion'] = $row['estado_reclamacion'];
+        $reclamacion['cliente'] = $row['cliente'];
+        $reclamacion['vendedor'] = $row['vendedor'];
+        $reclamacion['fechaPedido'] = $row['fecha_pedido'];
+        $reclamacion['fechaReclamacion'] = $row['fecha_reclamacion'];
+        $reclamacion['descripcion'] = $row['descripcion'];
     }
     closeCon($con);
 
@@ -81,34 +81,34 @@ function obtenerDatosReclamacion($idReclamacion, $idProducto) {
         <h2>Datos de la reclamación</h2>
         <hr />
         <form method="post" action="#">
-            <h4>Pedido y Reclamación con ID <?php echo $reclamacion['idLineaDePedido'];?></h4>
+            <h4>Pedido y Reclamación con ID <?php echo $reclamacion['idLineaDePedido']; ?></h4>
             <hr />
             <h5>Detalles de la reclamación</h5>
-            <strong>Vendedor: </strong><?php echo $reclamacion['vendedor'];?>
+            <strong>Vendedor: </strong><?php echo $reclamacion['vendedor']; ?>
             <br />
-            <strong>Cliente: </strong><?php echo $reclamacion['cliente'];?>
+            <strong>Cliente: </strong><?php echo $reclamacion['cliente']; ?>
             <br />
-            <strong>Fecha de la reclamación: </strong><?php echo $reclamacion['fechaReclamacion'];?>
+            <strong>Fecha de la reclamación: </strong><?php echo $reclamacion['fechaReclamacion']; ?>
             <br />
-            <strong>Descripción de la reclamación: </strong><?php echo $reclamacion['descripcion'];?>
+            <strong>Descripción de la reclamación: </strong><?php echo $reclamacion['descripcion']; ?>
             <br />
-            <strong>Estado de la reclamación: </strong><?php echo $reclamacion['estadoReclamacion'];?>
+            <strong>Estado de la reclamación: </strong><?php echo $reclamacion['estadoReclamacion']; ?>
             <br />
             <hr />
             <h5>Detalles del pedido</h5>
-            <strong>ID del producto: </strong><?php echo $reclamacion['idProducto'];?>
+            <strong>ID del producto: </strong><?php echo $reclamacion['idProducto']; ?>
             <br />
-            <strong>Nombre del producto: </strong><?php echo $reclamacion['nombreProducto'];?>
+            <strong>Nombre del producto: </strong><?php echo $reclamacion['nombreProducto']; ?>
             <br />
-            <strong>Cantidad: </strong><?php echo $reclamacion['cantidad'];?>
+            <strong>Cantidad: </strong><?php echo $reclamacion['cantidad']; ?>
             <br />
-            <strong>Precio: </strong><?php echo $reclamacion['precio'];?>€
+            <strong>Precio: </strong><?php echo $reclamacion['precio']; ?>€
             <br />
-            <strong>Importe total: </strong><?php echo $reclamacion['importe'];?>€
+            <strong>Importe total: </strong><?php echo $reclamacion['importe']; ?>€
             <br />
-            <strong>Fecha de compra: </strong><?php echo $reclamacion['fechaPedido'];?>
+            <strong>Fecha de compra: </strong><?php echo $reclamacion['fechaPedido']; ?>
             <br />
-            <strong>Estado del pedido: </strong><?php echo $reclamacion['estadoPedido'];?>
+            <strong>Estado del pedido: </strong><?php echo $reclamacion['estadoPedido']; ?>
             <br />
         </form>
     </main>

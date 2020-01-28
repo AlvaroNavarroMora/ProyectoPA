@@ -1,4 +1,8 @@
 <?php
+/*
+  En esta página mostramos los distintos pedidos realizados por un usuario
+ */
+
 session_start();
 if (!isset($_SESSION['email']) || !isset($_SESSION['tipo'])) {
     header("location: ./principal.php");

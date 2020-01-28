@@ -16,7 +16,7 @@ function soloImagenes($fichero) {
     }
 }
 
-function limiteTamanyo($fichero, $limite = (200 * 1024)) {
+function limiteTamanyo($fichero, $limite = (10 * 1024 * 1024)) {
     return $fichero <= $limite;
 }
 
@@ -85,7 +85,7 @@ if (isset($_POST['btnAddProduct'])) {
     if (sizeof($caracteristicaName) != sizeof($caracteristicaDesc)) {
         $errores[] = "Debe haber tantas características como descripciones";
     } else {
-        /*Como puede haber varias características necesitamos recorrer todas las que haya y asegurarnos de que hay tantas características como descripciones de las mismas*/
+        /* Como puede haber varias características necesitamos recorrer todas las que haya y asegurarnos de que hay tantas características como descripciones de las mismas */
         for ($i = 0; $i < count($caracteristicaName); $i++) {
             if (strlen($caracteristicaName[$i]) < 1) {
                 $errores[] = "El nombre de la característica $i debe ser más largo";
@@ -102,15 +102,15 @@ if (isset($_POST['btnAddProduct'])) {
             $errores[] = "Ya tiene un producto con ese nombre";
         }
     }
-/*Actualmente solo permitimos que los usuarios almacenen una imagen de sus productos, pero con este FOR si decidiesemos almacenar varias imágenes, solo tendríamos
-que añadirle al input el atributo multiple */
+    /* Actualmente solo permitimos que los usuarios almacenen una imagen de sus productos, pero con este FOR si decidiesemos almacenar varias imágenes, solo tendríamos
+      que añadirle al input el atributo multiple */
     foreach ($_FILES['files']['error'] as $k => $v) {
         if ($v != 0) {
             $errores[] = "Error en la imagen " . $_FILES['name'][$k];
         }
     }
     if (empty($errores)) {
-        /*Nos aseguramos de que existe un directorio para almacenar las imágenes de los productos*/
+        /* Nos aseguramos de que existe un directorio para almacenar las imágenes de los productos */
         $pathProductos = "../img/usrFotos/$email/products"; /* Carpeta para almacenar fotos de los productos del usuario */
         $pathThisProducto = "../img/usrFotos/$email/products/$producto"; /* Carpeta para almacenar fotos de los productos del usuario */
         if (!is_dir($pathProductos)) {
@@ -120,7 +120,7 @@ que añadirle al input el atributo multiple */
             mkdir($pathThisProducto);
         }
         /*
-            Asignamos una marca temporal junto al nombre de la imagen y comprobamos que el tamaño dela imagen y su extensión son correctos
+          Asignamos una marca temporal junto al nombre de la imagen y comprobamos que el tamaño dela imagen y su extensión son correctos
          */
         foreach ($_FILES['files']['tmp_name'] as $k => $v) {
             //Nombre temporal
@@ -202,7 +202,7 @@ que añadirle al input el atributo multiple */
                 });
                 $('#add_field').click(function (e) {
                     e.preventDefault(); //prevenir nnuevos clicks
-                    
+
                     $('#caracteristicas').append(
                             "<div class='form-row'>\n\
                                 <div class='col-md-4 mb-3'>\

@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] != "vendedor")) {
     header("location: ./principal.php");
 }
-
+/*En esta vista se muestra la información específica de los datos de unna reclamación*/
 if (isset($_POST["idVenta"]) && isset($_POST["cliente"]) && isset($_POST["importe"]) && isset($_POST["fecha"])) {
     include './utils/manejadorBD.php';
 
@@ -15,7 +15,7 @@ if (isset($_POST["idVenta"]) && isset($_POST["cliente"]) && isset($_POST["import
 } else {
     header("location:principal.php");
 }
-
+/*Obtengo los datos de la venta sobre la que se ha hecho la reclamación*/
 function obtenerVenta($email, $idVenta) {
     $con = openCon();
     mysqli_set_charset($con, "utf8");

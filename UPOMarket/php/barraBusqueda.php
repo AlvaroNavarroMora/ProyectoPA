@@ -6,7 +6,11 @@
         });
     });
 </script>
-<!-- Search form -->
+<!-- 
+                        Search form
+            Cuando el usuario envía el formulario con los términos de búsqueda
+            los recibimos por GET en esta página, y mostramos los resultados con PHP
+-->
 <div class="container-fluid">
     <div class="row mx-auto">
         <div class="col-xl-9 my-auto mx-auto">
