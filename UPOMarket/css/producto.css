@@ -1,9 +1,9 @@
 div.col-lg-9{
-    max-width: 65% !important;/*Amalio: Me parecia que tenia un tamaño demasiado grande y lo encogí un poco*/
+    max-width: 65% !important;
     margin-left: auto;
     margin-right: auto;
 }
-@media only screen and (max-width: 1000px) { /*Marcos: me parece bien, pero aseguraos que los cambios se ven bien en resolución móvil*/
+@media only screen and (max-width: 1000px) {
     div.col-lg-9 {
         max-width: 100% !important;
     }
@@ -37,4 +37,37 @@ form textarea {
 .alert-warning {
     margin: 3%;
     width: 100%;
+}
+main.container {
+    width: 90%;
+    margin: 0 auto;
+    min-height: 50vh !important;
+}
+#logo_main {
+    display: block;
+    margin: auto;
+    max-width: 75%;
+}
+
+.card .card-img-top {
+    max-height: 200px !important;
+}
+html {
+    background-color: #7A7D7F;
+}
+
+h4{
+    font-variant: all-small-caps;
+    color: #5a6268;
+}
+a {
+    text-decoration: none !important;
+}
+@media only screen and (max-width: 600px) {
+    #logo_main,#categorias {
+        display: none;
+    }
+    #categorias {
+        margin-top: 1% !important;
+    }
 }

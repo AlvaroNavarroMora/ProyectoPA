@@ -34,7 +34,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Mis Ventas - UPOMarket</title>
+        <title>Mis Reclamaciones - UPOMarket</title>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet">
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
         <link href="../css/principal.css" rel="stylesheet">
@@ -176,7 +176,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                     </nav>
                 </div>
                 <!-- /.col-lg-3 -->
-                <div class="col-lg-9">
+                <div class="col-lg-9 table-responsive-lg">
                     <table id="reclamaciones" class="table table-striped table-bordered dataTable" style="width:100%">
                         <thead>
                             <tr>
