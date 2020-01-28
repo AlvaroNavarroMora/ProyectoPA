@@ -124,30 +124,24 @@ if (isset($_SESSION['email']) && existeUsuario($_SESSION['email']) && $_SESSION[
     ?>
     <!-- Page Content -->
     <main class="container-fluid">
-        <div class="row">
 
-            <!-- /.col-lg-3 -->
-            <!--  <form id="conflictForm" action="#" method="POST">-->
-            <div class="col">
-                <table id="conflictos" class="table table-striped table-bordered dataTable" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Pedido</th>
-                            <th>Producto</th>
-                            <th>Vendedor</th>
-                            <th>Cliente</th>
-                            <th>Descripción</th>
-                            <th>Estado</th>
-                            <th>Fecha</th>
-                            <th>Decision</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            <!--  </form>-->
-            <!-- /.col-lg-9 -->
+        <div class="table-responsive-xl">
+            <table id="conflictos" class="table table-striped table-bordered dataTable" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Pedido</th>
+                        <th>Producto</th>
+                        <th>Vendedor</th>
+                        <th>Cliente</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Decision</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
-        <!-- /.row -->
+
     </main>
     <?php
     include '../html/footer.html';

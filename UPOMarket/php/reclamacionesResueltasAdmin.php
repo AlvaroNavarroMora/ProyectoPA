@@ -125,7 +125,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                     </nav>
                 </div>
                 <!-- /.col-lg-3 -->
-                <div class="col-lg-9">
+                <div class="col-lg-9 table-responsive-xl">
                     <table id="reclamaciones" class="table table-striped table-bordered dataTable" style="width:100%">
                         <thead>
                             <tr>
@@ -152,10 +152,9 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
 </html>
 <?php
 
-function obtenerMisReclamaciones($email) {
+function obtenerMisReclamaciones() {
     $con = openCon();
-    mysqli_set_charset($con, "utf8");
-
+    
     $query = "SELECT r.`id_pedido`, r.`id_producto`,p.`nombre`, p.`email_vendedor`, v.`email_cliente`, r.`descripcion`, r.`estado`, r.`fecha`
                  FROM `reclamaciones` as r,`productos` as p, `pedidos` as v , `lineas_de_pedido` as lp
                  WHERE r.`id_producto`=p.`id` 

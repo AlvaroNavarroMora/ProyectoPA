@@ -84,7 +84,6 @@ function mostrarValorar() {
     <link href="../css/shop-homepage.css" rel="stylesheet">
     <link href="../css/header.css" rel="stylesheet">
     <link href="../css/footer.css" rel="stylesheet">
-    <link href="../css/principal.css" rel="stylesheet" type="text/css"/>
     <link href="../css/producto.css" rel="stylesheet" type="text/css"/>
     <script src="../frameworks/jquery/jquery.min.js"></script>
     <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>

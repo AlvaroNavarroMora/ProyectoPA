@@ -33,6 +33,9 @@ footer {
 .f-p-ico a{
     text-decoration: none;
 }
+a i.sin-margen{
+    margin-left: 0 !important;
+}
 .footer div{
     margin: 0 auto !important;
 }

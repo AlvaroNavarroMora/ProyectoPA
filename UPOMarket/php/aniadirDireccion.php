@@ -7,7 +7,7 @@ if (!isset($_SESSION['email'])) {
 include './utils/manejadorBD.php';
 include './utils/sesionUtils.php';
 
-/* Añadir nombre del formulario registro */
+/* Filtro sobre los datos del formulario para añadir direcciones. */
 if (isset($_POST['btnAddDireccion'])) {
     $direccion1 = trim(filter_var($_POST['direccion1'], FILTER_SANITIZE_STRING));
     $direccion2 = trim(filter_var($_POST['direccion2'], FILTER_SANITIZE_STRING));
@@ -46,7 +46,7 @@ if (isset($_POST['btnAddDireccion'])) {
         }
     }
 }
-
+/*Esta función se encarga de añadir una dirección a la base de datos, preparando los datos y creando la consulta.*/
 function aniadirDireccion($email, $nombre, $direccion1, $direccion2, $provincia, $ciudad, $cp) {
     $correcto = false;
     $conn = openCon();

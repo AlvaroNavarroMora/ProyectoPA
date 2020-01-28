@@ -1,5 +1,6 @@
 <?php
 include './sesionUtils.php';
+/*Este fichero contiene los métodos necesarios para poder procesar un nuevo usuario correctamente, asegurándonos de que efectivamente no existía*/
 function registrarUsuario($nombre, $email, $password, $tipo) {
     $salida = false;
     if (!existeUsuario($email)) {
