@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+/*Este fichero consta de los métodos que nos ayudan a hacer la mayoría de las operaciones CRUD de un conflicto*/
 function existeConflicto($idPedido, $idProducto) {
     $query = "SELECT * FROM `reclamaciones` WHERE `id_pedido`='$idPedido' AND `id_producto`='$idProducto';";
     $result = ejecutarConsulta($query);
