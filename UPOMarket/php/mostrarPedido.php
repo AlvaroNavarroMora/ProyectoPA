@@ -3,41 +3,46 @@ include "./utils/sesionUtils.php";
 include './utils/encriptar.php';
 include './utils/utilsProductos.php';
 session_start();
-if (isset($_SESSION['email'])) {
-    if (isset($_GET['idPedido'])) {
-        $idPedido = filter_var($_GET['idPedido'], FILTER_SANITIZE_NUMBER_INT);
-        $query = "SELECT * FROM pedidos WHERE id='$idPedido'";
-        $link = openCon();
-        $result = mysqli_query($link, $query);
-        if (mysqli_num_rows($result) > 0) {
-            $row = mysqli_fetch_array($result);
-            if ($row['email_cliente'] == $_SESSION['email']) {
-                $direccion = obtenerDireccion($row['id_direccion']);
-                $fecha = $row['fecha'];
-                $query = "SELECT * FROM lineas_de_pedido WHERE id_pedido='$idPedido'";
-                $result = mysqli_query($link, $query);
-                if (mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $productoId = $row['id_producto'];
-                        $cantidad = $row['cantidad'];
-                        $estado = $row['estado'];
-                        $producto2 = obtenerProducto($productoId);
-                        $producto2['cantidad'] = $cantidad;
-                        $producto2['estado'] = $estado;
-                        $productos[] = $producto2;
-                    }
-                } else {
-                    $errores[] = "El pedido está vacío";
+if (!isset($_SESSION['email'])) {
+    header('Location: ../principal.php');
+}
+if (isset($_GET['idPedido'])) {
+    $idPedido = filter_var($_GET['idPedido'], FILTER_SANITIZE_NUMBER_INT);
+    $query = "SELECT * FROM pedidos WHERE id='$idPedido'";
+    $link = openCon();
+    $result = mysqli_query($link, $query);
+    if (mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_array($result);
+        if ($row['email_cliente'] == $_SESSION['email']) {
+            $direccion = obtenerDireccion($row['id_direccion']);
+            $fecha = $row['fecha'];
+            $query = "SELECT * FROM lineas_de_pedido WHERE id_pedido='$idPedido'";
+            $result = mysqli_query($link, $query);
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $productoId = $row['id_producto'];
+                    $cantidad = $row['cantidad'];
+                    $estado = $row['estado'];
+                    $producto2 = obtenerProducto($productoId);
+                    $producto2['cantidad'] = $cantidad;
+                    $producto2['estado'] = $estado;
+                    $productos[] = $producto2;
                 }
             } else {
-                $errores[] = "El pedido no le pertenece";
+                $errores[] = "El pedido está vacío";
             }
         } else {
-            $errores[] = "Pedido no existente";
+            $errores[] = "El pedido no le pertenece";
         }
-        closeCon($link);
+    } else {
+        $errores[] = "Pedido no existente";
     }
+    closeCon($link);
 }
+else {
+    header('Location: ../principal.php');
+}
+
 
 if (isset($errores)) {
     header('Location: ../principal.php');
@@ -72,9 +77,9 @@ if (isset($errores)) {
 
         <body>
 
-    <?php
-    include './header.php';
-    ?>
+            <?php
+            include './header.php';
+            ?>
             <main class="container">
                 <div class="row">
                     <div class="divCarrito table-responsive-lg">
@@ -91,23 +96,23 @@ if (isset($errores)) {
                                 </tr>
                             </thead>
 
-    <?php
-    $subtotal = 0;
-    $total = 0;
-    foreach ($productos as $i=>$producto) {
-        echo "<tr>";
-        echo "<td>" . $producto['nombre'] . "</td>";
-        echo "<td>" . $producto['descripcion'] . "</td>";
-        echo "<td class='text-center'>" . $producto['precio'] . "</td>";
-        echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
-        $subtotal = $producto['precio'] * $producto['cantidad'];
-        $total += $subtotal;
-        echo "<td id ='subtotal" . $i . "' class='text-center'>$subtotal €</td>";
-        echo "<td class='text-center'>" . $producto['estado'] . "</td>";
-        echo "<td class='text-center'><a href='producto.php?idProducto=".$producto["id"]."'>Valora este producto</a></td>";
-        echo "</tr>";
-    }
-    ?>
+                            <?php
+                            $subtotal = 0;
+                            $total = 0;
+                            foreach ($productos as $i => $producto) {
+                                echo "<tr>";
+                                echo "<td>" . $producto['nombre'] . "</td>";
+                                echo "<td>" . $producto['descripcion'] . "</td>";
+                                echo "<td class='text-center'>" . $producto['precio'] . "</td>";
+                                echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
+                                $subtotal = $producto['precio'] * $producto['cantidad'];
+                                $total += $subtotal;
+                                echo "<td id ='subtotal" . $i . "' class='text-center'>$subtotal €</td>";
+                                echo "<td class='text-center'>" . $producto['estado'] . "</td>";
+                                echo "<td class='text-center'><a href='producto.php?idProducto=" . $producto["id"] . "'>Valora este producto</a></td>";
+                                echo "</tr>";
+                            }
+                            ?>
 
                             <tr>
                                 <td colspan="4"><strong>Total:</strong></td>
@@ -119,7 +124,7 @@ if (isset($errores)) {
                             <div class="divCarrito">
                                 <h5 class="und">Fecha del pedido</h5>
                                 <br />
-    <?php echo $fecha; ?>
+                                <?php echo $fecha; ?>
                             </div>
                         </div>
 
@@ -128,25 +133,25 @@ if (isset($errores)) {
                             <div class="divCarrito">
                                 <h5 class="und">Dirección de envio</h5>
                                 <br />
-    <?php
-    echo "<strong>Dirección:</strong> " . $direccion["linea_1"];
-    if (!empty($direccion["linea_2"])) {
-        echo " - " . $direccion["linea_2"];
-    } else {
-        $direccion["linea_2"] = "";
-    }
-    echo "<br>";
-    echo "<strong>Provincia:</strong> " . $direccion["provincia"] . "<br>";
-    echo "<strong>Ciudad:</strong> " . $direccion["ciudad"] . "<br>";
-    echo "<strong>Código Postal:</strong> " . $direccion["cp"];
-    ?>
+                                <?php
+                                echo "<strong>Dirección:</strong> " . $direccion["linea_1"];
+                                if (!empty($direccion["linea_2"])) {
+                                    echo " - " . $direccion["linea_2"];
+                                } else {
+                                    $direccion["linea_2"] = "";
+                                }
+                                echo "<br>";
+                                echo "<strong>Provincia:</strong> " . $direccion["provincia"] . "<br>";
+                                echo "<strong>Ciudad:</strong> " . $direccion["ciudad"] . "<br>";
+                                echo "<strong>Código Postal:</strong> " . $direccion["cp"];
+                                ?>
                             </div>
                         </div>
 
                         <hr />
                         <div class="row">
                             <div class="divCarrito">
-                                <strong><a href='../pdf/crearPdf.php?idPedido=<?php echo $idPedido;?>'>Descargar PDF</a></strong>
+                                <strong><a href='../pdf/crearPdf.php?idPedido=<?php echo $idPedido; ?>'>Descargar PDF</a></strong>
                                 <!-- --------Hacer que se pueda descargan un pdf------ -->
                             </div>
                         </div>
@@ -162,13 +167,13 @@ if (isset($errores)) {
 
             </main>
             <!-- /.container -->
-    <?php
-    include '../html/footer.html';
-    ?>
+            <?php
+            include '../html/footer.html';
+            ?>
 
         </body>
 
     </html>
-            <?php
-        }
-        ?>
+    <?php
+}
+?>

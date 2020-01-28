@@ -118,16 +118,17 @@ if (isset($_POST['btnRegistrar'])) {
                                 </div>
                                 <br />
                                 <div class="form-label-group">
-                                    <input name="passwordConfirm" type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar Contraseña" required>
+                                    <input name="passwordConfirm" type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar contraseña" required>
                                 </div>
                                 <br />
-                                <div>
-                                    <span>¿Desea ser vendedor? </span><input name="vendedor" type="checkbox" id="inputVendedor" />
+                                <div class="custom-control custom-checkbox">
+                                    <label class="custom-control-label" for="inputVendedor">¿Desea ser vendedor? </label>
+                                    <input name="vendedor" type="checkbox" id="inputVendedor" class="custom-control-input"/>
                                 </div>
                                 <br />
-                                <button name="btnRegistrar" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
+                                <button name="btnRegistrar" class="btn btn-md btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
                                 <br />
-                                <p>¿Ya tienes una cuenta? <a href="login.php">¡Inicia sesión!</a></p>
+                                <p class="text-center">¿Ya tienes una cuenta? <a href="login.php">¡Inicia sesión!</a></p>
                             </form>
                         </div>
                     </div>
