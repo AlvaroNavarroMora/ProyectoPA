@@ -12,7 +12,7 @@ tr :first-child {
 }
 tbody tr:hover {
     cursor: pointer;
-    text-decoration: underline;
+    opacity: 0.75;
 }
 span.highlight {
     display: inline;

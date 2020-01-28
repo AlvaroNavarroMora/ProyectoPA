@@ -38,7 +38,7 @@ $data = json_encode(obtenerMisVentas($_SESSION["email"]));
                     "data": data,
                     "paging": true,
                     "ordering": true,
-                    "order": [[ 4, "desc" ]],
+                    "order": [[4, "desc"]],
                     "columns": [
                         {"data": "id"},
                         {"data": "email_cliente"},
@@ -90,6 +90,7 @@ $data = json_encode(obtenerMisVentas($_SESSION["email"]));
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav class="list-group">
+                        <h4 class="text-center">Gestión de Ventas</h4>
                         <ul class="list-unstyled">
                             <li><a href="misProductos.php" class="list-group-item">Mis Productos</a></li>
                             <li><a href="misVentas.php" class="list-group-item active">Mis Ventas</a></li>

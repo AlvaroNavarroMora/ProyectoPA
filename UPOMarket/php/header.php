@@ -33,10 +33,10 @@ function mostrarCliente() {
 function mostrarVendedor() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="./misPedidos.php">Menú Cliente</a>
+        <a class="nav-link" href="./misPedidos.php">Compras</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="./misProductos.php">Menú Vendedor</a>
+        <a class="nav-link" href="./misProductos.php">Ventas</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta <span id="num-productos"></span></a>
@@ -54,13 +54,13 @@ function mostrarVendedor() {
 
 function mostrarAdmin() {
     ?>
+    <li class="nav-item">
+        <a class="nav-link" href="./conflictos.php">Conflictos</a>
+    </li>
     <li id="profile" class="nav-item">
         <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
             echo $_SESSION['nombre'];
             ?></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="./conflictos.php">Conflictos</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./utils/cerrarSesion.php">Cerrar Sesión</a>
@@ -70,11 +70,13 @@ function mostrarAdmin() {
 ?>
 <script>
     $(document).ready(function () {
-        var num_productos = <?php if (isset($_SESSION["carrito"])) {
+        var num_productos = <?php
+if (isset($_SESSION["carrito"])) {
     echo count($_SESSION["carrito"]);
 } else {
     echo 0;
-} ?>;
+}
+?>;
         $("#num-productos").text("(" + num_productos + ")");
     });
 </script>

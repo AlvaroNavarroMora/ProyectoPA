@@ -207,8 +207,34 @@ function obtenerMisProductos($email) {
     return $productos;
 }
 
-function listarValoracionesProcucto($idProducto) {
-    $query = "SELECT * FROM valoraciones WHERE id_producto=$idProducto ORDER BY fecha DESC";
+/*Esta funcion listara las ultimas valoraciones del producto para usuarios no registrados*/
+function listarValoracionesProducto($idProducto) {
+    $query = "SELECT * FROM valoraciones WHERE id_producto=$idProducto ORDER BY fecha DESC LIMIT 10";
+    $result = ejecutarConsulta($query);
+    $valoraciones = Array();
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $valoraciones[] = $row;
+        }
+    }
+    return $valoraciones;
+}
+
+/*Esta funcion servira para mostrar, si existe, la valoracion del
+ * cliente en primer lugar de la lista de valoraciones*/
+function obtenerMiValoracionDelProducto($email, $idProducto) {
+    $query = "SELECT * FROM valoraciones WHERE email_cliente='$email' AND id_producto=$idProducto";
+    $result = ejecutarConsulta($query);
+    $valoracion = null;
+    if (mysqli_num_rows($result) > 0) {
+        $valoracion = mysqli_fetch_assoc($result);
+    }
+    return $valoracion;
+}
+
+/*Esta funcion lista las 10 valoraciones mas recientes del producto sin contar la del cliente*/
+function listarRestoValoracionesProducto($email, $idProducto) {
+    $query = "SELECT * FROM valoraciones WHERE id_producto=$idProducto AND email_cliente not like '$email' ORDER BY fecha DESC LIMIT 10";
     $result = ejecutarConsulta($query);
     $valoraciones = Array();
     if (mysqli_num_rows($result) > 0) {

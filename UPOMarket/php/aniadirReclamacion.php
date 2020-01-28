@@ -55,7 +55,7 @@ if (isset($_POST['btnAddReclamacion'])) {
     if (empty($errores)) {
 
         crearReclamacion($pedido, $producto, $descripcion);
-        header('Location: ./perfil.php');
+        header('Location: ./reclamacionesRealizadas.php');
     }
 }
 
