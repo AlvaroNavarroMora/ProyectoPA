@@ -20,7 +20,7 @@ if (isset($_GET['datos'])) {
     header("Location: ./misReclamaciones.php");
 }
 
-if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] != "vendedor")) {
+if (!isset($_SESSION['email']) || !isset($_SESSION['tipo'])) {
     header("location: ./principal.php");
 }
 
