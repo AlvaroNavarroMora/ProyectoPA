@@ -4,7 +4,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
     header("location: ./principal.php");
 }
 
-include "./utils/manejadorBD.php";
+include "./utils/utilsProductos.php";
 $data = json_encode(obtenerMisProductos($_SESSION["email"]));
 ?>
 <!DOCTYPE html>
@@ -38,6 +38,14 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                     "data": data,
                     "paging": true,
                     "ordering": true,
+                    columnDefs: [{
+                            targets: [2],
+                            render: function (data, type, row) {
+                                return data.length > 20 ?
+                                        data.substr(0, 20) + '…' :
+                                        data;
+                            }
+                        }],
                     "columns": [
                         {"data": "id"},
                         {"data": "nombre"},
@@ -77,8 +85,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                             var disponible = data[i]['disponible'];
                             if (disponible == 1) {
                                 var text = document.createTextNode("Disponible");
-                            }
-                            else {
+                            } else {
                                 var text = document.createTextNode("No disponible");
                             }
                             aux.replaceChild(text, aux.firstChild);
@@ -105,6 +112,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav class="list-group">
+                        <h4 class="text-center">Gestión de Ventas</h4>
                         <ul class="list-unstyled">
                             <li><a href="misProductos.php" class="list-group-item active">Mis Productos</a></li>
                             <li><a href="misVentas.php" class="list-group-item">Mis Ventas</a></li>
@@ -138,22 +146,3 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
         ?>
     </body>
 </html>
-<?php
-
-function obtenerMisProductos($email) {
-    $con = openCon();
-    mysqli_set_charset($con, "utf8");
-    $query = "SELECT * from productos where email_vendedor='$email'";
-    $result = mysqli_query($con, $query);
-    $productos = Array();
-    if (mysqli_num_rows($result) > 0) {
-        while ($row = mysqli_fetch_assoc($result)) {
-            $productos[] = $row;
-        }
-    }
-
-    closeCon($con);
-
-    return $productos;
-}
-?>

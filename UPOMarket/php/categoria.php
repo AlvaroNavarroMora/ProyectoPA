@@ -47,7 +47,7 @@ function mostrarProducto($producto) {
     ?>
     <div class = "col-lg-4 col-md-6 mb-4">
         <div class = "card h-100">
-            <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><img class = "card-img-top" src = "<?php echo $img ?>" alt = ""></a>
+            <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><img class = "card-img-top lazyload" data-src = "<?php echo $img ?>" alt = ""></a>
             <div class = "card-body">
                 <h4 class = "card-title">
                     <a href = "./producto.php?idProducto=<?php echo $producto["id"] ?>"><?php echo $producto["nombre"] ?></a>
@@ -90,6 +90,7 @@ function mostrarProducto($producto) {
         <script src="../frameworks/jquery/jquery.min.js"></script>
         <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
+        <script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.js"></script><!-- Para lazy loading de imagenes-->
 
         <script>
             $(document).ready(function () {
@@ -110,6 +111,7 @@ function mostrarProducto($producto) {
                         $(estrellas[i]).append($("<i class='far fa-star'></i>"));
                     }
                 }
+                $("img.lazyload").lazyload();
             });
         </script>
 
@@ -125,8 +127,8 @@ function mostrarProducto($producto) {
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav id='categorias' class="list-group">
+                        <h4 class="text-center">Categorías</h4>
                         <ul class="list-unstyled">
-                            <h4 class="text-center">Categorías</h4>
                             <?php
                             foreach ($categorias as $c) {
                                 if ($c[0] === $categoria) {

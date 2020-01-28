@@ -77,29 +77,28 @@ if (isset($errores)) {
                         <table id="tableProductos" class="table table-light">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Descripción</th>
-                                    <th>Precio</th>
-                                    <th>Cantidad</th>
-                                    <th>Subtotal </th>
-                                    <th>Estado </th>
+                                    <th class="text-center">Nombre</th>
+                                    <th class="text-center">Descripción</th>
+                                    <th class="text-center">Precio</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-center">Subtotal </th>
+                                    <th class="text-center">Estado </th>
                                 </tr>
                             </thead>
 
     <?php
-    $i = 0;
     $subtotal = 0;
     $total = 0;
-    foreach ($productos as $producto) {
+    foreach ($productos as $i=>$producto) {
         echo "<tr>";
         echo "<td>" . $producto['nombre'] . "</td>";
         echo "<td>" . $producto['descripcion'] . "</td>";
-        echo "<td>" . $producto['precio'] . "</td>";
-        echo "<td>" . $producto['cantidad'] . "</td>";
+        echo "<td class='text-center'>" . $producto['precio'] . "</td>";
+        echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
         $subtotal = $producto['precio'] * $producto['cantidad'];
         $total += $subtotal;
-        echo "<td id ='subtotal" . $i . "'>$subtotal €</td>";
-        echo "<td>" . $producto['estado'] . "</td>";
+        echo "<td id ='subtotal" . $i . "' class='text-center'>$subtotal €</td>";
+        echo "<td class='text-center'>" . $producto['estado'] . "</td>";
         echo "</tr>";
 
         $i++;

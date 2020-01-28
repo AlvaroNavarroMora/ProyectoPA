@@ -13,7 +13,12 @@ if (isset($_GET["idProducto"])) {
             $img = "../img/productDefaultImage.jpg";
         }
         $caracteristicas = listarCaracteristicasProducto($idProducto);
-        $valoraciones = listarValoracionesProcucto($idProducto);
+        if (isset($_SESSION["email"])) {
+            $miValoracion = obtenerMiValoracionDelProducto($_SESSION["email"], $idProducto);
+            $valoraciones = listarRestoValoracionesProducto($_SESSION["email"], $idProducto);
+        } else {
+            $valoraciones = listarValoracionesProducto($idProducto);
+        }
         $puntuacion = obtenerPuntuacionProducto($idProducto);
         $categorias = listarCategorias();
     } else {
@@ -60,7 +65,7 @@ function mostrarValorar() {
         ?>
         <input id="puntuacion" type="number" name="puntuacion" hidden>
         <input name="idProducto" type="number" value="<?php echo $_GET["idProducto"]
-        ?>" hidden>
+    ?>" hidden>
         <br>
         <input id="btn-coment" type="submit" name="enviarValoracion" value="Valora el producto!" class="btn btn-success">
     </form>
@@ -147,7 +152,7 @@ function mostrarValorar() {
             var descripcion = $("#miValoracion p").text();
             var puntuacion = $("#miValoracion span").text().length;
             var form = $("<form id='formValoracionProducto' method='get'></form>");
-            var text = $("<textarea name='valoracion'></textarea>");
+            var text = $("<textarea class='form-control' name='valoracion'></textarea>");
             $(text).css("width", "100%");
             $(text).val(descripcion);
             $(form).append(text);
@@ -281,24 +286,34 @@ function mostrarValorar() {
                         </div>
                         <div class="card-body">
                             <?php
-                            $valorable = true;
-                            foreach ($valoraciones as $v) {
-                                echo "<div";
-                                if ($v["email_cliente"] == $_SESSION["email"]) {
-                                    echo " id='miValoracion'";
-                                    $valorable = false;
+                            if (!empty($miValoracion)) {
+                                echo "<div>";
+                                echo "<span class='text-warning'>";
+                                $nota = $miValoracion["puntuacion"];
+                                for ($i = 0; $i < $nota; $i++) {
+                                    echo "&#9733;";
                                 }
-                                echo ">";
+                                echo "</span>";
+                                if ($miValoracion["email_cliente"] == $_SESSION["email"]) {
+                                    echo "<button id='btnEliminar' class='btn btn-sm btn-danger pull-right btn-valoracion'>Eliminar</button>";
+                                    echo "<button class='btn btn-sm btn-warning pull-right btn-valoracion' onclick='mostrarEditable()'>Editar</button>";
+                                }
+                                echo "<br>";
+                                echo '<p>' . $miValoracion['descripcion'] . '</p>';
+                                echo '<small>Por: ' . $miValoracion['email_cliente'] . '</small>';
+                                echo "<br>";
+                                echo '<small>Fecha: ' . $miValoracion['fecha'] . '</small>';
+                                echo "</div>";
+                                echo "<hr>";
+                            }
+                            foreach ($valoraciones as $v) {
+                                echo "<div>";
                                 echo "<span class='text-warning'>";
                                 $nota = $v["puntuacion"];
                                 for ($i = 0; $i < $nota; $i++) {
                                     echo "&#9733;";
                                 }
                                 echo "</span>";
-                                if ($v["email_cliente"] == $_SESSION["email"]) {
-                                    echo "<button id='btnEliminar' class='btn btn-sm btn-danger pull-right btn-valoracion'>Eliminar</button>";
-                                    echo "<button class='btn btn-sm btn-warning pull-right btn-valoracion' onclick='mostrarEditable()'>Editar</button>";
-                                }
                                 echo "<br>";
                                 echo '<p>' . $v['descripcion'] . '</p>';
                                 echo '<small>Por: ' . $v['email_cliente'] . '</small>';
@@ -307,7 +322,7 @@ function mostrarValorar() {
                                 echo "</div>";
                                 echo "<hr>";
                             }
-                            if (isset($_SESSION["email"]) && $valorable && compradoPorMi($_SESSION["email"], $idProducto)) {
+                            if (isset($_SESSION["email"]) && empty($miValoracion) && compradoPorMi($_SESSION["email"], $idProducto)) {
                                 mostrarValorar();
                             }
                             ?>

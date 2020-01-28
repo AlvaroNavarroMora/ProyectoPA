@@ -6,7 +6,6 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo'])) {
 
 include "./utils/manejadorBD.php";
 $data = json_encode(obtenerMisPedidos($_SESSION["email"]));
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -39,7 +38,7 @@ $data = json_encode(obtenerMisPedidos($_SESSION["email"]));
                     },
                     "data": data,
                     "paging": true,
-                    "order": [[ 1, "desc" ]],
+                    "order": [[1, "desc"]],
                     "ordering": true,
                     "columns": [
                         {"data": "idPedido"},
@@ -78,8 +77,9 @@ $data = json_encode(obtenerMisPedidos($_SESSION["email"]));
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav class="list-group">
+                        <h4 class="text-center">Gestión de Compras</h4>
                         <ul class="list-unstyled">
-                            <li><a href="misPedidos.php" class="list-group-item active">Mis Pedidos</a></li>
+                            <li><a href="misPedidos.php" class="list-group-item active">Mis Compras</a></li>
                             <li><a href="reclamacionesRealizadas.php" class="list-group-item">Mis Reclamaciones</a></li>
                         </ul>
                     </nav>
@@ -114,7 +114,7 @@ function obtenerMisPedidos($email) {
     $query = "SELECT * FROM pedidos WHERE email_cliente='$email'";
     $result = mysqli_query($con, $query);
     $pedidos = Array();
-    
+
     if (mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
             $total = 0;
@@ -128,7 +128,7 @@ function obtenerMisPedidos($email) {
                     $subtotal = $row2['cantidad'] * $row2['precio'];
                     $estado2 = $row2['estado'];
                     $total += $subtotal;
-                    if($estado2 == "Procesado" || ($estado == "Entregado" && $estado2 == "Enviado")){
+                    if ($estado2 == "Procesado" || ($estado == "Entregado" && $estado2 == "Enviado")) {
                         $estado = $estado2;
                     }
                 }
