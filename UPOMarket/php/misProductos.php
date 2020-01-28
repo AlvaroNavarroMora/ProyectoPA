@@ -121,7 +121,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
                     </nav>
                 </div>
                 <!-- /.col-lg-3 -->
-                <div class="col-lg-9">
+                <div class="col-lg-9 table-responsive-sm">
                     <a id="btn-aniadir-producto" class="btn btn-sm btn-primary" href="./aniadirProducto.php" role="button">Añadir Producto</a>
                     <table id="productos" class="table table-striped table-bordered dataTable" style="width:100%">
                         <thead>

@@ -306,7 +306,7 @@ if (isset($_POST['btnAddProduct'])) {
                                     <div class = "form-check">
                                         <input class = "form-check-input" type="checkbox" name="condiciones" id = "condiciones" required="true">
                                         <label class = "form-check-label" for = "gridCheck">
-                                            Acepto los terminos y condiciones
+                                            <a href="../pdf/terminosCondiciones.php" target="_blank">Acepto los terminos y condiciones</a>
                                         </label>
                                     </div>
                                 </div>

@@ -111,8 +111,7 @@ function obtenerVenta($email, $idVenta) {
         if ($modificado) {
             echo "<br>";
             echo "<div class='alert alert-success'>El pedido se ha actualizado con éxito</div>";
-        }
-        else if (!empty($error)) {
+        } else if (!empty($error)) {
             echo "<br>";
             echo '<div class="alert alert-warning">' . $error . "</div>";
         }
@@ -146,50 +145,52 @@ function obtenerVenta($email, $idVenta) {
         <hr>
         <h3>Productos</h3>
         <form id="actualizarLineasPedido" method="post" action="#" style="width:100%">
-            <table id="lineas-venta" class="table table-striped table-bordered" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th class='text-center'>Cantidad</th>
-                        <th class='text-center'>Precio(&euro;)</th>
-                        <th class='text-center'>Subtotal(&euro;)</th>
-                        <th class='text-center'>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    foreach ($venta as $v) {
-                        echo "<tr>";
-                        echo "<td><a href='./producto.php?idProducto=" . $v["id"] . "'>" . $v["nombre"] . "</a></td>";
-                        echo "<td class='text-center'>" . $v["cantidad"] . "</td>";
-                        echo "<td class='text-center'>" . number_format($v["precio"], 2) . "</td>";
-                        echo "<td class='text-center'>" . number_format($v["cantidad"] * $v["precio"], 2) . "</td>";
-                        echo "<td class='text-center'>";
-                        echo "<select id='estado' class='custom-select estado-linea' name='estado-" . $v["id"] . "'>";
-                        echo "<option value='Procesado' ";
-                        if ($v["estado"] == "Procesado") {
-                            echo "selected";
-                        }
-                        echo ">Procesado</option>";
+            <div class="table-responsive-lg">
+                <table id="lineas-venta" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th class='text-center'>Cantidad</th>
+                            <th class='text-center'>Precio(&euro;)</th>
+                            <th class='text-center'>Subtotal(&euro;)</th>
+                            <th class='text-center'>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($venta as $v) {
+                            echo "<tr>";
+                            echo "<td><a href='./producto.php?idProducto=" . $v["id"] . "'>" . $v["nombre"] . "</a></td>";
+                            echo "<td class='text-center'>" . $v["cantidad"] . "</td>";
+                            echo "<td class='text-center'>" . number_format($v["precio"], 2) . "</td>";
+                            echo "<td class='text-center'>" . number_format($v["cantidad"] * $v["precio"], 2) . "</td>";
+                            echo "<td class='text-center'>";
+                            echo "<select id='estado' class='custom-select estado-linea' name='estado-" . $v["id"] . "'>";
+                            echo "<option value='Procesado' ";
+                            if ($v["estado"] == "Procesado") {
+                                echo "selected";
+                            }
+                            echo ">Procesado</option>";
 
-                        echo "<option value='Enviado' ";
-                        if ($v["estado"] == "Enviado") {
-                            echo "selected";
-                        }
-                        echo ">Enviado</option>";
+                            echo "<option value='Enviado' ";
+                            if ($v["estado"] == "Enviado") {
+                                echo "selected";
+                            }
+                            echo ">Enviado</option>";
 
-                        echo "<option value='Entregado' ";
-                        if ($v["estado"] == "Entregado") {
-                            echo "selected";
-                        }
-                        echo ">Entregado</option>";
+                            echo "<option value='Entregado' ";
+                            if ($v["estado"] == "Entregado") {
+                                echo "selected";
+                            }
+                            echo ">Entregado</option>";
 
-                        echo "</td>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
+                            echo "</td>";
+                            echo "</tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
             <input type="text" value="<?php echo $idVenta ?>" name="idVenta" hidden>
             <input type="text" value="<?php echo $cliente ?>" name="cliente" hidden>
             <input type="text" value="<?php echo $importe ?>" name="importe" hidden>

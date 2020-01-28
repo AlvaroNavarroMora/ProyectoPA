@@ -62,6 +62,11 @@ if (isset($errores)) {
             <script src="../frameworks/jquery/jquery.min.js"></script>
             <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
+            <style>
+                td {
+                    max-width: 400px;
+                }
+            </style>
 
         </head>
 
@@ -72,7 +77,7 @@ if (isset($errores)) {
     ?>
             <main class="container">
                 <div class="row">
-                    <div class="divCarrito">
+                    <div class="divCarrito table-responsive-lg">
                         <h3>Resumen del pedido</h3>
                         <table id="tableProductos" class="table table-light">
                             <thead>
