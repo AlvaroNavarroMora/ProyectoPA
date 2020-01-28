@@ -35,14 +35,21 @@ function mostrarPerfil($nombre, $email, $tipo) {
                 <!-- LISTA DE CATEGORÍAS -->
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
-                    <div class="list-group">
-                        <p class="list-group-item active">Opciones</p>
-                        <a href="perfil.php" class="list-group-item">Ver Perfil</a>
-                        <a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a>
-                        <a href="editarDireccion.php" class="list-group-item">Editar Dirección de Envío</a>
-                        <a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a>
-                        <a href="cambiarContrasenia.php" class="list-group-item">Cambiar Contraseña</a>
-                    </div>
+                    <nav class="list-group">
+                        <h4 class="text-center">Perfil De Usuario</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="perfil.php" class="list-group-item">Ver Perfil</a></li>
+                            <li><a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a></li>
+                            <li><a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a></li>
+                            <li><a href="editarDireccion.php" class="list-group-item">Direcciones</a></li>
+                            <li><a href="cambiarContrasenia.php" class="list-group-item">Cambiar Contraseña</a></li>
+                            <?php if ($tipo == "cliente") {
+                                ?>
+                                <li><a href="convertirseEnVendedor.php" class="list-group-item active">Convertirse en vendedor</a></li>
+                            <?php }
+                            ?>
+                        </ul>
+                    </nav>
                 </div>
                 <!-- /.col-lg-3 -->
 
@@ -84,7 +91,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
                                     <span><input name="vendedor" type="checkbox" id="checkboxVendedorPerfil"></span>
                                     </p>
 
-                                    <input class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" type="submit" value="Confirmar" name="cambiarTipo"></input>
+                                    <input class="btn btn-md btn-primary btn-block text-uppercase" type="submit" type="submit" value="Confirmar" name="cambiarTipo"></input>
                                 </form>
                             </div>
                         </div>

@@ -34,7 +34,7 @@ form textarea {
 .ordenacion {
     display: none;
 }
-.alert {
+.alert-warning {
     margin: 3%;
     width: 100%;
 }

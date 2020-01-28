@@ -127,8 +127,8 @@ function mostrarProducto($producto) {
                 <div class="col-lg-3">
                     <img id="logo_main" class="img-fluid" src="../img/upomarket.png" alt="upomarket">
                     <nav id='categorias' class="list-group">
+                        <h4 class="text-center">Categorías</h4>
                         <ul class="list-unstyled">
-                            <h4 class="text-center">Categorías</h4>
                             <?php
                             foreach ($categorias as $c) {
                                 if ($c[0] === $categoria) {

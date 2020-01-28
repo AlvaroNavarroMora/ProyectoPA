@@ -79,36 +79,34 @@ if (isset($errores)) {
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
-                                    <th>Precio</th>
-                                    <th>Cantidad</th>
-                                    <th>Subtotal </th>
-                                    <th>Estado </th>
+                                    <th class="text-center">Precio</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-center">Subtotal </th>
+                                    <th class="text-center">Estado </th>
                                 </tr>
                             </thead>
 
     <?php
-    $i = 0;
     $subtotal = 0;
     $total = 0;
-    foreach ($productos as $producto) {
+    foreach ($productos as $i=>$producto) {
         echo "<tr>";
         echo "<td>" . $producto['nombre'] . "</td>";
         echo "<td>" . $producto['descripcion'] . "</td>";
-        echo "<td>" . $producto['precio'] . "</td>";
-        echo "<td>" . $producto['cantidad'] . "</td>";
+        echo "<td class='text-center'>" . $producto['precio'] . "</td>";
+        echo "<td class='text-center'>" . $producto['cantidad'] . "</td>";
         $subtotal = $producto['precio'] * $producto['cantidad'];
         $total += $subtotal;
-        echo "<td id ='subtotal" . $i . "'>$subtotal €</td>";
-        echo "<td>" . $producto['estado'] . "</td>";
+        echo "<td id ='subtotal" . $i . "' class='text-center'>$subtotal €</td>";
+        echo "<td class='text-center'>" . $producto['estado'] . "</td>";
+        echo "<td class='text-center'><a href='producto.php?idProducto=".$producto["id"]."'>Valora este producto</a></td>";
         echo "</tr>";
-
-        $i++;
     }
     ?>
 
                             <tr>
-                                <td colspan="3"><strong>Total:</strong></td>
-                                <td id="precioTotalCarrito" colspan="3"><?php echo number_format($total, 2); ?>€</td>
+                                <td colspan="4"><strong>Total:</strong></td>
+                                <td class='text-center' id="precioTotalCarrito"><?php echo number_format($total, 2); ?>€</td>
                             </tr>
                         </table>
                         <hr />

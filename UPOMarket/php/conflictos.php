@@ -58,7 +58,7 @@ if (isset($_SESSION['email']) && existeUsuario($_SESSION['email']) && $_SESSION[
                 "ordering": true,
                 "columns": [
                     {"data": "id_pedido"},
-                    {"data": "id_producto"},
+                    {"data": "nombre"},
                     {"data": "email_vendedor"},
                     {"data": "email_cliente"},
                     {"data": "descripcion"},
@@ -88,13 +88,13 @@ if (isset($_SESSION['email']) && existeUsuario($_SESSION['email']) && $_SESSION[
                         //
                         var btnDarRazonCliente = document.createElement("button");
                         $(btnDarRazonCliente).text("CLIENTE");
-                        $(btnDarRazonCliente).attr("class", "btn btn-success");
+                        $(btnDarRazonCliente).attr("class", "btn btn-sm btn-success");
                         $(btnDarRazonCliente).attr("onclick", "darRazon('" + txtBtn1 + "');");
                         aux.append(btnDarRazonCliente);
 
                         var btnDarRazonVendedor = document.createElement("button");
                         $(btnDarRazonVendedor).text("VENDEDOR");
-                        $(btnDarRazonVendedor).attr("class", "btn btn-danger");
+                        $(btnDarRazonVendedor).attr("class", "btn btn-sm btn-danger");
                         $(btnDarRazonVendedor).attr("onclick", "darRazon('" + txtBtn2 + "');");
                         aux.append(btnDarRazonCliente);
                         aux.append(btnDarRazonVendedor);

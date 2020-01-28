@@ -7,6 +7,19 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
 include './utils/utilsProductos.php';
 include './utils/sesionUtils.php';
 
+function soloImagenes($fichero) {
+    $tiposAceptados = Array('image/gif', 'image/jpeg', 'image/pjpeg', 'image/png');
+    if (array_search($fichero, $tiposAceptados) === false) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function limiteTamanyo($fichero, $limite = (200 * 1024)) {
+    return $fichero <= $limite;
+}
+
 /* Añadir nombre del formulario registro */
 if (isset($_POST['btnAddProduct'])) {
     print_r($_POST);
@@ -111,8 +124,17 @@ if (isset($_POST['btnAddProduct'])) {
             $newName = str_replace(".", time() . ".", $_FILES['files']['name'][$k]);
             //Ruta destino + nuevo nombre
             $newPath = $pathThisProducto . '/' . $newName;
-            //Mover la imagen al destino
-            move_uploaded_file($tmp_name, $newPath);
+            if (!limiteTamanyo($_FILES['files']['size'][$k])) {
+                $errores[] = "Imágen Demasiado grande";
+            }
+            if (!soloImagenes($_FILES['files']['type'][$k])) {
+                $errores[] = "Formato de imagen erroneo";
+            }
+
+            if (!isset($errores)) {
+                //Mover la imagen al destino
+                move_uploaded_file($tmp_name, $newPath);
+            }
         }
         $haInsertado = insertarProducto($email, $producto, $descripcion, $precio, $stock, $newPath, $categorias, $caracteristicaName, $caracteristicaDesc);
         if ($haInsertado) {
@@ -156,7 +178,7 @@ if (isset($_POST['btnAddProduct'])) {
                     if (input.files && input.files[i]) {
                         readers[i].onload = function (e) {
                             $('#preview').append("<img src=" + e.target.result + " alt='your image' class='img-thumbnail' />");
-                        }
+                        };
                         if (input.files.length == 1) {
                             $('#imgLab').empty();
                             $('#imgLab').append(input.files[i].name);
@@ -208,8 +230,9 @@ if (isset($_POST['btnAddProduct'])) {
                     if (isset($errores)) {
                         echo "<div class = 'alert alert-danger'><ul>";
                         echo "<h6>Upss, parece que algo ha salido mal.</h6>";
-                        foreach ($errores as $e)
+                        foreach ($errores as $e) {
                             echo "<li>$e</li>";
+                        }
                         echo '</ul>';
                         echo "</div>";
                     }
@@ -232,8 +255,8 @@ if (isset($_POST['btnAddProduct'])) {
                             <label for="descripcion">Descripción</label>
                             <textarea name="descripcion" class="form-control" placeholder="Escriba una descripción del producto" rows="5" required="true"></textarea><!--Controlar numero de palabras JS? -->
                         </div>
-                        <button type="button" id="add_field" class="btn btn-primary">Agregar</button>
                         <div id="caracteristicas">
+                            <button type="button" id="add_field" class="btn btn-sm btn-outline-primary">Agregar</button>
                             <div class="form-row">
                                 <!-- <div class="form-group col-md-6">-->
                                 <div class="col-md-4 mb-3">

@@ -50,3 +50,10 @@ html {
   font-size: 55px;
   color: #7A7D7F;
 }
+h4{
+    font-variant: all-small-caps;
+    color: #5a6268;
+}
+a {
+    text-decoration: none !important;
+}
