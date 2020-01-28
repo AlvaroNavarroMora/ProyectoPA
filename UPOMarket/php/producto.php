@@ -65,7 +65,7 @@ function mostrarValorar() {
         ?>
         <input id="puntuacion" type="number" name="puntuacion" hidden>
         <input name="idProducto" type="number" value="<?php echo $_GET["idProducto"]
-    ?>" hidden>
+        ?>" hidden>
         <br>
         <input id="btn-coment" type="submit" name="enviarValoracion" value="Enviar" class="btn btn-success">
     </form>
@@ -259,7 +259,7 @@ function mostrarValorar() {
                                     <button class="btn btn-primary" name="btnAgregarCarrito" value="Agregar al carrito" type="submit">Agregar al carrito</button>
                                 </form>
                                 <?php
-                            }else {
+                            } else {
                                 echo '<div class="alert alert-info">Inicia Sesión para comprar este producto</div>';
                             }
                             ?>
@@ -288,41 +288,45 @@ function mostrarValorar() {
                         </div>
                         <div class="card-body">
                             <?php
-                            if (!empty($miValoracion)) {
-                                echo "<div>";
-                                echo "<span class='text-warning'>";
-                                $nota = $miValoracion["puntuacion"];
-                                for ($i = 0; $i < $nota; $i++) {
-                                    echo "&#9733;";
+                            if (empty($miValoracion) && empty($valoraciones)) {
+                                echo "<p>Aún no hay opiniones para este producto.</p>";
+                            } else {
+                                if (!empty($miValoracion)) {
+                                    echo "<div>";
+                                    echo "<span class='text-warning'>";
+                                    $nota = $miValoracion["puntuacion"];
+                                    for ($i = 0; $i < $nota; $i++) {
+                                        echo "&#9733;";
+                                    }
+                                    echo "</span>";
+                                    if ($miValoracion["email_cliente"] == $_SESSION["email"]) {
+                                        echo "<button id='btnEliminar' class='btn btn-sm btn-danger pull-right btn-valoracion'>Eliminar</button>";
+                                        echo "<button class='btn btn-sm btn-warning pull-right btn-valoracion' onclick='mostrarEditable()'>Editar</button>";
+                                    }
+                                    echo "<br>";
+                                    echo '<p>' . $miValoracion['descripcion'] . '</p>';
+                                    echo '<small>Por: ' . $miValoracion['email_cliente'] . '</small>';
+                                    echo "<br>";
+                                    echo '<small>Fecha: ' . $miValoracion['fecha'] . '</small>';
+                                    echo "</div>";
+                                    echo "<hr>";
                                 }
-                                echo "</span>";
-                                if ($miValoracion["email_cliente"] == $_SESSION["email"]) {
-                                    echo "<button id='btnEliminar' class='btn btn-sm btn-danger pull-right btn-valoracion'>Eliminar</button>";
-                                    echo "<button class='btn btn-sm btn-warning pull-right btn-valoracion' onclick='mostrarEditable()'>Editar</button>";
+                                foreach ($valoraciones as $v) {
+                                    echo "<div>";
+                                    echo "<span class='text-warning'>";
+                                    $nota = $v["puntuacion"];
+                                    for ($i = 0; $i < $nota; $i++) {
+                                        echo "&#9733;";
+                                    }
+                                    echo "</span>";
+                                    echo "<br>";
+                                    echo '<p>' . $v['descripcion'] . '</p>';
+                                    echo '<small>Por: ' . $v['email_cliente'] . '</small>';
+                                    echo "<br>";
+                                    echo '<small>Fecha: ' . $v['fecha'] . '</small>';
+                                    echo "</div>";
+                                    echo "<hr>";
                                 }
-                                echo "<br>";
-                                echo '<p>' . $miValoracion['descripcion'] . '</p>';
-                                echo '<small>Por: ' . $miValoracion['email_cliente'] . '</small>';
-                                echo "<br>";
-                                echo '<small>Fecha: ' . $miValoracion['fecha'] . '</small>';
-                                echo "</div>";
-                                echo "<hr>";
-                            }
-                            foreach ($valoraciones as $v) {
-                                echo "<div>";
-                                echo "<span class='text-warning'>";
-                                $nota = $v["puntuacion"];
-                                for ($i = 0; $i < $nota; $i++) {
-                                    echo "&#9733;";
-                                }
-                                echo "</span>";
-                                echo "<br>";
-                                echo '<p>' . $v['descripcion'] . '</p>';
-                                echo '<small>Por: ' . $v['email_cliente'] . '</small>';
-                                echo "<br>";
-                                echo '<small>Fecha: ' . $v['fecha'] . '</small>';
-                                echo "</div>";
-                                echo "<hr>";
                             }
                             if (isset($_SESSION["email"]) && empty($miValoracion) && compradoPorMi($_SESSION["email"], $idProducto)) {
                                 mostrarValorar();
