@@ -11,7 +11,6 @@ function soloImagenes($fichero) {
     $tiposAceptados = Array('image/gif', 'image/jpeg', 'image/pjpeg', 'image/png');
     if (array_search($fichero, $tiposAceptados) === false) {
         return false;
-        echo "falso";
     } else {
         return true;
     }
@@ -135,7 +134,6 @@ if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad']
             $newName = str_replace(".", time() . ".", $_FILES['files']['name'][$k]);
             //Ruta destino + nuevo nombre
             $newPath = $pathThisProducto . '/' . $newName;
-            echo "<br>" . $_FILES['files']['size'][$k] . "<br>" . $_FILES['files']['type'][$k];
             if (!limiteTamanyo($_FILES['files']['size'][$k])) {
                 $errores[] = "Imágen Demasiado grande";
             }
