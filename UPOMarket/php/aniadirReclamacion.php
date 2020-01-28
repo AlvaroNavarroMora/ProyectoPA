@@ -1,14 +1,14 @@
 <?php
 session_start();
-if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] != "vendedor")) {
+if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] == "vendedor")) {
     header("location: ./principal.php");
 }
-
+/* Desde esta página el cliente puede crear una nueva reclamación */
 include './utils/utilsProductos.php';
 include './utils/sesionUtils.php';
 include './utils/utilsConflicto.php';
 
-/* Añadir nombre del formulario registro */
+/* Filtrado y saneamiento del formulario que se usa para añadir una nueva reclamación */
 if (isset($_POST['btnAddReclamacion'])) {
     //print_r($_POST);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
@@ -51,7 +51,7 @@ if (isset($_POST['btnAddReclamacion'])) {
             $errores[] = "Ya tiene un producto con ese nombre";
         }
     }
-    
+
     if (empty($errores)) {
 
         crearReclamacion($pedido, $producto, $descripcion);

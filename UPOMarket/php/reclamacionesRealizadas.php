@@ -1,8 +1,14 @@
 <?php
 session_start();
-
+/*En esta vista se le muestra al cliente un listado con todas las reclamaciones que ha solicitado*/
 include "./utils/manejadorBD.php";
 include "./utils/utilsConflicto.php";
+
+
+if (!isset($_SESSION['email']) || !isset($_SESSION['tipo'])) {
+    header("location: ./principal.php");
+}
+
 if (isset($_GET['datos'])) {
     $datos = filter_var($_GET['datos'], FILTER_SANITIZE_MAGIC_QUOTES);
     $aux = explode(";", $_GET['datos']);
@@ -18,10 +24,6 @@ if (isset($_GET['datos'])) {
         }
     }
     header("Location: ./misReclamaciones.php");
-}
-
-if (!isset($_SESSION['email']) || !isset($_SESSION['tipo'])) {
-    header("location: ./principal.php");
 }
 
 $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
@@ -170,7 +172,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
     </body>
 </html>
 <?php
-
+//En esta función conseguimos todos los datos necesarios para mostrar en el dataTable
 function obtenerMisReclamaciones($email) {
     $con = openCon();
     mysqli_set_charset($con, "utf8");

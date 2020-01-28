@@ -1,6 +1,10 @@
 <?php
 
-//funciones
+/*
+    
+Esta página es en la que nos encargamos de procesar el formulario para cambiar el nombre del usuario
+ */
+
 function mostrarPerfil($nombre, $email, $tipo) {
     ?>
     <head>
@@ -124,7 +128,6 @@ if (isset($_SESSION['email'])) {
         $nombre = $row['nombre'];
         $email = $row['email'];
         $tipo = $row['tipo'];
-        
     }
 
     if (isset($_POST['cambiarNombre'])) {
@@ -134,14 +137,14 @@ if (isset($_SESSION['email'])) {
         } else {
             $errores[] = "Nombre no válido";
         }
-        
+
         if (!isset($errores) && $nombre != "") {
             $sentencia = "UPDATE usuarios SET nombre='" . $nombre . "' WHERE email='" . $_SESSION['email'] . "'";
             $result = ejecutarConsulta($sentencia);
             $_SESSION['nombre'] = $nombre;
         }
         header('Location: ./perfil.php');
-    }else{
+    } else {
         mostrarPerfil($nombre, $email, $tipo);
     }
 } else {

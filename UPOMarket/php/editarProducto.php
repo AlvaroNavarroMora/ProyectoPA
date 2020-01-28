@@ -7,6 +7,12 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'
 include './utils/utilsProductos.php';
 include './utils/sesionUtils.php';
 
+/*
+  Desde este formulario podremos modificar un producto concreto de un usuario
+ */
+
+/* Con esta función nos aseguramos de que nos pasan una imagen */
+
 function soloImagenes($fichero) {
     $tiposAceptados = Array('image/gif', 'image/jpeg', 'image/pjpeg', 'image/png');
     if (array_search($fichero, $tiposAceptados) === false) {
@@ -16,12 +22,15 @@ function soloImagenes($fichero) {
     }
 }
 
-function limiteTamanyo($fichero, $limite = (200 * 1024)) {
+/* Nos aseguramos */
+
+function limiteTamanyo($fichero, $limite = (10 * 1024 * 1024)) {
     return $fichero <= $limite;
 }
 
-/* Añadir nombre del formulario registro */
+/* Formulario que procesa la actualización del producto */
 if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad'])) {
+    /* Si decide marcar su producto como no disponible  entrará en el if */
     if (isset($_POST['btnUpdateDisponibilidad'])) {
         $disponibilidad = 0;
     } else {
@@ -118,7 +127,6 @@ if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad']
         }
     }
     if (empty($errores)) {
-        //Si la insercion falla $credenciales=false, sino $credenciales tendrá el nombre de usuario y su id para guardar la sesion
         $pathProductos = "../img/usrFotos/$email/products"; /* Carpeta para almacenar fotos de los productos del usuario */
         $pathThisProducto = "../img/usrFotos/$email/products/$nombreProducto"; /* Carpeta para almacenar fotos de los productos del usuario */
         if (!is_dir($pathProductos)) {

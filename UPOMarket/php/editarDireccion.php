@@ -1,6 +1,8 @@
 <?php
-
-//funciones
+/*
+    
+Esta página es en la que nos encargamos de procesar el formulario para modificar las direcciones del usuario
+ */
 function mostrarPerfil($nombre, $email, $tipo) {
     ?>
     <head>

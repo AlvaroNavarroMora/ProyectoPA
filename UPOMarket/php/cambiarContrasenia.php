@@ -1,6 +1,10 @@
 <?php
 
-//funciones
+/*
+
+Este fichero se encarga de mostrar la pantalla dónde está el formulario dónde el usuario solicita el cambio de contraseña
+
+  */
 function mostrarPerfil($nombre, $email, $tipo, $errores = null) {
     ?>
     <head>
@@ -27,10 +31,8 @@ function mostrarPerfil($nombre, $email, $tipo, $errores = null) {
         <?php
         include './header.php';
         ?>
-
         <!-- Page Content -->
         <main class="container">
-
             <div class="row">
                 <!-- LISTA DE CATEGORÍAS -->
                 <div class="col-lg-3">

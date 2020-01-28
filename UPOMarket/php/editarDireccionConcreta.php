@@ -3,7 +3,9 @@ session_start();
 if (!isset($_SESSION['email'])) {
     header("location: ./principal.php");
 }
-
+/*
+    Desde aquí nos encargamos de editar una dirección concreta ya existente
+ */
 include './utils/manejadorBD.php';
 include './utils/sesionUtils.php';
 include './utils/encriptar.php';

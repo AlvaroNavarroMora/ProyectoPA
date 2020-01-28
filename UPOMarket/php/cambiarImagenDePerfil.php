@@ -1,6 +1,8 @@
 <?php
 
-//funciones
+/*
+Esta página es en la que nos encargamos de procesar el formulario para cambiar la imagen de perfil del usuario
+*/
 function mostrarPerfil($nombre, $email, $tipo) {
     ?>
     <head>
@@ -28,7 +30,6 @@ function mostrarPerfil($nombre, $email, $tipo) {
         <?php
         include './header.php';
         ?>
-
         <!-- Page Content -->
         <main class="container">
 

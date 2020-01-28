@@ -1,6 +1,9 @@
 <?php
 
-//funciones
+/*
+    
+Desde aquí un usuario normal puede convertirse en usuario de tipo vendedor
+ */
 function mostrarPerfil($nombre, $email, $tipo) {
     ?>
     <head>
