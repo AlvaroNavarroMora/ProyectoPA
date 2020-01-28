@@ -2,9 +2,9 @@
 /*Desde este fichero controlamos las principales funciones de la base de datos.*/
 function openCon() {
 //credenciales para la BD de Marcos
-    $host = "localhost";//localhost //85.137.192.11:3308
-    $user = "serverProduccion";//serverProduccion //upomarket
-    $pas = "UpomarKet321!";//UpomarKet321! //A2cMnUHsChA0DcZ8
+    $host = "85.137.192.11:3308";//localhost //85.137.192.11:3308
+    $user = "upomarket";//serverProduccion //upomarket
+    $pas = "A2cMnUHsChA0DcZ8";//UpomarKet321! //A2cMnUHsChA0DcZ8
     $db = "upomarket";
     try {
         $link = mysqli_connect($host, $user, $pas, $db);
