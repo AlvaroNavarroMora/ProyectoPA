@@ -57,8 +57,6 @@ function mostrarPerfil($nombre, $email, $tipo) {
                     <div id="contenedorPerfil">
                         <div class="card mt-4">
                             <div class="card-body">
-                                <h3 class="card-title">Perfil
-                                </h3>
                                 <form class="form-signin" action="#" method="post" enctype="multipart/form-data">
                                     <?php
                                     $query = "SELECT foto FROM usuarios WHERE email='" . $_SESSION['email'] . "' AND (foto is not null)";

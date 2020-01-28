@@ -54,3 +54,6 @@ h4{
     font-variant: all-small-caps;
     color: #5a6268;
 }
+a {
+    text-decoration: none !important;
+}
