@@ -130,7 +130,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                             $(btnDarRazonCliente).attr("class", "btn btn-sm btn-success");
 
                             $(btnDarRazonCliente).text("DEVOLVER");
-                            $(btnDarRazonCliente).attr("class", "btn btn-success");
+                            $(btnDarRazonCliente).attr("class", "btn btn-sm btn-success");
 
                             $(btnDarRazonCliente).attr("onclick", "administrarReclamacion('" + txtBtn1 + "');");
                             aux.append(btnDarRazonCliente);
