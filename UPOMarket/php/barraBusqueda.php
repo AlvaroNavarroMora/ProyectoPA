@@ -6,7 +6,11 @@
         });
     });
 </script>
-<!-- Search form -->
+<!-- 
+                        Search form
+            Cuando el usuario envía el formulario con los términos de búsqueda
+            los recibimos por GET en esta página, y mostramos los resultados con PHP
+-->
 <div class="container-fluid">
     <div class="row mx-auto">
         <div class="col-xl-9 my-auto mx-auto">
@@ -44,27 +48,27 @@
                     }
                     echo '>Ordenar (por defecto)</option>
                     <option value="0" ';
-                    if(isset($_GET["ordenar"]) && $_GET["ordenar"] == 0) {
+                    if (isset($_GET["ordenar"]) && $_GET["ordenar"] == 0) {
                         echo "selected";
                     }
                     echo '>Mejor Valorados</option>
                     <option value="1" ';
-                    if(isset($_GET["ordenar"]) && $_GET["ordenar"] == 1) {
+                    if (isset($_GET["ordenar"]) && $_GET["ordenar"] == 1) {
                         echo "selected";
                     }
                     echo '>Más Vendidos</option>
                     <option value="2" ';
-                    if(isset($_GET["ordenar"]) && $_GET["ordenar"] == 2) {
+                    if (isset($_GET["ordenar"]) && $_GET["ordenar"] == 2) {
                         echo "selected";
                     }
                     echo '>Novedades</option>
                     <option value="3" ';
-                    if(isset($_GET["ordenar"]) && $_GET["ordenar"] == 3) {
+                    if (isset($_GET["ordenar"]) && $_GET["ordenar"] == 3) {
                         echo "selected";
                     }
                     echo '>Precio: ascendente</option>
                     <option value="4" ';
-                    if(isset($_GET["ordenar"]) && $_GET["ordenar"] == 4) {
+                    if (isset($_GET["ordenar"]) && $_GET["ordenar"] == 4) {
                         echo "selected";
                     }
                     echo '>Precio: descentente</option>

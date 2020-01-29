@@ -1,6 +1,8 @@
 <?php
 session_start();
-
+/*
+  Desde esta vista un usuario puede ver las reclamaciones en las que está presente
+ *  */
 include "./utils/manejadorBD.php";
 include "./utils/utilsConflicto.php";
 if (isset($_GET['datos'])) {
@@ -58,7 +60,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                     "paging": true,
                     "ordering": true,
                     columnDefs: [{
-                            targets: [2,5],
+                            targets: [2, 5],
                             render: function (data, type, row) {
                                 return data.length > 20 ?
                                         data.substr(0, 20) + '…' :
@@ -123,7 +125,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
 
                             var txtBtn1 = idPedido + ";" + idProducto + ";S";
                             var txtBtn2 = idPedido + ";" + idProducto + ";N";
-                            //
+                            //Generamos los botones de decisión
                             var btnDarRazonCliente = document.createElement("button");
 
                             $(btnDarRazonCliente).text("ACEPTAR");
@@ -204,6 +206,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
 </html>
 <?php
 
+//Obtenemos los datos que mostraremos en el data table
 function obtenerMisReclamaciones($email) {
     $con = openCon();
 

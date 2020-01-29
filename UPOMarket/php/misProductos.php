@@ -29,6 +29,7 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
         <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
 
         <script>
+            //Creación del data table
             $(document).ready(function () {
                 var data = <?php echo $data ?>;
                 $('#productos').DataTable({

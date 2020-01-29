@@ -8,7 +8,8 @@ if (existeSesion()) {
     header('Location: ./principal.php');
 }
 
-/* Añadir nombre del formulario registro */
+/* Recopilamos la información del nuevo usuario, filtramos y saneamos el formulario y lo registramos si todo va bien.
+ * Durante el proceso, le creamos un directorio personal donde se almacenaran las imágenes de perfil y productos. */
 if (isset($_POST['btnRegistrar'])) {
     $user = filter_var($_POST['usuario'], FILTER_SANITIZE_MAGIC_QUOTES);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
@@ -61,12 +62,12 @@ if (isset($_POST['btnRegistrar'])) {
             mkdir($pathUser);
             if ($esVendedor === 'on') {
                 $_SESSION['tipo'] = 'vendedor';
-                $pathVendor = $pathUser."/products";
+                $pathVendor = $pathUser . "/products";
                 mkdir($pathVendor);
             } else {
                 $_SESSION['tipo'] = 'cliente';
             }
-            
+
 
             header("Location: ./principal.php");
         } else {

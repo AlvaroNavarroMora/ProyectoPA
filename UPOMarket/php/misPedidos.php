@@ -1,4 +1,8 @@
 <?php
+/*
+  En esta página mostramos los distintos pedidos realizados por un usuario
+ */
+
 session_start();
 if (!isset($_SESSION['email']) || !isset($_SESSION['tipo'])) {
     header("location: ./principal.php");
@@ -30,6 +34,7 @@ $data = json_encode(obtenerMisPedidos($_SESSION["email"]));
         <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
 
         <script>
+            //Creación del data Table
             $(document).ready(function () {
                 var data = <?php echo $data ?>;
                 $('#pedidos').DataTable({

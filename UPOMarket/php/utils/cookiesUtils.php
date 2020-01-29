@@ -1,5 +1,7 @@
 <?php
-/*Si no existe la cookie recarga la página que le pasemos por parámetro*/
+
+/* Si no existe la cookie recarga la página que le pasemos por parámetro */
+
 function comprobarCookie($pagina) {
     if ($_GET['establecida'] != 'si') {
         // Establecemos la cookie

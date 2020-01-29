@@ -1,4 +1,7 @@
 <?php
+/*
+  En este fichero tenemos modularizados los distintos métodos que muestran los botones en la barra de navegación
+ */
 
 function mostrarSinSesion() {
     ?>

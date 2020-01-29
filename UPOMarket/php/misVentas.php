@@ -1,4 +1,7 @@
 <?php
+/*
+  En esta vista un usuario vendedor puede ver los pedidos de sus productos que tiene
+ *  */
 session_start();
 if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] != "vendedor")) {
     header("location: ./principal.php");
@@ -123,6 +126,7 @@ $data = json_encode(obtenerMisVentas($_SESSION["email"]));
 </html>
 <?php
 
+//Obtenemos los datos que mostraremos en el data table
 function obtenerMisVentas($email) {
     $con = openCon();
     mysqli_set_charset($con, "utf8");

@@ -2,7 +2,7 @@
 session_start();
 include './utils/utilsProductos.php';
 $categorias = listarCategorias();
-
+/*Realización de la busqueda de un producto y visualización de los datos del mismo*/
 if (!isset($_GET["busqueda"])) {
     header("location:principal.php");
 }
@@ -88,7 +88,7 @@ else
                         });
                         var imgs = table.column(3).data();
                         var rows = $("tbody tr");
-                        /*modif acp*/
+                        //Mostramos la imagen miniatura del producto
                         for (var i = 0; i < imgs.length; i++) {
                             var aux = $(rows[i]).children()[3];
                             path = data[i]['imagen'];
@@ -98,7 +98,7 @@ else
                             $(imagen).attr("onerror", "reemplazarImg(this)");
                             $(imagen).addClass("mostrarImagen");
                             aux.replaceChild(imagen, aux.firstChild);
-                        }/*Fin modif acp*/
+                        }
 
                         var cells = $("tbody tr :nth-child(2)");
                         for (var i = 0; i < cells.length; i++) {
