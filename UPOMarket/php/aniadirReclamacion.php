@@ -10,7 +10,7 @@ include './utils/utilsConflicto.php';
 
 /* Filtrado y saneamiento del formulario que se usa para añadir una nueva reclamación */
 if (isset($_POST['btnAddReclamacion'])) {
-    //print_r($_POST);
+
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
     $producto = filter_var($_POST['producto'], FILTER_SANITIZE_MAGIC_QUOTES);

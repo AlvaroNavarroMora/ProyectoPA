@@ -24,8 +24,7 @@ function limiteTamanyo($fichero, $limite = (10 * 1024 * 1024)) {
 }
 
 /* Filtro y saneamiento sobre los distintos campos del formulario de creación del producto */
-if (isset($_POST['btnAddProduct'])) {
-    print_r($_POST);
+if (isset($_POST['btnAddProduct'])) { 
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
     $producto = filter_var($_POST['producto'], FILTER_SANITIZE_STRING);
