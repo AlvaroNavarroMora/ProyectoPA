@@ -1,36 +1,56 @@
 <?php
 session_start();
-if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] != "vendedor")) {
+if (!isset($_SESSION['email'])) {
     header("location: ./principal.php");
 }
-/* En esta vista se muestra la información específica de los datos de unna reclamación */
-if (isset($_POST["idVenta"]) && isset($_POST["cliente"]) && isset($_POST["importe"]) && isset($_POST["fecha"])) {
-    include './utils/manejadorBD.php';
 
-    $idVenta = filter_var($_POST["idVenta"], FILTER_SANITIZE_NUMBER_INT);
-    $venta = obtenerVenta($_SESSION["email"], $idVenta);
-    if (empty($venta)) {
+/*
+ * Esta vista muestra la información detallada de una reclamación especifica.
+ */
+if (isset($_POST["idReclamacion"]) && isset($_POST["idProducto"])) {
+    include './utils/manejadorBD.php';
+    $idReclamacion = filter_var($_POST["idReclamacion"], FILTER_SANITIZE_NUMBER_INT);
+    $idProducto = filter_var($_POST["idProducto"], FILTER_SANITIZE_NUMBER_INT);
+    $reclamacion = obtenerDatosReclamacion($idReclamacion, $idProducto);
+    if (empty($reclamacion)) {
         header("location:principal.php");
     }
 } else {
     header("location:principal.php");
 }
-/* Obtenemos los datos de la venta sobre la que se ha hecho la reclamación */
+/* Obtenemos los datos de una reclamación específica */
 
-function obtenerVenta($email, $idVenta) {
+function obtenerDatosReclamacion($idReclamacion, $idProducto) {
     $con = openCon();
-    mysqli_set_charset($con, "utf8");
-    $query = "SELECT prod.id as 'id', prod.nombre, prod.precio, lp.cantidad, lp.estado FROM pedidos p, lineas_de_pedido lp, productos prod WHERE prod.email_vendedor='$email' AND lp.id_pedido = p.id AND lp.id_producto = prod.id and p.id=$idVenta";
+    $query = "SELECT r.fecha as 'fecha_reclamacion', r.descripcion as 'descripcion',
+        r.estado as 'estado_reclamacion', p.fecha as 'fecha_pedido',
+        prod.email_vendedor as 'vendedor', p.email_cliente as 'cliente',
+        prod.id as 'id', prod.nombre as 'nombre', prod.precio as 'precio',
+        lp.cantidad as 'cantidad', lp.estado as 'estado_pedido' FROM pedidos p,
+        lineas_de_pedido lp, productos prod, reclamaciones as r 
+        WHERE lp.id_pedido = p.id AND lp.id_producto = '$idProducto' AND r.id_pedido='$idReclamacion'
+        AND r.id_pedido=p.id AND r.id_producto=lp.id_producto AND lp.id_producto=prod.id";
     $result = mysqli_query($con, $query);
-    $lp = Array();
+
     if (mysqli_num_rows($result) > 0) {
-        while ($row = mysqli_fetch_assoc($result)) {
-            $lp[] = $row;
-        }
+        $row = mysqli_fetch_array($result);
+        $reclamacion['idLineaDePedido'] = $idReclamacion;
+        $reclamacion['idProducto'] = $idProducto;
+        $reclamacion['nombreProducto'] = $row['nombre'];
+        $reclamacion['cantidad'] = $row['cantidad'];
+        $reclamacion['precio'] = $row['precio'];
+        $reclamacion['importe'] = $row['precio'] * $row['cantidad'];
+        $reclamacion['estadoPedido'] = $row['estado_pedido'];
+        $reclamacion['estadoReclamacion'] = $row['estado_reclamacion'];
+        $reclamacion['cliente'] = $row['cliente'];
+        $reclamacion['vendedor'] = $row['vendedor'];
+        $reclamacion['fechaPedido'] = $row['fecha_pedido'];
+        $reclamacion['fechaReclamacion'] = $row['fecha_reclamacion'];
+        $reclamacion['descripcion'] = $row['descripcion'];
     }
     closeCon($con);
 
-    return $lp;
+    return $reclamacion;
 }
 ?>
 <head>
@@ -60,74 +80,39 @@ function obtenerVenta($email, $idVenta) {
     ?>
 
     <!-- Page Content -->
-    <main class="container">
-        <h3>Datos del pedido</h3>
-        <hr>
-        <div class="row">
-            <?php
-            echo "<div class='col'><p><strong>ID Venta:</strong> " . $_POST["idVenta"] . "</p>";
-            echo "<p><strong>Email del cliente:</strong> " . $_POST["cliente"] . "</p></div>";
-            echo "<div class='col'><p><strong>Fecha:</strong> " . $_POST["fecha"] . "</p>";
-            echo "<p><strong>Importe:</strong> " . number_format($_POST["importe"], 2) . "&euro;</p></div>";
-            ?>
-            <div class="col">
-                <form>
-                    <select id="actualizarPedido" class="custom-select" name="estado-venta">
-                        <option value="" disabled selected>--Seleccionar--</option>
-                        <option value="Procesado">Procesado</option>
-                        <option value="Enviado">Enviado</option>
-                        <option value="Entregado">Entregado</option>
-                    </select>
-                </form>
-            </div>
-        </div>
-        <hr>
-        <h3>Productos</h3>
-        <form id="actualizarLineasPedido" method="post" action="#" style="width:100%">
-            <table id="lineas-venta" class="table table-striped table-bordered" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th class='text-center'>Cantidad</th>
-                        <th class='text-center'>Precio(&euro;)</th>
-                        <th class='text-center'>Subtotal(&euro;)</th>
-                        <th class='text-center'>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    foreach ($venta as $v) {
-                        echo "<tr>";
-                        echo "<td><a href='./producto.php?idProducto=" . $v["id"] . "'>" . $v["nombre"] . "</a></td>";
-                        echo "<td class='text-center'>" . $v["cantidad"] . "</td>";
-                        echo "<td class='text-center'>" . number_format($v["precio"], 2) . "</td>";
-                        echo "<td class='text-center'>" . number_format($v["cantidad"] * $v["precio"], 2) . "</td>";
-                        echo "<td class='text-center'>";
-                        echo "<select id='estado' class='custom-select' name='estado-" . $v["id"] . "'>";
-                        echo "<option value='Procesado' ";
-                        if ($v["estado"] == "Procesado") {
-                            echo "selected";
-                        }
-                        echo ">Procesado</option>";
-
-                        echo "<option value='Enviado' ";
-                        if ($v["estado"] == "Enviado") {
-                            echo "selected";
-                        }
-                        echo ">Enviado</option>";
-
-                        echo "<option value='Entregado' ";
-                        if ($v["estado"] == "Entregado") {
-                            echo "selected";
-                        }
-                        echo ">Entregado</option>";
-
-                        echo "</td>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
+    <main class="container mt-4">
+        <h2>Datos de la reclamación</h2>
+        <hr />
+        <form method="post" action="#">
+            <h4>Pedido y Reclamación con ID <?php echo $reclamacion['idLineaDePedido']; ?></h4>
+            <hr />
+            <h5>Detalles de la reclamación</h5>
+            <strong>Vendedor: </strong><?php echo $reclamacion['vendedor']; ?>
+            <br />
+            <strong>Cliente: </strong><?php echo $reclamacion['cliente']; ?>
+            <br />
+            <strong>Fecha de la reclamación: </strong><?php echo $reclamacion['fechaReclamacion']; ?>
+            <br />
+            <strong>Descripción de la reclamación: </strong><?php echo $reclamacion['descripcion']; ?>
+            <br />
+            <strong>Estado de la reclamación: </strong><?php echo $reclamacion['estadoReclamacion']; ?>
+            <br />
+            <hr />
+            <h5>Detalles del pedido</h5>
+            <strong>ID del producto: </strong><?php echo $reclamacion['idProducto']; ?>
+            <br />
+            <strong>Nombre del producto: </strong><?php echo $reclamacion['nombreProducto']; ?>
+            <br />
+            <strong>Cantidad: </strong><?php echo $reclamacion['cantidad']; ?>
+            <br />
+            <strong>Precio: </strong><?php echo $reclamacion['precio']; ?>€
+            <br />
+            <strong>Importe total: </strong><?php echo $reclamacion['importe']; ?>€
+            <br />
+            <strong>Fecha de compra: </strong><?php echo $reclamacion['fechaPedido']; ?>
+            <br />
+            <strong>Estado del pedido: </strong><?php echo $reclamacion['estadoPedido']; ?>
+            <br />
         </form>
     </main>
     <!-- /.container -->

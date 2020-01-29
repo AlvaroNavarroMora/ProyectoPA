@@ -89,22 +89,12 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
 
                         $('#reclamaciones tbody').on('click', 'tr', function () {
                             var value = table.row(this).data().id_pedido;
-                            var input = $("<input type='text' name='idVenta'/>");
+                            var input = $("<input type='text' name='idReclamacion'/>");
                             $(input).val(value);
                             $("#formReclamaciones").append(input);
-
-                            value = table.row(this).data().email_cliente;
-                            input = $("<input type='text' name='cliente'/>");
-                            $(input).val(value);
-                            $("#formReclamaciones").append(input);
-
-                            value = table.row(this).data().importe;
-                            input = $("<input type='text' name='importe'/>");
-                            $(input).val(value);
-                            $("#formReclamaciones").append(input);
-
-                            value = table.row(this).data().fecha;
-                            input = $("<input type='text' name='fecha'/>");
+                            
+                            value = table.row(this).data().id_producto;
+                            input = $("<input type='text' name='idProducto'/>");
                             $(input).val(value);
                             $("#formReclamaciones").append(input);
 
@@ -131,7 +121,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                             $(btnDarRazonCliente).text("ACEPTAR");
                             $(btnDarRazonCliente).attr("class", "btn btn-sm btn-success");
 
-                            $(btnDarRazonCliente).text("DEVOLVER");
+                            $(btnDarRazonCliente).text("REEMBOLSAR");
                             $(btnDarRazonCliente).attr("class", "btn btn-sm btn-success");
 
                             $(btnDarRazonCliente).attr("onclick", "administrarReclamacion('" + txtBtn1 + "');");
@@ -178,7 +168,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                     </nav>
                 </div>
                 <!-- /.col-lg-3 -->
-                <div class="col-lg-9 table-responsive-lg">
+                <div id="divReclamaciones" class="col-lg-9 table-responsive-xl">
                     <table id="reclamaciones" class="table table-striped table-bordered dataTable" style="width:100%">
                         <thead>
                             <tr>
@@ -190,7 +180,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                                 <th>Descripción</th>
                                 <th>Estado</th>
                                 <th>Fecha</th>
-                                <th>Decision</th>
+                                <th>Decisión</th>
                             </tr>
                         </thead>
                     </table>

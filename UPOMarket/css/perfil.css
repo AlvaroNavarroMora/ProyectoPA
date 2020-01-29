@@ -31,3 +31,9 @@
 a.list-group-item{
     text-decoration: none;
 }
+h5.card-title {
+    text-decoration: underline;
+}
+div.alert {
+    margin: 3%;
+}
