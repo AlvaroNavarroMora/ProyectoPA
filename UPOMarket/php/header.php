@@ -17,7 +17,7 @@ function mostrarSinSesion() {
 function mostrarCliente() {
     ?>
     <li class="nav-item">
-        <a class="nav-link" href="./misPedidos.php">Menú Cliente</a>
+        <a class="nav-link" href="./misPedidos.php">Compras</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./carrito.php"><i class="fa fa-shopping-cart"></i> Cesta <span id="num-productos"></span></a>
