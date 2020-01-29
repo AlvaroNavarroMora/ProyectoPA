@@ -28,13 +28,13 @@ if (isset($_POST['btnAddProduct'])) {
     print_r($_POST);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $producto = filter_var($_POST['producto'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $descripcion = filter_var($_POST['descripcion'], FILTER_SANITIZE_MAGIC_QUOTES);
+    $producto = filter_var($_POST['producto'], FILTER_SANITIZE_STRING);
+    $descripcion = filter_var($_POST['descripcion'], FILTER_SANITIZE_STRING);
     $categorias = filter_var_array($_POST['cats'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $caracteristicaName = filter_var_array($_POST['caracteristicaName'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $caracteristicaDesc = filter_var_array($_POST['caracteristicaDesc'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $precio = filter_var($_POST['precio'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $stock = filter_var($_POST['stock'], FILTER_SANITIZE_MAGIC_QUOTES);
+    $caracteristicaName = filter_var_array($_POST['caracteristicaName'], FILTER_SANITIZE_STRING);
+    $caracteristicaDesc = filter_var_array($_POST['caracteristicaDesc'], FILTER_SANITIZE_STRING);
+    $precio = filter_var($_POST['precio'], FILTER_SANITIZE_NUMBER_FLOAT);
+    $stock = filter_var($_POST['stock'], FILTER_SANITIZE_NUMBER_INT);
 
 
     if ($stock === false || $password === false || $precio === false || $email === false || $descripcion === false || $producto === false || $caracteristicaName === false || $caracteristicaDesc == false) {
