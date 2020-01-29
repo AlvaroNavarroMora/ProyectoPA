@@ -4,6 +4,9 @@
 #reclamaciones th,td {
     text-align: center;
 }
+#divReclamaciones {
+    overflow: auto;
+}
 tbody tr:hover {
     cursor: pointer;
     opacity: 0.75;

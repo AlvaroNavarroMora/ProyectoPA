@@ -302,7 +302,7 @@ function mostrarValorar() {
                                 echo "<p>Aún no hay opiniones para este producto.</p>";
                             } else {
                                 if (!empty($miValoracion)) {
-                                    echo "<div>";
+                                    echo "<div id=miValoracion>";
                                     echo "<span class='text-warning'>";
                                     $nota = $miValoracion["puntuacion"];
                                     for ($i = 0; $i < $nota; $i++) {
