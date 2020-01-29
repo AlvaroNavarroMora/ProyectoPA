@@ -83,6 +83,7 @@ if (isset($_SESSION["carrito"])) {
         $("#num-productos").text("(" + num_productos + ")");
     });
 </script>
+<link rel="icon" type="image/png" href="../img/upomarket_cart.png">
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
         <a class="navbar-brand" href="../php/principal.php"><img height="40" src="../img/upomarket_nav.png" alt="upomarket_nav"></a>

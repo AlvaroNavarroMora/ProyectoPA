@@ -43,8 +43,8 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
         <link href="../css/header.css" rel="stylesheet">
         <link href="../css/footer.css" rel="stylesheet">
         <link href="../css/misReclamaciones.css" rel="stylesheet">
-
         <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
         <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
