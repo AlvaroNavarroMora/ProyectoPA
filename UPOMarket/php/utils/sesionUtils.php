@@ -27,12 +27,12 @@ function comprobarUsuarioContraseña($email, $password) {
     $row = mysqli_fetch_array($result);
     //obtener $psswdHash de la BD
     $psswdHash = $row['password'];
-    $salida = false;
+    /*$salida = false;
     if (password_verify($password, $psswdHash)) {
         $salida = 0;
-    }
+    }*/
 
-    return $salida;
+    return password_verify($password, $psswdHash);
 }
 
 function existeUsuario($email) {
