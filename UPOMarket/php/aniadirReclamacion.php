@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] == "vendedor")) {
+if (!isset($_SESSION['email']) || !isset($_SESSION['tipo'])) {
     header("location: ./principal.php");
 }
 /* Desde esta página el cliente puede crear una nueva reclamación */
@@ -44,7 +44,7 @@ if (isset($_POST['btnAddReclamacion'])) {
         $errores[] = "El campo descripcion es obligatorio.";
     }
 
-    if (!comprobarSesionActual($email) || comprobarUsuarioContraseña($email, $password)) {
+    if (!comprobarSesionActual($email) || !comprobarUsuarioContraseña($email, $password)) {
         $errores[] = "Credenciales incorrectas";
     } else {
         if (comprobarUsuarioProducto($email, $producto)) {
