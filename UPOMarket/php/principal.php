@@ -93,7 +93,6 @@ function mostrarProducto($producto) {
         <title>Inicio - UPOMarket</title>
         <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-        <link href="../css/shop-homepage.css" rel="stylesheet">
         <link href="../css/header.css" rel="stylesheet">
         <link href="../css/footer.css" rel="stylesheet">
         <link href="../css/principal.css" rel="stylesheet">
