@@ -123,9 +123,9 @@ if (isset($_POST['btnRegistrar'])) {
                                     <input name="passwordConfirm" type="password" id="inputConfirmPassword" class="form-control" placeholder="Confirmar contraseña" required>
                                 </div>
                                 <br />
-                                <div class="custom-control custom-checkbox">
-                                    <label class="custom-control-label" for="inputVendedor">¿Desea ser vendedor? </label>
-                                    <input name="vendedor" type="checkbox" id="inputVendedor" class="custom-control-input"/>
+                                <div class="form-label-group form-check">
+                                    <label class="form-check-label" for="inputVendedor">¿Desea ser vendedor? </label>
+                                    <input name="vendedor" type="checkbox" id="inputVendedor"/>
                                 </div>
                                 <br />
                                 <button name="btnRegistrar" class="btn btn-md btn-primary btn-block text-uppercase" type="submit">Registrarse</button>
