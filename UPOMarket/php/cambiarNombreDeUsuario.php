@@ -132,7 +132,7 @@ if (isset($_SESSION['email'])) {
     if (isset($_POST['cambiarNombre'])) {
 
         if (isset($_POST['nombre'])) {
-            $nombre = filter_var($_POST['nombre'], FILTER_SANITIZE_MAGIC_QUOTES);
+            $nombre = filter_var($_POST['nombre'], FILTER_SANITIZE_STRING);
         } else {
             $errores[] = "Nombre no válido";
         }
