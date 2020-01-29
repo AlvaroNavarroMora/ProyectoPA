@@ -44,7 +44,7 @@ if (isset($_POST['btnAddReclamacion'])) {
         $errores[] = "El campo descripcion es obligatorio.";
     }
 
-    if (!comprobarSesionActual($email) || comprobarUsuarioContraseña($email, $password)) {
+    if (!comprobarSesionActual($email) || !comprobarUsuarioContraseña($email, $password)) {
         $errores[] = "Credenciales incorrectas";
     } else {
         if (comprobarUsuarioProducto($email, $producto)) {
