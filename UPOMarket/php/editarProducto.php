@@ -110,7 +110,7 @@ if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad']
             }
         }
     }
-    if (!comprobarSesionActual($email) || comprobarUsuarioContraseña($email, $password)) {
+    if (!comprobarSesionActual($email) || !comprobarUsuarioContraseña($email, $password)) {
         $errores[] = "Credenciales incorrectas";
     } else {
         if (!comprobarUsuarioIdProducto($email, $id)) {
