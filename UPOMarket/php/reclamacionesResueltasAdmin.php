@@ -106,7 +106,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
     </head>
 
     <body>
-        <form id="formReclamaciones" action="reclamacionAdmin.php" method="post" hidden>
+        <form id="formReclamaciones" action="reclamacion.php" method="post" hidden>
         </form>
         <?php
         include './header.php';
