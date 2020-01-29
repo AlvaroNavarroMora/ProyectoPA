@@ -3,7 +3,9 @@ session_start();
 if (!isset($_SESSION['email'])) {
     header("location: ./principal.php");
 }
-
+/*
+    Desde aquí nos encargamos de editar una dirección concreta ya existente
+ */
 include './utils/manejadorBD.php';
 include './utils/sesionUtils.php';
 include './utils/encriptar.php';
@@ -21,7 +23,7 @@ if (isset($_GET['dir'])) {
     }
 }
 
-/* Añadir nombre del formulario registro */
+/* Filtramos y saneamos los datos */
 if (isset($_POST['btnEditDireccion'])) {
     $direccion1 = trim(filter_var($_POST['direccion1'], FILTER_SANITIZE_STRING));
     $direccion2 = trim(filter_var($_POST['direccion2'], FILTER_SANITIZE_STRING));
@@ -61,7 +63,7 @@ if (isset($_POST['btnEditDireccion'])) {
         }
     }
 }
-
+/*Modificación de la dirección*/
 function editarDireccion($dirId, $email, $nombre, $direccion1, $direccion2, $provincia, $ciudad, $cp) {
     $correcto = false;
     $conn = openCon();

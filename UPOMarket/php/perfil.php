@@ -1,6 +1,9 @@
 <?php
+/*
 
-//funciones
+  Esta página es en la que nos encargamos de mostrar el perfil genérico a todos los usuarios
+ */
+
 function mostrarPerfil($nombre, $email, $tipo) {
     ?>
     <head>
@@ -111,17 +114,17 @@ function mostrarPerfil($nombre, $email, $tipo) {
                             <div class="card mt-4 mr-4 d-inline-block col-lg-4">
                                 <div class="card-body">
                                     <label><strong>Nombre</strong></label>
-                                    <p><?php echo $row2['nombre'];?></p>
+                                    <p><?php echo $row2['nombre']; ?></p>
                                     <label><strong>Línea 1</strong></label>
-                                    <p><?php echo $row2['linea_1'];?></p>
+                                    <p><?php echo $row2['linea_1']; ?></p>
                                     <label><strong>Línea 2</strong></label>
-                                    <p><?php echo $row2['linea_2'];?></p>
+                                    <p><?php echo $row2['linea_2']; ?></p>
                                     <label><strong>Ciudad</strong></label>
-                                    <p><?php echo $row2['ciudad'];?></p>
+                                    <p><?php echo $row2['ciudad']; ?></p>
                                     <label><strong>Provincia</strong></label>
-                                    <p><?php echo $row2['provincia'];?></p>
+                                    <p><?php echo $row2['provincia']; ?></p>
                                     <label><strong>Código Postal</strong></label>
-                                    <p><?php echo $row2['cp'];?></p>
+                                    <p><?php echo $row2['cp']; ?></p>
                                 </div>
                             </div>
                             <?php
@@ -148,6 +151,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
 include "./utils/sesionUtils.php";
 include "./utils/manejadorBD.php";
 session_start();
+//Obtenemos los distintos datos que nos hacen falta en la vista
 if (isset($_SESSION['email'])) {
 
     $sql = "SELECT nombre, email, tipo FROM usuarios WHERE email='" . $_SESSION['email'] . "'";

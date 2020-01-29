@@ -1,6 +1,9 @@
 <?php
 session_start();
-
+/*
+  Esta vista muestra los datos específicos de un producto
+ * En este método filtramos los datos
+ */
 if (isset($_GET["idProducto"])) {
     include './utils/utilsProductos.php';
 
@@ -27,7 +30,7 @@ if (isset($_GET["idProducto"])) {
 } else {
     header("location:principal.php");
 }
-
+//Método para enviar una nueva valoración de un producto
 if (isset($_GET["enviarValoracion"])) {
     $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $puntuacion_nueva = filter_var($_GET["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
@@ -40,19 +43,22 @@ if (isset($_GET["enviarValoracion"])) {
     }
 
     header("location:producto.php?idProducto=$idProducto");
-} else if (isset($_GET["editarValoracion"])) {
+} else if (isset($_GET["editarValoracion"])) {//Método que controla la actualización de la opinión de un cliente sobre un producto
     $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $puntuacion_nueva = filter_var($_GET["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
     $valoracion_nueva = trim(filter_var($_GET["valoracion"], FILTER_SANITIZE_STRING));
 
     actualizarValoracion($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
     header("location:producto.php?idProducto=$idProducto");
-} else if (isset($_GET["eliminarValoracion"])) {
+} else if (isset($_GET["eliminarValoracion"])) {//Eliminación de la valoración de un producto
     $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
 
     eliminarValoracion($_SESSION["email"], $idProducto);
     header("location:producto.php?idProducto=$idProducto");
 }
+/*
+ * Esta función muestra la media de las valoraciones en formato de estrellas
+ */
 
 function mostrarValorar() {
     ?>
@@ -111,6 +117,9 @@ function mostrarValorar() {
                 $("#eliminarSubmit").click();
             });
         });
+        /*
+         * Obtenemos la valoración actual de un producto
+         */
         function obtenerValoracion() {
             $("#formValoracionProducto").submit(function () {
                 var estrellas = $("#formValoracionProducto .fa-star");
@@ -130,6 +139,7 @@ function mostrarValorar() {
 
             });
         }
+        /*Animación de la valoración*/
         function animaEstrellas() {
             $(".fa-star").click(function () {
                 var id = $(this).attr('id');
@@ -146,6 +156,7 @@ function mostrarValorar() {
                 }
             });
         }
+        /*Controlar la edición de la valoración*/
         function mostrarEditable() {
             $("#miValoracion").hide();
             var descripcion = $("#miValoracion p").text();
@@ -223,7 +234,7 @@ function mostrarValorar() {
                             <h4><?php echo $producto['precio'] ?>€</h4>
                             <p class="card-text"><?php echo $producto['descripcion'] ?></p>
                             <div id="productRating" class="text-warning"></div>
-                            <?php echo number_format($puntuacion, 1) ?> estrellas
+    <?php echo number_format($puntuacion, 1) ?> estrellas
                             <br />
                             <br />
                             <?php

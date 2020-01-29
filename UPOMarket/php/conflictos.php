@@ -5,6 +5,13 @@ include "./utils/utilsConflicto.php";
 session_start();
 
 
+if (isset($_SESSION['email']) && existeUsuario($_SESSION['email']) && $_SESSION['tipo'] == "admin") {
+    $data = json_encode(obtenerConflictos());
+} else {
+    header('Location: ./principal.php');
+}
+
+/* Filtramos y saneamos los datos del formulario. */
 if (isset($_GET['datos'])) {
     $datos = filter_var($_GET['datos'], FILTER_SANITIZE_MAGIC_QUOTES);
     $aux = explode(";", $_GET['datos']);
@@ -16,11 +23,6 @@ if (isset($_GET['datos'])) {
         resolverConflicto($idPedido, $idProducto, $estado);
     }
     header("Location: ./conflictos.php");
-}
-if (isset($_SESSION['email']) && existeUsuario($_SESSION['email']) && $_SESSION['tipo'] == "admin") {
-    $data = json_encode(obtenerConflictos());
-} else {
-    header('Location: ./principal.php');
 }
 ?>
 

@@ -1,4 +1,9 @@
 <?php
+/*
+  Página principal del usuario de tipo administrador.
+ * 
+ * 
+ *  */
 session_start();
 
 include "./utils/manejadorBD.php";
@@ -33,6 +38,8 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
         <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
 
         <script>
+            /*La función más importante del administrador es tratar las reclamaciones, con DataTables le damos una visión cómoda
+             * de todas las decisiones sobre las que debe inferir*/
             $(document).ready(function () {
                 var data = <?php echo $data ?>;
                 $('#reclamaciones').DataTable({
@@ -43,7 +50,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                     "paging": true,
                     "ordering": true,
                     columnDefs: [{
-                            targets: [2,5],
+                            targets: [2, 5],
                             render: function (data, type, row) {
                                 return data.length > 20 ?
                                         data.substr(0, 20) + '…' :
@@ -61,6 +68,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                         {"data": "fecha"}
                     ],
                     "drawCallback": function () {
+                        /*Añadimos un enlace a una vista más específica de la reclamación*/
                         var table = $('#reclamaciones').DataTable();
 
                         $("table tr").find('td:eq(1)').each(function () {
@@ -81,7 +89,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                             $("#formReclamaciones").submit();
                         });
 
-
+                        /**/
                         var decisiones = table.column(7).data();
                         var rows = $("tbody tr");
 
@@ -153,6 +161,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
 <?php
 
 function obtenerMisReclamaciones($email) {
+    /* Mediante este sql recopilamos todos los datos útiles para el administrador */
     $con = openCon();
     mysqli_set_charset($con, "utf8");
 
