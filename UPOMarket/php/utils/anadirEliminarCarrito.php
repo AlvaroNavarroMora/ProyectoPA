@@ -1,11 +1,12 @@
 <?php
+
 /*
-En este fichero php tenemos el código que realiza las funciones principales del carrito de la compra
+  En este fichero php tenemos el código que realiza las funciones principales del carrito de la compra
  *  */
 session_start();
 if (isset($_SESSION['email'])) {
     include './encriptar.php';
-/*Comprobaciones que realizamos si un usuario pulsa sobre "Agregar al carrito"*/
+    /* Comprobaciones que realizamos si un usuario pulsa sobre "Agregar al carrito" */
     if (isset($_POST['btnAgregarCarrito'])) {
         if (isset($_POST['id'])) {
             $idProv = desencriptar($_POST['id']);
@@ -52,7 +53,7 @@ if (isset($_SESSION['email'])) {
             header('Location: ../producto.php?idProducto=' . $id);
         }
     } else {
-        /*Comprobaciones que realizamos si el usuario pulsa sobre "Eliminar carrito" Eliminaremos todos los elementos del carrito*/
+        /* Comprobaciones que realizamos si el usuario pulsa sobre "Eliminar carrito" Eliminaremos todos los elementos del carrito */
         if (isset($_POST['btnEliminarCarrito'])) {
             $valorBtn = filter_var($_POST['btnEliminarCarrito'], FILTER_SANITIZE_NUMBER_INT);
             if (is_numeric($valorBtn)) {
@@ -85,7 +86,7 @@ if (isset($_SESSION['email'])) {
                 header('Location: ../principal.php');
             }
         } else {
-        /*Comprobaciones que realizamos si el usuario pulsa sobre "Eliminar del carrito" Eliminaremosun elemento concreto*/
+            /* Comprobaciones que realizamos si el usuario pulsa sobre "Eliminar del carrito" Eliminaremosun elemento concreto */
             if (isset($_POST['btnEliminarCarritoProducto'])) {
                 if (isset($_POST['id'])) {
                     $idProv = desencriptar($_POST['id']);
@@ -109,7 +110,7 @@ if (isset($_SESSION['email'])) {
                     header('Location: ../producto.php?idProducto=' . $id);
                 }
             } else {
-                /*Finalmente si el usuario pulsa sobre "Realizar Compra" filtraremos todos los productos de su carrito y procesaremos su orden*/
+                /* Finalmente si el usuario pulsa sobre "Realizar Compra" filtraremos todos los productos de su carrito y procesaremos su orden */
                 if (isset($_POST['procesarCompra'])) {
                     if (isset($_POST['direccion'])) {
                         $direccion = filter_var($_POST['direccion'], FILTER_SANITIZE_NUMBER_INT);
@@ -120,7 +121,7 @@ if (isset($_SESSION['email'])) {
                     while (isset($_POST["cantidad" . $index])) {
                         if (isset($_POST["idProducto" . $index])) {
                             $id = desencriptar($_POST["idProducto" . $index]);
-                            foreach ($_SESSION["carrito"] as $i=>$item) {
+                            foreach ($_SESSION["carrito"] as $i => $item) {
                                 if ($item["id"] == $id) {
                                     $_SESSION["carrito"][$i]["cantidad"] = $_POST["cantidad" . $index];
                                 }

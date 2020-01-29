@@ -43,7 +43,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                     "paging": true,
                     "ordering": true,
                     columnDefs: [{
-                            targets: [2,5],
+                            targets: [2, 5],
                             render: function (data, type, row) {
                                 return data.length > 20 ?
                                         data.substr(0, 20) + '…' :
@@ -151,10 +151,11 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
     </body>
 </html>
 <?php
+
 //Recogemos los datos que se visualizarán en el dataTable
 function obtenerMisReclamaciones() {
     $con = openCon();
-    
+
     $query = "SELECT r.`id_pedido`, r.`id_producto`,p.`nombre`, p.`email_vendedor`, v.`email_cliente`, r.`descripcion`, r.`estado`, r.`fecha`
                  FROM `reclamaciones` as r,`productos` as p, `pedidos` as v , `lineas_de_pedido` as lp
                  WHERE r.`id_producto`=p.`id` 

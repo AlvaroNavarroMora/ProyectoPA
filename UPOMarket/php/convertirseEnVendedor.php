@@ -1,9 +1,9 @@
 <?php
-
 /*
-    
-Desde aquí un usuario normal puede convertirse en usuario de tipo vendedor
+
+  Desde aquí un usuario normal puede convertirse en usuario de tipo vendedor
  */
+
 function mostrarPerfil($nombre, $email, $tipo) {
     ?>
     <head>
@@ -135,7 +135,7 @@ if (isset($_SESSION['email'])) {
         if (isset($_POST['vendedor'])) {
             $sentencia = "UPDATE usuarios SET tipo='vendedor' WHERE email='" . $_SESSION['email'] . "'";
             $result = ejecutarConsulta($sentencia);
-            $pathProductos = "../img/usrFotos/".$_SESSION['email']."/products";
+            $pathProductos = "../img/usrFotos/" . $_SESSION['email'] . "/products";
             mkdir($pathProductos);
             $_SESSION['tipo'] = 'vendedor';
         }

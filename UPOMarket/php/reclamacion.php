@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] != "vendedor")) {
     header("location: ./principal.php");
 }
-/*En esta vista se muestra la información específica de los datos de unna reclamación*/
+/* En esta vista se muestra la información específica de los datos de unna reclamación */
 if (isset($_POST["idVenta"]) && isset($_POST["cliente"]) && isset($_POST["importe"]) && isset($_POST["fecha"])) {
     include './utils/manejadorBD.php';
 
@@ -15,7 +15,8 @@ if (isset($_POST["idVenta"]) && isset($_POST["cliente"]) && isset($_POST["import
 } else {
     header("location:principal.php");
 }
-/*Obtengo los datos de la venta sobre la que se ha hecho la reclamación*/
+/* Obtenemos los datos de la venta sobre la que se ha hecho la reclamación */
+
 function obtenerVenta($email, $idVenta) {
     $con = openCon();
     mysqli_set_charset($con, "utf8");
@@ -39,7 +40,7 @@ function obtenerVenta($email, $idVenta) {
     <meta name="author" content="">
 
 
-    <title>Venta - UPOMarket</title>
+    <title>Reclamacion - UPOMarket</title>
     <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/shop-homepage.css" rel="stylesheet">
@@ -102,7 +103,7 @@ function obtenerVenta($email, $idVenta) {
                         echo "<td class='text-center'>" . number_format($v["precio"], 2) . "</td>";
                         echo "<td class='text-center'>" . number_format($v["cantidad"] * $v["precio"], 2) . "</td>";
                         echo "<td class='text-center'>";
-                        echo "<select id='estado' class='custom-select' name='estado-".$v["id"]."'>";
+                        echo "<select id='estado' class='custom-select' name='estado-" . $v["id"] . "'>";
                         echo "<option value='Procesado' ";
                         if ($v["estado"] == "Procesado") {
                             echo "selected";

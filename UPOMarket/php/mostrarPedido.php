@@ -4,7 +4,7 @@ include './utils/encriptar.php';
 include './utils/utilsProductos.php';
 
 /*
-    En esta vista un usuario cliente puede ver la información concreta de un pedido.
+  En esta vista un usuario cliente puede ver la información concreta de un pedido.
  * Además puede descargar un pdf a modo de factura y poner una reclamación.
  */
 
@@ -44,8 +44,7 @@ if (isset($_GET['idPedido'])) {
         $errores[] = "Pedido no existente";
     }
     closeCon($link);
-}
-else {
+} else {
     header('Location: ../principal.php');
 }
 

@@ -1,8 +1,9 @@
 <?php
 /*
-    
-Esta página es en la que nos encargamos de procesar el formulario para modificar las direcciones del usuario
+
+  Esta página es en la que nos encargamos de procesar el formulario para modificar las direcciones del usuario
  */
+
 function mostrarPerfil($nombre, $email, $tipo) {
     ?>
     <head>
@@ -161,7 +162,7 @@ include "./utils/manejadorBD.php";
 include './utils/encriptar.php';
 session_start();
 if (isset($_SESSION['email'])) {
-    
+
     $sql = "SELECT nombre, email, tipo FROM usuarios WHERE email='" . $_SESSION['email'] . "'";
     $result = ejecutarConsulta($sql);
     if (mysqli_num_rows($result) > 0) {
@@ -169,33 +170,30 @@ if (isset($_SESSION['email'])) {
         $nombre = $row['nombre'];
         $email = $row['email'];
         $tipo = $row['tipo'];
-        
     }
-    
-    if(isset($_POST['editarDireccion'])){
-        if(isset($_POST['editarDireccion'])){
-            if(isset($_POST['direccionEditar'])){
+
+    if (isset($_POST['editarDireccion'])) {
+        if (isset($_POST['editarDireccion'])) {
+            if (isset($_POST['direccionEditar'])) {
                 $idDir = filter_var($_POST['direccionEditar'], FILTER_SANITIZE_NUMBER_INT);
                 $idEncript = base64_encode(encriptar($idDir));
-                header('Location: ./editarDireccionConcreta.php?dir='.$idEncript);
+                header('Location: ./editarDireccionConcreta.php?dir=' . $idEncript);
             }
         }
         mostrarPerfil($nombre, $email, $tipo);
-    }else{
-        
-        if(isset($_POST['eliminarDireccion'])){
-            if(isset($_POST['direccionEliminar'])){
+    } else {
+
+        if (isset($_POST['eliminarDireccion'])) {
+            if (isset($_POST['direccionEliminar'])) {
                 $idDir = filter_var($_POST['direccionEliminar'], FILTER_SANITIZE_MAGIC_QUOTES);
-                $query = "DELETE FROM direcciones_clientes WHERE direccion_cliente='".$idDir."'";
+                $query = "DELETE FROM direcciones_clientes WHERE direccion_cliente='" . $idDir . "'";
                 $result = ejecutarConsulta($query);
                 mostrarPerfil($nombre, $email, $tipo);
             }
-        }else{
+        } else {
             mostrarPerfil($nombre, $email, $tipo);
         }
     }
-    
-    
 } else {
     header('Location: ./principal.php');
 }

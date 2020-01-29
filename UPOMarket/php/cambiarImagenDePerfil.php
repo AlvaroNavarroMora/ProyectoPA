@@ -1,8 +1,8 @@
 <?php
-
 /*
-Esta página es en la que nos encargamos de procesar el formulario para cambiar la imagen de perfil del usuario
-*/
+  Esta página es en la que nos encargamos de procesar el formulario para cambiar la imagen de perfil del usuario
+ */
+
 function mostrarPerfil($nombre, $email, $tipo) {
     ?>
     <head>

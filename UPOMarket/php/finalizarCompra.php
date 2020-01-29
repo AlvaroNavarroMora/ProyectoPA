@@ -1,4 +1,5 @@
 <?php
+
 include "./utils/sesionUtils.php";
 include './utils/encriptar.php';
 include './utils/utilsProductos.php';
@@ -24,20 +25,19 @@ if (isset($_SESSION['email'])) {
                 $query = "INSERT INTO lineas_de_pedido (id_pedido, id_producto, cantidad) "
                         . "VALUES('$idPedido', '" . $producto['id'] . "', '" . $producto['cantidad'] . "')";
                 $result = mysqli_query($link, $query);
-                $query = "SELECT stock FROM productos WHERE id='".$producto['id']."'";
+                $query = "SELECT stock FROM productos WHERE id='" . $producto['id'] . "'";
                 $result2 = mysqli_query($link, $query);
                 if (mysqli_num_rows($result2) > 0) {
                     $row = mysqli_fetch_array($result2);
                     $stock = $row['stock'];
                     $stock = $stock - $producto['cantidad'];
-                    $query = "UPDATE productos SET stock='$stock' WHERE id='".$producto['id']."'";
+                    $query = "UPDATE productos SET stock='$stock' WHERE id='" . $producto['id'] . "'";
                     $result3 = mysqli_query($link, $query);
                 }
             }
             mysqli_close($link);
             unset($_SESSION['carrito']);
             unset($_SESSION['direccion']);
-            
         }
     }
 }
@@ -45,6 +45,6 @@ if (isset($_SESSION['email'])) {
 if (!isset($idPedido)) {
     echo "Parece que algo ha ido mal";
 } else {
-    header('Location: ./mostrarPedido.php?idPedido='.$idPedido);
+    header('Location: ./mostrarPedido.php?idPedido=' . $idPedido);
 }
 ?>

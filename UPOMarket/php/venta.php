@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] != "vendedor")) {
     header("location: ./principal.php");
 }
-/*Esta clase muestra al vendedor los datos de una venta en concreto, desde aquí puede modificar el estado de la misma*/
+/* Esta clase muestra al vendedor los datos de una venta en concreto, desde aquí puede modificar el estado de la misma */
 if (isset($_POST["idVenta"]) && isset($_POST["cliente"]) && isset($_POST["importe"]) && isset($_POST["fecha"])) {
     include './utils/manejadorBD.php';
 
@@ -34,6 +34,7 @@ if (isset($_POST["idVenta"]) && isset($_POST["cliente"]) && isset($_POST["import
 } else {
     header("location:principal.php");
 }
+
 //Con este método cambia el estado del pedido realizado
 function actualizarEstadoLinea($idVenta, $idProducto, $estado) {
     $con = openCon();
@@ -46,6 +47,7 @@ function actualizarEstadoLinea($idVenta, $idProducto, $estado) {
 
     return $correcto;
 }
+
 //Esta función recoge la información que queremos mostrar de la venta
 function obtenerVenta($email, $idVenta) {
     $con = openCon();

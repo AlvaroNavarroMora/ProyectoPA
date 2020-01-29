@@ -24,8 +24,8 @@ function mostrarCliente() {
     </li>
     <li id="profile" class="nav-item">
         <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
-    echo $_SESSION['nombre'];
-    ?></a>
+            echo $_SESSION['nombre'];
+            ?></a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./utils/cerrarSesion.php">Cerrar Sesión</a>
@@ -46,8 +46,8 @@ function mostrarVendedor() {
     </li>
     <li id="profile" class="nav-item">
         <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
-    echo $_SESSION['nombre'];
-    ?></a>
+            echo $_SESSION['nombre'];
+            ?></a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./utils/cerrarSesion.php">Cerrar Sesión</a>
@@ -62,8 +62,8 @@ function mostrarAdmin() {
     </li>
     <li id="profile" class="nav-item">
         <a class="nav-link" href="./perfil.php"><i class="fas fa-user"></i> <?php
-    echo $_SESSION['nombre'];
-    ?></a>
+            echo $_SESSION['nombre'];
+            ?></a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="./utils/cerrarSesion.php">Cerrar Sesión</a>
@@ -91,19 +91,19 @@ if (isset($_SESSION["carrito"])) {
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
-<?php
-if (!isset($_SESSION['email'])) {
-    mostrarSinSesion();
-} else {
-    if ($_SESSION['tipo'] == 'admin') {
-        mostrarAdmin();
-    } elseif ($_SESSION['tipo'] == 'vendedor') {
-        mostrarVendedor();
-    } else {
-        mostrarCliente();
-    }
-}
-?>
+                <?php
+                if (!isset($_SESSION['email'])) {
+                    mostrarSinSesion();
+                } else {
+                    if ($_SESSION['tipo'] == 'admin') {
+                        mostrarAdmin();
+                    } elseif ($_SESSION['tipo'] == 'vendedor') {
+                        mostrarVendedor();
+                    } else {
+                        mostrarCliente();
+                    }
+                }
+                ?>
             </ul>
         </div>
     </div>

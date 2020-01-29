@@ -6,7 +6,7 @@ session_start();
 
 /*
 
-Esta página se encarga de realizar la compra y generar un nuevo pedido
+  Esta página se encarga de realizar la compra y generar un nuevo pedido
 
  */
 
@@ -168,14 +168,14 @@ if (isset($_SESSION['email'])) {
                                 shape: 'pill'
                             },
                             createOrder: function (data, actions) {
-                                
+
 
                                 return actions.order.create(<?php echo json_encode(buildRequestBody(round($total, 2), $array_productos, $direccion)); ?>);
                             },
                             onApprove: function (data, actions) {
-                             
+
                                 return actions.order.capture().then(function (details) {
-                               
+
                                     var formCompra = document.getElementById("finalizarCompra");
                                     formCompra.submit();
                                 });
@@ -205,6 +205,7 @@ if (isset($_SESSION['email'])) {
 } else {
     header('Location: ./principal.php');
 }
+/* Comprobamos que existe el stock necesario para realizar la compra */
 
 function validaStock($productos) {
     $correcto = true;
@@ -223,6 +224,8 @@ function validaStock($productos) {
     }
     return $correcto;
 }
+
+/* Contruimos un JSON que luego se le enviará a Paypal para procesar la compra */
 
 function buildRequestBody($total, $items, $direccion) {
     return array(
@@ -250,39 +253,9 @@ function buildRequestBody($total, $items, $direccion) {
                             'currency_code' => 'EUR',
                             'value' => $total,
                         ),
-                    /* 'shipping' =>
-                      array(
-                      'currency_code' => 'EUR',
-                      'value' => '20.00',
-                      ),
-                      'tax_total' =>
-                      array(
-                      'currency_code' => 'EUR',
-                      'value' => '20.00',
-                      ), */
                     ),
                 ),
                 'items' => $items,
-                /* array(
-                  0 =>
-                  array(
-                  'name' => 'T-Shirt',
-                  'description' => 'Green XL',
-                  'sku' => 'sku01',
-                  'unit_amount' =>
-                  array(
-                  'currency_code' => 'EUR',
-                  'value' => '500.00',
-                  ),
-                  'tax' =>
-                  array(
-                  'currency_code' => 'EUR',
-                  'value' => '20.00',
-                  ),
-                  'quantity' => '1',
-                  'category' => 'PHYSICAL_GOODS',
-                  ),
-                  ), */
                 'shipping' =>
                 array(
                     'method' => 'Seur',

@@ -3,6 +3,7 @@ include "./utils/sesionUtils.php";
 include "./utils/utilsProductos.php";
 include './utils/encriptar.php';
 session_start();
+/* Esta página mostraá la lista de todos los productos que el cliente ha guardado en su carrito */
 if (isset($_SESSION['email'])) {
     if (isset($_GET["error"])) {
         if ($_GET["error"] == "stock_no_disponible") {
@@ -11,6 +12,7 @@ if (isset($_SESSION['email'])) {
             $error = "Algo ha ido mal, revise su carrito.";
         }
     }
+    //Recogemos por sesión los datos, si el usuario tiene algún elemento en el carrito
     if (isset($_SESSION["carrito"])) {
         $ids = Array();
         foreach ($_SESSION["carrito"] as $p) {

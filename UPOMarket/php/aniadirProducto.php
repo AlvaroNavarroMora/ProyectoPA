@@ -3,6 +3,9 @@ session_start();
 if (!isset($_SESSION['email']) || !isset($_SESSION['tipo']) || ($_SESSION['tipo'] != "vendedor")) {
     header("location: ./principal.php");
 }
+/*
+  Desde este formulario un usuario vendedor puede generar nuevos productos
+ */
 
 include './utils/utilsProductos.php';
 include './utils/sesionUtils.php';
@@ -20,7 +23,7 @@ function limiteTamanyo($fichero, $limite = (10 * 1024 * 1024)) {
     return $fichero <= $limite;
 }
 
-/* Filtro sobre los distintos campos del formulario de creación del producto */
+/* Filtro y saneamiento sobre los distintos campos del formulario de creación del producto */
 if (isset($_POST['btnAddProduct'])) {
     print_r($_POST);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);

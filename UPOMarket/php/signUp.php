@@ -62,12 +62,12 @@ if (isset($_POST['btnRegistrar'])) {
             mkdir($pathUser);
             if ($esVendedor === 'on') {
                 $_SESSION['tipo'] = 'vendedor';
-                $pathVendor = $pathUser."/products";
+                $pathVendor = $pathUser . "/products";
                 mkdir($pathVendor);
             } else {
                 $_SESSION['tipo'] = 'cliente';
             }
-            
+
 
             header("Location: ./principal.php");
         } else {

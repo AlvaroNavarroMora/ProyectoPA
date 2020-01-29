@@ -1,8 +1,7 @@
 <?php
-
 /*
-    
-Esta página es en la que nos encargamos de procesar el formulario para cambiar el nombre del usuario
+
+  Esta página es en la que nos encargamos de procesar el formulario para cambiar el nombre del usuario
  */
 
 function mostrarPerfil($nombre, $email, $tipo) {

@@ -1,4 +1,6 @@
 <?php
+/*Vista con los productos de una categoría concreta*/
+
 session_start();
 include './utils/utilsProductos.php';
 $categorias = listarCategorias();
@@ -7,6 +9,7 @@ if (!isset($_GET["categoria"])) {
     header("location:principal.php");
 }
 $categoria = trim(filter_var($_GET["categoria"], FILTER_SANITIZE_STRING));
+//Comprobamos que parámetro de ordenación hay que seguir
 if (isset($_GET["ordenar"])) {
     $opcion = filter_var($_GET["ordenar"], FILTER_SANITIZE_NUMBER_INT);
     switch ($opcion) {
@@ -36,7 +39,7 @@ if (isset($_GET["ordenar"])) {
 } else {
     $productosCategoria = listarProductosDeCategoria($categoria);
 }
-
+//Mostramos los distintos productos
 function mostrarProducto($producto) {
     $puntuacion = obtenerPuntuacionProducto($producto["id"]);
     if (file_exists($producto["imagen"])) {
