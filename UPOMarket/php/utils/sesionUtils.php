@@ -1,5 +1,7 @@
 <?php
-/*Métodos recurrentes a la hora de trabajar con sesiones*/
+
+/* Métodos recurrentes a la hora de trabajar con sesiones */
+
 function cerrarSesion() {
     unset($_SESSION['email']);
     session_destroy();
@@ -13,7 +15,9 @@ function existeSesion() {
 function comprobarSesionActual($email) {
     return $_SESSION['email'] == $email;
 }
-/*Comprobamos que el usuario y la contraseña que ha insertado efectivamente corresponden entre sí*/
+
+/* Comprobamos que el usuario y la contraseña que ha insertado efectivamente corresponden entre sí */
+
 function comprobarUsuarioContraseña($email, $password) {
 
     $sentencia = "SELECT email, password, nombre, tipo FROM usuarios WHERE email = '" . $email . "'";

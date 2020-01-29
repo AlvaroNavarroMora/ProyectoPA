@@ -34,6 +34,7 @@ $data = json_encode(obtenerMisPedidos($_SESSION["email"]));
         <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->
 
         <script>
+            //Creación del data Table
             $(document).ready(function () {
                 var data = <?php echo $data ?>;
                 $('#pedidos').DataTable({

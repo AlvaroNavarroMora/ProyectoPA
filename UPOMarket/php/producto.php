@@ -1,7 +1,7 @@
 <?php
 session_start();
 /*
-Esta vista muestra los datos específicos de un producto
+  Esta vista muestra los datos específicos de un producto
  * En este método filtramos los datos
  */
 if (isset($_GET["idProducto"])) {
@@ -59,6 +59,7 @@ if (isset($_GET["enviarValoracion"])) {
 /*
  * Esta función muestra la media de las valoraciones en formato de estrellas
  */
+
 function mostrarValorar() {
     ?>
     <form id='formValoracionProducto' class="md-form mr-auto mb-4" method="GET">
@@ -117,7 +118,7 @@ function mostrarValorar() {
             });
         });
         /*
-        * Obtenemos la valoración actual de un producto
+         * Obtenemos la valoración actual de un producto
          */
         function obtenerValoracion() {
             $("#formValoracionProducto").submit(function () {
@@ -233,7 +234,7 @@ function mostrarValorar() {
                             <h4><?php echo $producto['precio'] ?>€</h4>
                             <p class="card-text"><?php echo $producto['descripcion'] ?></p>
                             <div id="productRating" class="text-warning"></div>
-                            <?php echo number_format($puntuacion, 1) ?> estrellas
+    <?php echo number_format($puntuacion, 1) ?> estrellas
                             <br />
                             <br />
                             <?php

@@ -1,10 +1,10 @@
 <?php
-
 /*
 
-Este fichero se encarga de mostrar la pantalla dónde está el formulario dónde el usuario solicita el cambio de contraseña
+  Este fichero se encarga de mostrar la pantalla dónde está el formulario dónde el usuario solicita el cambio de contraseña
 
-  */
+ */
+
 function mostrarPerfil($nombre, $email, $tipo, $errores = null) {
     ?>
     <head>

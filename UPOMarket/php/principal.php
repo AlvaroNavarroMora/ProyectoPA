@@ -3,7 +3,7 @@ session_start();
 include './utils/utilsProductos.php';
 
 /*
-Esta es la página principal de la tienda
+  Esta es la página principal de la tienda
  * Desde aquí cargamos los productos mejor valorados para mostrarlos.
  * También mostramos un aside con las categorías de las que disponemos
  *  */

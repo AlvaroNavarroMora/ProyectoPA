@@ -1,6 +1,6 @@
 <?php
 session_start();
-/*En esta vista se le muestra al cliente un listado con todas las reclamaciones que ha solicitado*/
+/* En esta vista se le muestra al cliente un listado con todas las reclamaciones que ha solicitado */
 include "./utils/manejadorBD.php";
 include "./utils/utilsConflicto.php";
 
@@ -172,6 +172,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
     </body>
 </html>
 <?php
+
 //En esta función conseguimos todos los datos necesarios para mostrar en el dataTable
 function obtenerMisReclamaciones($email) {
     $con = openCon();

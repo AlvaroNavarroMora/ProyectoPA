@@ -1,6 +1,6 @@
 <?php
 /*
-Página principal del usuario de tipo administrador.
+  Página principal del usuario de tipo administrador.
  * 
  * 
  *  */
@@ -50,7 +50,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                     "paging": true,
                     "ordering": true,
                     columnDefs: [{
-                            targets: [2,5],
+                            targets: [2, 5],
                             render: function (data, type, row) {
                                 return data.length > 20 ?
                                         data.substr(0, 20) + '…' :
@@ -161,7 +161,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
 <?php
 
 function obtenerMisReclamaciones($email) {
-    /*Mediante este sql recopilamos todos los datos útiles para el administrador*/
+    /* Mediante este sql recopilamos todos los datos útiles para el administrador */
     $con = openCon();
     mysqli_set_charset($con, "utf8");
 

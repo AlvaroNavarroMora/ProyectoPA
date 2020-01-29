@@ -2,9 +2,10 @@
 
 include 'manejadorBD.php';
 /*
-Desde este fichero contamos con distintas funciones para realizar las operaciones CRUD de los productos.
+  Desde este fichero contamos con distintas funciones para realizar las operaciones CRUD de los productos.
  * También tenemos fnciones que nos ayudan a realizar otro tipo de consultas sobre los mismos, como consultas por categoría, comprobar si existe el producto, etc...
  *  */
+
 function listarCategorias() {
     $query = "SELECT nombre FROM categorias";
     $result = ejecutarConsulta($query);
@@ -210,7 +211,8 @@ function obtenerMisProductos($email) {
     return $productos;
 }
 
-/*Esta funcion listara las ultimas valoraciones del producto para usuarios no registrados*/
+/* Esta funcion listara las ultimas valoraciones del producto para usuarios no registrados */
+
 function listarValoracionesProducto($idProducto) {
     $query = "SELECT * FROM valoraciones WHERE id_producto=$idProducto ORDER BY fecha DESC LIMIT 10";
     $result = ejecutarConsulta($query);
@@ -223,8 +225,9 @@ function listarValoracionesProducto($idProducto) {
     return $valoraciones;
 }
 
-/*Esta funcion servira para mostrar, si existe, la valoracion del
- * cliente en primer lugar de la lista de valoraciones*/
+/* Esta funcion servira para mostrar, si existe, la valoracion del
+ * cliente en primer lugar de la lista de valoraciones */
+
 function obtenerMiValoracionDelProducto($email, $idProducto) {
     $query = "SELECT * FROM valoraciones WHERE email_cliente='$email' AND id_producto=$idProducto";
     $result = ejecutarConsulta($query);
@@ -235,7 +238,8 @@ function obtenerMiValoracionDelProducto($email, $idProducto) {
     return $valoracion;
 }
 
-/*Esta funcion lista las 10 valoraciones mas recientes del producto sin contar la del cliente*/
+/* Esta funcion lista las 10 valoraciones mas recientes del producto sin contar la del cliente */
+
 function listarRestoValoracionesProducto($email, $idProducto) {
     $query = "SELECT * FROM valoraciones WHERE id_producto=$idProducto AND email_cliente not like '$email' ORDER BY fecha DESC LIMIT 10";
     $result = ejecutarConsulta($query);

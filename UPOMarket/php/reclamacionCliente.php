@@ -17,6 +17,7 @@ if (isset($_POST["idReclamacion"]) && isset($_POST["idProducto"])) {
     header("location:principal.php");
 }
 /* Consultamos los datos de la reclamación que queremos visualizar */
+
 function obtenerDatosReclamacion($idReclamacion, $idProducto) {
     $con = openCon();
     $query = "SELECT r.fecha as 'fecha_reclamacion', r.descripcion as 'descripcion',
@@ -57,7 +58,7 @@ function obtenerDatosReclamacion($idReclamacion, $idProducto) {
     <meta name="author" content="">
 
 
-    <title>Venta - UPOMarket</title>
+    <title>Reclamacion - UPOMarket</title>
     <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/shop-homepage.css" rel="stylesheet">

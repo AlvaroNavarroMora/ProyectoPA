@@ -151,6 +151,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
 include "./utils/sesionUtils.php";
 include "./utils/manejadorBD.php";
 session_start();
+//Obtenemos los distintos datos que nos hacen falta en la vista
 if (isset($_SESSION['email'])) {
 
     $sql = "SELECT nombre, email, tipo FROM usuarios WHERE email='" . $_SESSION['email'] . "'";

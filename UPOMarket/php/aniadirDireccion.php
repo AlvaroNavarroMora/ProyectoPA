@@ -3,11 +3,11 @@ session_start();
 if (!isset($_SESSION['email'])) {
     header("location: ./principal.php");
 }
-
+/*Formulario y tratamiento de los datos del mismo para añadir una dirección a un cliente*/
 include './utils/manejadorBD.php';
 include './utils/sesionUtils.php';
 
-/* Filtro sobre los datos del formulario para añadir direcciones. */
+/* Filtro y saneamiento sobre los datos del formulario para añadir direcciones. */
 if (isset($_POST['btnAddDireccion'])) {
     $direccion1 = trim(filter_var($_POST['direccion1'], FILTER_SANITIZE_STRING));
     $direccion2 = trim(filter_var($_POST['direccion2'], FILTER_SANITIZE_STRING));
@@ -46,7 +46,8 @@ if (isset($_POST['btnAddDireccion'])) {
         }
     }
 }
-/*Esta función se encarga de añadir una dirección a la base de datos, preparando los datos y creando la consulta.*/
+/* Esta función se encarga de añadir una dirección a la base de datos, preparando los datos y creando la consulta. */
+
 function aniadirDireccion($email, $nombre, $direccion1, $direccion2, $provincia, $ciudad, $cp) {
     $correcto = false;
     $conn = openCon();
@@ -60,12 +61,12 @@ function aniadirDireccion($email, $nombre, $direccion1, $direccion2, $provincia,
     if ($id_direccion > 0) {
         $query = "INSERT INTO direcciones_clientes (email_cliente, direccion_cliente) VALUES('$email','$id_direccion')";
         mysqli_query($conn, $query);
-        if(mysqli_affected_rows($conn) > 0) {
+        if (mysqli_affected_rows($conn) > 0) {
             $correcto = true;
         }
     }
     closeCon($conn);
-    
+
     return $correcto;
 }
 ?>
@@ -99,7 +100,7 @@ function aniadirDireccion($email, $nombre, $direccion1, $direccion2, $provincia,
         <!-- Page Content -->
         <main class="container">
             <div class="row">
-                
+
                 <!-- /.col-lg-3 -->
                 <div class="col-lg-9">
                     <form enctype="multipart/form-data" action="#" method="post">
