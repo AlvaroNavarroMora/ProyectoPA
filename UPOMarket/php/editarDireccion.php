@@ -112,7 +112,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
                     $query = "SELECT direccion_cliente FROM direcciones_clientes WHERE email_cliente='" . $_SESSION['email'] . "'";
                     $result = ejecutarConsulta($query);
                     if (mysqli_num_rows($result) <= 0) {
-                        echo "<p>No tiene ninguna dirección registrada aún, para poder realizar una compra registre una.</p>";
+                        echo "<div class='alert alert-warning'>Aún no tiene ninguna dirección, añada una para poder realizar compras</div>";
                     } else {
                         while ($row = mysqli_fetch_assoc($result)) {
                             $dirId = $row['direccion_cliente'];

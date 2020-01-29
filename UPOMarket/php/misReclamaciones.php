@@ -131,7 +131,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                             $(btnDarRazonCliente).text("ACEPTAR");
                             $(btnDarRazonCliente).attr("class", "btn btn-sm btn-success");
 
-                            $(btnDarRazonCliente).text("DEVOLVER");
+                            $(btnDarRazonCliente).text("REEMBOLSAR");
                             $(btnDarRazonCliente).attr("class", "btn btn-sm btn-success");
 
                             $(btnDarRazonCliente).attr("onclick", "administrarReclamacion('" + txtBtn1 + "');");
@@ -190,7 +190,7 @@ $data = json_encode(obtenerMisReclamaciones($_SESSION["email"]));
                                 <th>Descripción</th>
                                 <th>Estado</th>
                                 <th>Fecha</th>
-                                <th>Decision</th>
+                                <th>Decisión</th>
                             </tr>
                         </thead>
                     </table>

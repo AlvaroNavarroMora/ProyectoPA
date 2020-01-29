@@ -44,7 +44,11 @@ function mostrarPerfil($nombre, $email, $tipo) {
                             <li><a href="perfil.php" class="list-group-item active">Ver Perfil</a></li>
                             <li><a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a></li>
                             <li><a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a></li>
-                            <li><a href="editarDireccion.php" class="list-group-item">Direcciones</a></li>
+                            <?php
+                            if($_SESSION["tipo"] == "cliente" || $_SESSION["tipo"] == "vendedor") {
+                            echo '<li><a href="editarDireccion.php" class="list-group-item">Direcciones</a></li>';
+                            }
+                            ?>
                             <li><a href="cambiarContrasenia.php" class="list-group-item">Cambiar Contraseña</a></li>
                             <?php if ($tipo == "cliente") {
                                 ?>
@@ -94,45 +98,46 @@ function mostrarPerfil($nombre, $email, $tipo) {
 
                 </div>
                 <!-- /.col-lg-9 -->
+                <?php
+                if ($_SESSION["tipo"] == "cliente" || $_SESSION["tipo"] == "vendedor") {
+                echo '<div class = "col" id = "contenedorDirecciones">';
 
-                <div class="col" id="contenedorDirecciones">
-
-                    <h3 id="titDirecciones" class="mt-4">Mis direcciones</h3>
-
-                    <?php
-                    $query = "SELECT direccion_cliente FROM direcciones_clientes WHERE email_cliente='" . $_SESSION['email'] . "'";
-                    $result = ejecutarConsulta($query);
-                    if (mysqli_num_rows($result) <= 0) {
-                        echo "<p>No tiene ninguna dirección registrada aún, para poder realizar una compra registre una.</p>";
-                    } else {
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            $dirId = $row['direccion_cliente'];
-                            $sentencia = "SELECT nombre, linea_1, linea_2, provincia, ciudad, cp FROM direcciones WHERE id='" . $dirId . "'";
-                            $result2 = ejecutarConsulta($sentencia);
-                            $row2 = mysqli_fetch_array($result2);
-                            ?>
-                            <div class="card mt-4 mr-4 d-inline-block col-lg-4">
-                                <div class="card-body">
-                                    <label><strong>Nombre</strong></label>
-                                    <p><?php echo $row2['nombre']; ?></p>
-                                    <label><strong>Línea 1</strong></label>
-                                    <p><?php echo $row2['linea_1']; ?></p>
-                                    <label><strong>Línea 2</strong></label>
-                                    <p><?php echo $row2['linea_2']; ?></p>
-                                    <label><strong>Ciudad</strong></label>
-                                    <p><?php echo $row2['ciudad']; ?></p>
-                                    <label><strong>Provincia</strong></label>
-                                    <p><?php echo $row2['provincia']; ?></p>
-                                    <label><strong>Código Postal</strong></label>
-                                    <p><?php echo $row2['cp']; ?></p>
-                                </div>
+                $query = "SELECT direccion_cliente FROM direcciones_clientes WHERE email_cliente='" . $_SESSION['email'] . "'";
+                $result = ejecutarConsulta($query);
+                if (mysqli_num_rows($result) <= 0) {
+                    echo "<div class='alert alert-warning'>Aún no tiene ninguna dirección, añada una para poder realizar compras</div>";
+                } else {
+                    $i = 1;
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $dirId = $row['direccion_cliente'];
+                        $sentencia = "SELECT nombre, linea_1, linea_2, provincia, ciudad, cp FROM direcciones WHERE id='" . $dirId . "'";
+                        $result2 = ejecutarConsulta($sentencia);
+                        $row2 = mysqli_fetch_array($result2);
+                        ?>
+                        <div class="card mt-4 mr-4 d-inline-block col-lg-4">
+                            <div class="card-body">
+                                <h5 class='card-title'>Dirección <?php echo $i++ ?></h5>
+                                <label><strong>Nombre</strong></label>
+                                <p><?php echo $row2['nombre']; ?></p>
+                                <label><strong>Línea 1</strong></label>
+                                <p><?php echo $row2['linea_1']; ?></p>
+                                <label><strong>Línea 2</strong></label>
+                                <p><?php echo $row2['linea_2']; ?></p>
+                                <label><strong>Ciudad</strong></label>
+                                <p><?php echo $row2['ciudad']; ?></p>
+                                <label><strong>Provincia</strong></label>
+                                <p><?php echo $row2['provincia']; ?></p>
+                                <label><strong>Código Postal</strong></label>
+                                <p><?php echo $row2['cp']; ?></p>
                             </div>
-                            <?php
-                        }
+                        </div>
+                        <?php
                     }
-                    ?>
+                    }
+                    echo '</div>';
+                }
+                ?>
 
-                </div>
             </div>
 
         </main>
