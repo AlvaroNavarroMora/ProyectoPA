@@ -37,15 +37,15 @@ if (isset($_POST['btnUpdateProduct']) || isset($_POST['btnUpdateDisponibilidad']
         $disponibilidad = 1;
     }
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $id = filter_var($_POST['idProducto'], FILTER_SANITIZE_MAGIC_QUOTES);
+    $id = filter_var($_POST['idProducto'], FILTER_SANITIZE_STRING);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $nombreProducto = filter_var($_POST['producto'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $descripcion = filter_var($_POST['descripcion'], FILTER_SANITIZE_MAGIC_QUOTES);
+    $nombreProducto = filter_var($_POST['producto'], FILTER_SANITIZE_STRING);
+    $descripcion = filter_var($_POST['descripcion'], FILTER_SANITIZE_STRING);
     $categorias = filter_var_array($_POST['cats'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $caracteristicaName = filter_var_array($_POST['caracteristicaName'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $caracteristicaDesc = filter_var_array($_POST['caracteristicaDesc'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $precio = filter_var($_POST['precio'], FILTER_SANITIZE_MAGIC_QUOTES);
-    $stock = filter_var($_POST['stock'], FILTER_SANITIZE_MAGIC_QUOTES);
+    $caracteristicaName = filter_var_array($_POST['caracteristicaName'], FILTER_SANITIZE_STRING);
+    $caracteristicaDesc = filter_var_array($_POST['caracteristicaDesc'], FILTER_SANITIZE_STRING);
+    $precio = filter_var($_POST['precio'], FILTER_SANITIZE_NUMBER_FLOAT);
+    $stock = filter_var($_POST['stock'], FILTER_SANITIZE_NUMBER_INT);
 
 
     if ($id === false || $stock === false || $password === false || $precio === false || $email === false || $descripcion === false || $nombreProducto === false || $caracteristicaName === false || $caracteristicaDesc == false) {
