@@ -18,12 +18,11 @@ $data = json_encode(obtenerMisProductos($_SESSION["email"]));
         <title>Mis Productos - UPOMarket</title>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet">
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-        <link href="../css/principal.css" rel="stylesheet">
         <link href="../css/header.css" rel="stylesheet">
+        <link href="../css/principal.css" rel="stylesheet">
         <link href="../css/footer.css" rel="stylesheet">
-        <link href="../css/misProductos.css" rel="stylesheet">
-
-        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script src="../frameworks/jquery/jquery.min.js"></script>
+        <script src="../frameworks/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
         <script src="https://kit.fontawesome.com/a076d05399.js"></script><!-- Para que se vean los logos -->

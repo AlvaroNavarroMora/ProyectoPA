@@ -43,7 +43,11 @@ function mostrarPerfil($nombre, $email, $tipo) {
                             <li><a href="perfil.php" class="list-group-item">Ver Perfil</a></li>
                             <li><a href="cambiarImagenDePerfil.php" class="list-group-item active">Cambiar Imagen</a></li>
                             <li><a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a></li>
-                            <li><a href="editarDireccion.php" class="list-group-item">Direcciones</a></li>
+                            <?php
+                            if($_SESSION["tipo"] == "cliente" || $_SESSION["tipo"] == "vendedor") {
+                            echo '<li><a href="editarDireccion.php" class="list-group-item">Direcciones de envío</a></li>';
+                            }
+                            ?>
                             <li><a href="cambiarContrasenia.php" class="list-group-item">Cambiar Contraseña</a></li>
                             <?php if ($tipo == "cliente") {
                                 ?>

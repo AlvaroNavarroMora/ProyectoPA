@@ -44,7 +44,11 @@ function mostrarPerfil($nombre, $email, $tipo) {
                             <li><a href="perfil.php" class="list-group-item">Ver Perfil</a></li>
                             <li><a href="cambiarImagenDePerfil.php" class="list-group-item">Cambiar Imagen</a></li>
                             <li><a href="cambiarNombreDeUsuario.php" class="list-group-item">Cambiar Nombre</a></li>
-                            <li><a href="editarDireccion.php" class="list-group-item active">Direcciones</a></li>
+                            <?php
+                            if($_SESSION["tipo"] == "cliente" || $_SESSION["tipo"] == "vendedor") {
+                            echo '<li><a href="editarDireccion.php" class="list-group-item active">Direcciones de envío</a></li>';
+                            }
+                            ?>
                             <li><a href="cambiarContrasenia.php" class="list-group-item">Cambiar Contraseña</a></li>
                             <?php if ($tipo == "cliente") {
                                 ?>
@@ -112,7 +116,7 @@ function mostrarPerfil($nombre, $email, $tipo) {
                     $query = "SELECT direccion_cliente FROM direcciones_clientes WHERE email_cliente='" . $_SESSION['email'] . "'";
                     $result = ejecutarConsulta($query);
                     if (mysqli_num_rows($result) <= 0) {
-                        echo "<p>No tiene ninguna dirección registrada aún, para poder realizar una compra registre una.</p>";
+                        echo "<div class='alert alert-warning'>Aún no tiene ninguna dirección, añada una para poder realizar compras</div>";
                     } else {
                         while ($row = mysqli_fetch_assoc($result)) {
                             $dirId = $row['direccion_cliente'];
