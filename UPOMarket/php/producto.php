@@ -35,12 +35,8 @@ if (isset($_GET["enviarValoracion"])) {
     $idProducto = filter_var($_GET["idProducto"], FILTER_SANITIZE_NUMBER_INT);
     $puntuacion_nueva = filter_var($_GET["puntuacion"], FILTER_SANITIZE_NUMBER_INT);
     $valoracion_nueva = trim(filter_var($_GET["valoracion"], FILTER_SANITIZE_STRING));
-    if (filter_var($valoracion, FILTER_VALIDATE_INT, array("options" =>
-                array("min_range" => 1, "max_range" => 5))) === false) {
-        $error = "La valoración introducida no es válida";
-    } else {
-        valorarProducto($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
-    }
+
+    valorarProducto($_SESSION["email"], $idProducto, $puntuacion_nueva, $valoracion_nueva);
 
     header("location:producto.php?idProducto=$idProducto");
 } else if (isset($_GET["editarValoracion"])) {//Método que controla la actualización de la opinión de un cliente sobre un producto
@@ -87,7 +83,6 @@ function mostrarValorar() {
     <title>Producto/<?php echo $producto['nombre'] ?> - UPOMarket</title>
     <link href="../frameworks/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="../css/shop-homepage.css" rel="stylesheet">
     <link href="../css/header.css" rel="stylesheet">
     <link href="../css/footer.css" rel="stylesheet">
     <link href="../css/producto.css" rel="stylesheet" type="text/css"/>
@@ -234,7 +229,7 @@ function mostrarValorar() {
                             <h4><?php echo $producto['precio'] ?>€</h4>
                             <p class="card-text"><?php echo $producto['descripcion'] ?></p>
                             <div id="productRating" class="text-warning"></div>
-    <?php echo number_format($puntuacion, 1) ?> estrellas
+                            <?php echo number_format($puntuacion, 1) ?> estrellas
                             <br />
                             <br />
                             <?php
