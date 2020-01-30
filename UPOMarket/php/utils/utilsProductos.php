@@ -348,7 +348,7 @@ function obtenerDireccion($idDireccion) {
 }
 
 function compradoPorMi($email, $idProducto) {
-    $query = "SELECT * FROM pedidos p, lineas_de_pedido lp WHERE p.email_cliente='$email' AND lp.id_producto=$idProducto;";
+    $query = "SELECT * FROM pedidos p, lineas_de_pedido lp WHERE p.email_cliente='$email' AND lp.id_producto=$idProducto AND p.id=lp.id_pedido;";
     $result = ejecutarConsulta($query);
 
     return mysqli_num_rows($result) > 0;
