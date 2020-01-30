@@ -60,7 +60,7 @@ if (isset($_GET['datos'])) {
                 "ordering": true,
                 "columns": [
                     {"data": "id_pedido"},
-                    {"data": "nombre"},
+                    {"data": "id_producto"},
                     {"data": "email_vendedor"},
                     {"data": "email_cliente"},
                     {"data": "descripcion"},
