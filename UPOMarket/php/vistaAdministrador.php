@@ -165,12 +165,12 @@ function obtenerMisReclamaciones($email) {
     $con = openCon();
     mysqli_set_charset($con, "utf8");
 
-    $query = "SELECT r.`id_pedido`, r.`id_producto`,sum(lp.`cantidad`*p.`precio`) as 'importe',p.`nombre`, p.`email_vendedor`, v.`email_cliente`, r.`descripcion`, r.`estado`, r.`fecha`
+    $query = "SELECT r.`id_pedido`, r.`id_producto`,p.`nombre`, p.`email_vendedor`, v.`email_cliente`, r.`descripcion`, r.`estado`, r.`fecha`
                  FROM `reclamaciones` as r,`productos` as p, `pedidos` as v , `lineas_de_pedido` as lp
                  WHERE r.`id_producto`=p.`id` 
                  AND r.`id_pedido`=v.`id` 
                  AND r.`estado`='No Resuelto'
-                 AND lp.`id_pedido` = v.`id` AND lp.`id_producto` = p.`id` GROUP BY lp.id_pedido";
+                 AND lp.`id_pedido` = v.`id` AND lp.`id_producto` = p.`id`";
 
     $result = mysqli_query($con, $query);
     $conflictos = Array();

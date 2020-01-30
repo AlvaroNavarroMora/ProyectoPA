@@ -60,7 +60,7 @@ if (isset($_GET['datos'])) {
                 "ordering": true,
                 "columns": [
                     {"data": "id_pedido"},
-                    {"data": "nombre"},
+                    {"data": "id_producto"},
                     {"data": "email_vendedor"},
                     {"data": "email_cliente"},
                     {"data": "descripcion"},
@@ -98,7 +98,6 @@ if (isset($_GET['datos'])) {
                         $(btnDarRazonVendedor).text("VENDEDOR");
                         $(btnDarRazonVendedor).attr("class", "btn btn-sm btn-danger");
                         $(btnDarRazonVendedor).attr("onclick", "darRazon('" + txtBtn2 + "');");
-                        aux.append(btnDarRazonCliente);
                         aux.append(btnDarRazonVendedor);
 
                         //aux.replaceChild(btnDar, aux.firstChild);

@@ -1,8 +1,9 @@
 tr :first-child {
     display: none;
 }
-th,td {
+#productos th,td {
     text-align: center;
+    vertical-align: middle;
 }
 tbody tr :nth-child(2) {
     text-align: left;
@@ -21,7 +22,7 @@ span.highlight {
 }
 img.mostrarImagen {
     display:inline-table;
-    max-width: 50px;
+    max-width: 100px;
 }
 #contenedorTablaProductos.container {
     margin-top: 3%;
