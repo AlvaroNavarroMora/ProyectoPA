@@ -9,6 +9,7 @@ tr :first-child {
 }
 #ventas th,td {
     text-align: center;
+    vertical-align: middle;
 }
 tbody tr:hover {
     cursor: pointer;
@@ -20,7 +21,7 @@ span.highlight {
 }
 img.mostrarImagen {
     display:inline-table;
-    max-width: 50px;
+    max-width: 100px;
 }
 #btn-aniadir-producto {
     margin: 3% 0 1% 0;
